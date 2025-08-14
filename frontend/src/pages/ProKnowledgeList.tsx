@@ -15,215 +15,341 @@ const ROW_HEIGHT = 64;
 const PER_PAGE_OPTIONS = [10, 25, 50, 100];
 
 const ProKnowledgeList: React.FC = () => {
-\tconst api = useMemo(() => new ApiService(API_BASE_URL), []);
-\tconst [facts, setFacts] = useState<FactItem[]>([]);
-\tconst [page, setPage] = useState<number>(1);
-\tconst [perPage, setPerPage] = useState<number>(50);
-\tconst [total, setTotal] = useState<number>(0);
-\tconst [loading, setLoading] = useState<boolean>(false);
-\tconst [error, setError] = useState<string | null>(null);
-\tconst [search, setSearch] = useState<string>('');
+	const api = useMemo(() => new ApiService(API_BASE_URL), []);
+	const [facts, setFacts] = useState<FactItem[]>([]);
+	const [page, setPage] = useState<number>(1);
+	const [perPage, setPerPage] = useState<number>(50);
+	const [total, setTotal] = useState<number>(0);
+	const [loading, setLoading] = useState<boolean>(false);
+	const [error, setError] = useState<string | null>(null);
+	const [search, setSearch] = useState<string>('');
 
-\tconst loadPage = useCallback(async (nextPage: number, nextPerPage: number) => {
-\t\tsetLoading(true);
-\t\tsetError(null);
-\t\ttry {
-\t\t\t// Server-seitige Pagination
-\t\t\tconst data = await api.getFactsPaginated(nextPage, nextPerPage);
-\t\t\tsetFacts(data.facts || []);
-\t\t\tsetTotal(data.total || 0);
-\t\t} catch (e: any) {
-\t\t\tsetError(e?.message || 'Laden fehlgeschlagen');
-\t\t} finally {
-\t\t\tsetLoading(false);
-\t\t}
-\t}, [api]);
+	const loadPage = useCallback(async (nextPage: number, nextPerPage: number) => {
+		setLoading(true);
+		setError(null);
+		try {
+			// Server-seitige Pagination
+			const data = await api.getFactsPaginated(nextPage, nextPerPage);
+			setFacts(data.facts || []);
+			setTotal(data.total || 0);
+		} catch (e: any) {
+			setError(e?.message || 'Laden fehlgeschlagen');
+		} finally {
+			setLoading(false);
+		}
+	}, [api]);
 
-\tuseEffect(() => {
-\t\tloadPage(page, perPage);
-\t}, [page, perPage, loadPage]);
+	useEffect(() => {
+		loadPage(page, perPage);
+	}, [page, perPage, loadPage]);
 
-\tconst totalPages = Math.max(1, Math.ceil(total / perPage));
+	const totalPages = Math.max(1, Math.ceil(total / perPage));
 
-\tconst Row = ({ index, style }: { index: number; style: React.CSSProperties }) => {
-\t\tconst fact = facts[index];
-\t\tif (!fact) return null;
-\t\treturn (
-\t\t\t<div style={style} className="px-3 py-2">
-\t\t\t\t<Card className="p-3">
-\t\t\t\t\t<div className="flex items-start justify-between gap-2">
-\t\t\t\t\t\t<code className="text-sm font-mono break-all">{fact.statement}</code>
-\t\t\t\t\t\t<div className="flex items-center gap-2 ml-2 shrink-0">
-\t\t\t\t\t\t\t{typeof fact.id !== 'undefined' && (
-\t\t\t\t\t\t\t\t<Badge variant="outline">#{fact.id}</Badge>
-\t\t\t\t\t\t\t)}
-\t\t\t\t\t\t\t{typeof fact.confidence === 'number' && (
-\t\t\t\t\t\t\t\t<Badge variant={fact.confidence > 0.8 ? 'default' : 'secondary'}>
-\t\t\t\t\t\t\t\t\t{Math.round(fact.confidence * 100)}%
-\t\t\t\t\t\t\t\t</Badge>
-\t\t\t\t\t\t\t)}
-\t\t\t\t\t\t</div>
-\t\t\t\t\t</div>
-\t\t\t\t</Card>
-\t\t\t</div>
-\t\t);
-\t};
+	const Row = ({ index, style }: { index: number; style: React.CSSProperties }) => {
+		const fact = facts[index];
+		if (!fact) return null;
+		return (
+			<div style={style} className="px-3 py-2">
+				<Card className="p-3">
+					<div className="flex items-start justify-between gap-2">
+						<code className="text-sm font-mono break-all">{fact.statement}</code>
+						<div className="flex items-center gap-2 ml-2 shrink-0">
+							{typeof fact.id !== 'undefined' && (
+								<Badge variant="outline">#{fact.id}</Badge>
+							)}
+							{typeof fact.confidence === 'number' && (
+								<Badge variant={fact.confidence > 0.8 ? 'default' : 'secondary'}>
+									{Math.round(fact.confidence * 100)}%
+								</Badge>
+							)}
+						</div>
+					</div>
+				</Card>
+			</div>
+		);
+	};
 
-\tconst handleFirst = () => setPage(1);
-\tconst handlePrev = () => setPage(p => Math.max(1, p - 1));
-\tconst handleNext = () => setPage(p => Math.min(totalPages, p + 1));
-\tconst handleLast = () => setPage(totalPages);
+	const handleFirst = () => setPage(1);
+	const handlePrev = () => setPage(p => Math.max(1, p - 1));
+	const handleNext = () => setPage(p => Math.min(totalPages, p + 1));
+	const handleLast = () => setPage(totalPages);
 
-\tconst [stats, setStats] = useState<any>(null);
-\tconst refreshStats = useCallback(async () => {
-\t\ttry {
-\t\t\tconst s = await api.getFactsStats(5000);
-\t\t\tsetStats(s);
-\t\t} catch {}
-\t}, [api]);
+	const [stats, setStats] = useState<any>(null);
+	const refreshStats = useCallback(async () => {
+		try {
+			const s = await api.getFactsStats(5000);
+			setStats(s);
+		} catch {}
+	}, [api]);
 
-\tuseEffect(() => { refreshStats(); }, [refreshStats]);
+	useEffect(() => { refreshStats(); }, [refreshStats]);
 
-\tconst [bulkText, setBulkText] = useState<string>('');
-\tconst [bulkBusy, setBulkBusy] = useState<boolean>(false);
-\tconst doBulkImport = async () => {
-\t\tconst statements = bulkText
-\t\t\t.split(/\r?\n/)
-\t\t\t.map(s => s.trim())
-\t\t\t.filter(s => s.length > 0);
-\t\tif (statements.length === 0) return;
-\t\tsetBulkBusy(true);
-\t\ttry {
-\t\t\tawait api.bulkInsert(statements);
-\t\t\tsetBulkText('');
-\t\t\tawait loadPage(page, perPage);
-\t\t\tawait refreshStats();
-\t\t} finally {
-\t\t\tsetBulkBusy(false);
-\t\t}
-\t};
+	const [bulkText, setBulkText] = useState<string>('');
+	const [bulkBusy, setBulkBusy] = useState<boolean>(false);
+	const [bulkErrors, setBulkErrors] = useState<string | null>(null);
+	const doBulkImport = async () => {
+		const statements = bulkText
+			.split(/\r?\n/)
+			.map(s => s.trim())
+			.filter(s => s.length > 0);
+		if (statements.length === 0) return;
+		setBulkBusy(true);
+		setBulkErrors(null);
+		try {
+			const res = await api.bulkInsert(statements);
+			if (res?.errors && res.errors.length > 0) {
+				setBulkErrors(`${res.errors.length} Fehler beim Import.`);
+			}
+			setBulkText('');
+			await loadPage(page, perPage);
+			await refreshStats();
+		} finally {
+			setBulkBusy(false);
+		}
+	};
 
-\treturn (
-\t\t<div className="h-full flex flex-col p-4 gap-4">
-\t\t\t{/* Header Controls */}
-\t\t\t<div className="flex flex-wrap items-center gap-3">
-\t\t\t\t<div className="text-sm text-muted-foreground">
-\t\t\t\t\t{total.toLocaleString()} Facts • Page {page} / {totalPages}
-\t\t\t\t</div>
-\t\t\t\t<div className="flex items-center gap-2 ml-auto">
-\t\t\t\t\t<Button variant="outline" onClick={handleFirst} disabled={page === 1}>First</Button>
-\t\t\t\t\t<Button variant="outline" onClick={handlePrev} disabled={page === 1}>Previous</Button>
-\t\t\t\t\t<Input
-\t\t\t\t\t\ttype="number"
-\t\t\t\t\t\tvalue={page}
-\t\t\t\t\t\tmin={1}
-\t\t\t\t\t\tmax={totalPages}
-\t\t\t\t\t\tonChange={(e) => setPage(Math.max(1, Math.min(totalPages, Number(e.target.value) || 1)))}
-\t\t\t\t\t\tclassName="w-20"
-\t\t\t\t\t/>
-\t\t\t\t\t<Button variant="outline" onClick={handleNext} disabled={page === totalPages}>Next</Button>
-\t\t\t\t\t<Button variant="outline" onClick={handleLast} disabled={page === totalPages}>Last</Button>
-\t\t\t\t\t<select
-\t\t\t\t\t\tclassName="border rounded px-2 py-1 text-sm"
-\t\t\t\t\t\tvalue={perPage}
-\t\t\t\t\t\tonChange={(e) => { setPerPage(Number(e.target.value)); setPage(1); }}
-\t\t\t\t\t>
-\t\t\t\t\t\t{PER_PAGE_OPTIONS.map(v => (
-\t\t\t\t\t\t\t<option key={v} value={v}>{v}/page</option>
-\t\t\t\t\t\t))}
-\t\t\t\t\t</select>
-\t\t\t\t</div>
-\t\t\t</div>
+	// Drag & Drop JSONL Import
+	const handleFileImport = async (file: File) => {
+		if (!file) return;
+		setBulkBusy(true);
+		setBulkErrors(null);
+		try {
+			const text = await file.text();
+			let statements: string[] = [];
+			const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+			for (const line of lines) {
+				try {
+					if (line.startsWith('{') && line.endsWith('}')) {
+						const obj = JSON.parse(line);
+						const st = (obj as any).statement || (obj as any).fact || (obj as any)?.data?.statement;
+						if (typeof st === 'string' && st.trim().length > 0) statements.push(st.trim());
+					} else {
+						statements.push(line);
+					}
+				} catch {}
+			}
+			statements = statements.filter(s => s.length > 0);
+			if (statements.length === 0) {
+				setBulkErrors('Keine importierbaren Statements gefunden.');
+				return;
+			}
+			const res = await api.bulkInsert(statements);
+			if (res?.errors && res.errors.length > 0) {
+				setBulkErrors(`${res.errors.length} Fehler beim Import (Datei).`);
+			}
+			await loadPage(1, perPage);
+			setPage(1);
+			await refreshStats();
+		} finally {
+			setBulkBusy(false);
+		}
+	};
 
-\t\t\t{/* Search (client-seitig – optional) */}
-\t\t\t<div className="flex items-center gap-2">
-\t\t\t\t<Input
-\t\t\t\t\tplaceholder="Suche (Client-Filter auf aktuelle Seite)"
-\t\t\t\t\tvalue={search}
-\t\t\t\t\tonChange={(e) => setSearch(e.target.value)}
-\t\t\t\t\tclassName="max-w-sm"
-\t\t\t\t/>
-\t\t\t\t<Button variant="outline" onClick={() => { setSearch(''); }}>Reset</Button>
-\t\t\t</div>
+	// Export-Download
+	const [exportLimit, setExportLimit] = useState<number>(100);
+	const [exportFormat, setExportFormat] = useState<'json' | 'jsonl'>('jsonl');
+	const [exportBusy, setExportBusy] = useState<boolean>(false);
+	const doExport = async () => {
+		setExportBusy(true);
+		try {
+			const data = await api.exportFacts(exportLimit, exportFormat);
+			let blob: Blob;
+			if (exportFormat === 'json') {
+				blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+			} else {
+				blob = new Blob([data as string], { type: 'application/x-ndjson' });
+			}
+			const url = URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.href = url;
+			a.download = `facts_export_${exportLimit || 'all'}.${exportFormat}`;
+			document.body.appendChild(a);
+			a.click();
+			document.body.removeChild(a);
+			URL.revokeObjectURL(url);
+		} finally {
+			setExportBusy(false);
+		}
+	};
 
-\t\t\t{/* List */}
-\t\t\t<div className="flex-1 min-h-0">
-\t\t\t\t{error && (
-\t\t\t\t\t<div className="text-sm text-red-500 mb-2">{error}</div>
-\t\t\t\t)}
-\t\t\t\t<Card className="h-full">
-\t\t\t\t\t<ScrollArea className="h-full">
-\t\t\t\t\t\t<FixedSizeList
-\t\t\t\t\t\t\theight={600}
-\t\t\t\t\t\t\titemCount={facts.filter(f => !search || f.statement.toLowerCase().includes(search.toLowerCase())).length}
-\t\t\t\t\t\t\titemSize={ROW_HEIGHT}
-\t\t\t\t\t\t\twidth="100%"
-\t\t\t\t\t\t\toverScanCount={5 as any}
-\t\t\t\t\t\t>
-\t\t\t\t\t\t\t{({ index, style }) => {
-\t\t\t\t\t\t\t\tconst data = facts.filter(f => !search || f.statement.toLowerCase().includes(search.toLowerCase()));
-\t\t\t\t\t\t\t\tconst item = data[index];
-\t\t\t\t\t\t\t\tif (!item) return null;
-\t\t\t\t\t\t\t\treturn (
-\t\t\t\t\t\t\t\t\t<div style={style} className="px-3 py-2">
-\t\t\t\t\t\t\t\t\t\t<Card className="p-3">
-\t\t\t\t\t\t\t\t\t\t\t<div className="flex items-start justify-between gap-2">
-\t\t\t\t\t\t\t\t\t\t\t\t<code className="text-sm font-mono break-all">{item.statement}</code>
-\t\t\t\t\t\t\t\t\t\t\t\t<div className="flex items-center gap-2 ml-2 shrink-0">
-\t\t\t\t\t\t\t\t\t\t\t\t\t{typeof item.id !== 'undefined' && (
-\t\t\t\t\t\t\t\t\t\t\t\t\t\t<Badge variant="outline">#{item.id}</Badge>
-\t\t\t\t\t\t\t\t\t\t\t\t\t)}
-\t\t\t\t\t\t\t\t\t\t\t\t\t{typeof item.confidence === 'number' && (
-\t\t\t\t\t\t\t\t\t\t\t\t\t\t<Badge variant={item.confidence > 0.8 ? 'default' : 'secondary'}>
-\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t{Math.round(item.confidence * 100)}%
-\t\t\t\t\t\t\t\t\t\t\t\t\t\t</Badge>
-\t\t\t\t\t\t\t\t\t\t\t\t\t)}
-\t\t\t\t\t\t\t\t\t\t\t</div>
-\t\t\t\t\t\t\t\t\t\t\t</div>
-\t\t\t\t\t\t\t\t\t\t</Card>
-\t\t\t\t\t\t\t\t\t</div>
-\t\t\t\t\t\t\t\t);
-\t\t\t\t\t\t\t}}
-\t\t\t\t\t\t/>
-\t\t\t\t\t</ScrollArea>
-\t\t\t\t</Card>
-\t\t\t</div>
+	return (
+		<div className="h-full flex flex-col p-4 gap-4">
+			{/* Header Controls */}
+			<div className="flex flex-wrap items-center gap-3">
+				<div className="text-sm text-muted-foreground">
+					{total.toLocaleString()} Facts • Page {page} / {totalPages}
+				</div>
+				<div className="flex items-center gap-2 ml-auto">
+					<Button variant="outline" onClick={handleFirst} disabled={page === 1}>First</Button>
+					<Button variant="outline" onClick={handlePrev} disabled={page === 1}>Previous</Button>
+					<Input
+						type="number"
+						value={page}
+						min={1}
+						max={totalPages}
+						onChange={(e) => setPage(Math.max(1, Math.min(totalPages, Number(e.target.value) || 1)))}
+						className="w-20"
+					/>
+					<Button variant="outline" onClick={handleNext} disabled={page === totalPages}>Next</Button>
+					<Button variant="outline" onClick={handleLast} disabled={page === totalPages}>Last</Button>
+					<select
+						className="border rounded px-2 py-1 text-sm"
+						value={perPage}
+						onChange={(e) => { setPerPage(Number(e.target.value)); setPage(1); }}
+					>
+						{PER_PAGE_OPTIONS.map(v => (
+							<option key={v} value={v}>{v}/page</option>
+						))}
+					</select>
+				</div>
+			</div>
 
-\t\t\t{/* Stats + Bulk Import */}
-\t\t\t<div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-\t\t\t\t<Card className="p-4">
-\t\t\t\t\t<div className="flex items-center justify-between mb-2">
-\t\t\t\t\t\t<h3 className="text-sm font-semibold">Stats</h3>
-\t\t\t\t\t\t<Button size="sm" variant="outline" onClick={refreshStats}>Refresh</Button>
-\t\t\t\t\t</div>
-\t\t\t\t\t<div className="text-sm text-muted-foreground mb-2">
-\t\t\t\t\t\tTotal: {(stats?.total || total || 0).toLocaleString()}
-\t\t\t\t\t</div>
-\t\t\t\t\t<div className="flex flex-wrap gap-2">
-\t\t\t\t\t\t{Array.isArray(stats?.top_predicates) && stats.top_predicates.slice(0, 10).map((p: any, i: number) => (
-\t\t\t\t\t\t\t<Badge key={i} variant="secondary" className="text-xs">{p.predicate || p.name}: {p.count}</Badge>
-\t\t\t\t\t\t))}
-\t\t\t\t\t</div>
-\t\t\t\t</Card>
+			{/* Search (client-seitig – optional) */}
+			<div className="flex items-center gap-2">
+				<Input
+					placeholder="Suche (Client-Filter auf aktuelle Seite)"
+					value={search}
+					onChange={(e) => setSearch(e.target.value)}
+					className="max-w-sm"
+				/>
+				<Button variant="outline" onClick={() => { setSearch(''); }}>Reset</Button>
+			</div>
 
-\t\t\t\t<Card className="p-4">
-\t\t\t\t\t<div className="flex items-center justify-between mb-2">
-\t\t\t\t\t\t<h3 className="text-sm font-semibold">Bulk Import</h3>
-\t\t\t\t\t\t<Button size="sm" onClick={doBulkImport} disabled={bulkBusy || bulkText.trim().length === 0}>
-\t\t\t\t\t\t\tImportieren
-\t\t\t\t\t\t</Button>
-\t\t\t\t\t</div>
-\t\t\t\t\t<Textarea
-\t\t\t\t\t\tplaceholder="Eine Aussage pro Zeile: Predicate(Entity1, Entity2)."
-\t\t\t\t\t\trows={6}
-\t\t\t\t\t\tvalue={bulkText}
-\t\t\t\t\t\tonChange={(e) => setBulkText(e.target.value)}
-\t\t\t\t\t/>
-\t\t\t\t\t<div className="text-xs text-muted-foreground mt-1">{bulkText.split(/\r?\n/).filter(s => s.trim().length > 0).length} Statements vorbereitet</div>
-\t\t\t\t</Card>
-\t\t\t</div>
-\t\t</div>
-\t);
+			{/* List */}
+			<div className="flex-1 min-h-0">
+				{error && (
+					<div className="text-sm text-red-500 mb-2">{error}</div>
+				)}
+				<Card className="h-full">
+					<ScrollArea className="h-full">
+						<FixedSizeList
+							height={600}
+							itemCount={facts.filter(f => !search || f.statement.toLowerCase().includes(search.toLowerCase())).length}
+							itemSize={ROW_HEIGHT}
+							width="100%"
+							overScanCount={5 as any}
+						>
+							{({ index, style }) => {
+								const data = facts.filter(f => !search || f.statement.toLowerCase().includes(search.toLowerCase()));
+								const item = data[index];
+								if (!item) return null;
+								return (
+									<div style={style} className="px-3 py-2">
+										<Card className="p-3">
+											<div className="flex items-start justify-between gap-2">
+												<code className="text-sm font-mono break-all">{item.statement}</code>
+												<div className="flex items-center gap-2 ml-2 shrink-0">
+													{typeof item.id !== 'undefined' && (
+														<Badge variant="outline">#{item.id}</Badge>
+													)}
+													{typeof item.confidence === 'number' && (
+														<Badge variant={item.confidence > 0.8 ? 'default' : 'secondary'}>
+															{Math.round(item.confidence * 100)}%
+														</Badge>
+													)}
+												</div>
+											</div>
+										</Card>
+									</div>
+								);
+							}}
+						/>
+					</ScrollArea>
+				</Card>
+			</div>
+
+			{/* Stats + Export + Bulk Import */}
+			<div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+				<Card className="p-4">
+					<div className="flex items-center justify-between mb-2">
+						<h3 className="text-sm font-semibold">Stats</h3>
+						<Button size="sm" variant="outline" onClick={refreshStats}>Refresh</Button>
+					</div>
+					<div className="text-sm text-muted-foreground mb-2">
+						Total: {(stats?.total || total || 0).toLocaleString()}
+					</div>
+					<div className="flex flex-wrap gap-2 mb-2">
+						{Array.isArray(stats?.top_predicates) && stats.top_predicates.slice(0, 10).map((p: any, i: number) => (
+							<Badge key={i} variant="secondary" className="text-xs">{p.predicate || p.name}: {p.count}</Badge>
+						))}
+					</div>
+					{stats?.activity && (
+						<div className="text-xs text-muted-foreground space-y-1">
+							<div className="flex items-center justify-between">
+								<span>24h</span>
+								<div className="flex-1 mx-2 h-2 bg-muted rounded">
+									<div className="h-2 bg-primary rounded" style={{ width: `${Math.min(100, (stats.activity.last_24h || 0) / Math.max(1, stats.activity.last_30d || 1) * 100)}%` }} />
+								</div>
+								<span>{stats.activity.last_24h}</span>
+							</div>
+							<div className="flex items-center justify-between">
+								<span>7d</span>
+								<div className="flex-1 mx-2 h-2 bg-muted rounded">
+									<div className="h-2 bg-secondary rounded" style={{ width: `${Math.min(100, (stats.activity.last_7d || 0) / Math.max(1, stats.activity.last_30d || 1) * 100)}%` }} />
+								</div>
+								<span>{stats.activity.last_7d}</span>
+							</div>
+							<div className="flex items-center justify-between">
+								<span>30d</span>
+								<div className="flex-1 mx-2 h-2 bg-muted rounded">
+									<div className="h-2 bg-foreground/30 rounded" style={{ width: `100%` }} />
+								</div>
+								<span>{stats.activity.last_30d}</span>
+							</div>
+						</div>
+					)}
+				</Card>
+
+				{/* Export Panel */}
+				<Card className="p-4">
+					<div className="flex items-center justify-between mb-2">
+						<h3 className="text-sm font-semibold">Export</h3>
+						<Button size="sm" onClick={doExport} disabled={exportBusy}>
+							{exportBusy ? 'Export...' : 'Download'}
+						</Button>
+					</div>
+					<div className="flex items-center gap-2">
+						<label className="text-xs text-muted-foreground">Limit</label>
+						<Input type="number" className="w-24" value={exportLimit} min={0} onChange={(e) => setExportLimit(Math.max(0, Number(e.target.value) || 0))} />
+						<select className="border rounded px-2 py-1 text-sm" value={exportFormat} onChange={(e) => setExportFormat((e.target.value as any) || 'jsonl')}>
+							<option value="jsonl">JSONL</option>
+							<option value="json">JSON</option>
+						</select>
+					</div>
+					<div className="text-xs text-muted-foreground mt-2">Limit 0 = alle Facts</div>
+				</Card>
+
+				{/* Bulk Import */}
+				<Card className="p-4">
+					<div className="flex items-center justify-between mb-2">
+						<h3 className="text-sm font-semibold">Bulk Import</h3>
+						<Button size="sm" onClick={doBulkImport} disabled={bulkBusy || bulkText.trim().length === 0}>
+							Importieren
+						</Button>
+					</div>
+					<Textarea
+						placeholder="Eine Aussage pro Zeile: Predicate(Entity1, Entity2)."
+						rows={6}
+						value={bulkText}
+						onChange={(e) => setBulkText(e.target.value)}
+					/>
+					<div className="text-xs text-muted-foreground mt-1">{bulkText.split(/\r?\n/).filter(s => s.trim().length > 0).length} Statements vorbereitet</div>
+					<div className="mt-3 p-3 border border-dashed rounded text-xs text-muted-foreground text-center"
+						onDragOver={(e) => { e.preventDefault(); }}
+						onDrop={(e) => { e.preventDefault(); const f = (e as any).dataTransfer?.files?.[0]; if (f) handleFileImport(f); }}
+					>
+						Drag & Drop JSONL-Datei hierher oder
+						<label className="ml-1 underline cursor-pointer">
+							Datei auswählen
+							<input type="file" accept=".jsonl,.json,.txt" className="hidden" onChange={(e) => { const f = (e.target as HTMLInputElement).files?.[0]; if (f) handleFileImport(f); }} />
+						</label>
+					</div>
+					{bulkBusy && <div className="text-xs text-muted-foreground mt-2">Import läuft...</div>}
+					{bulkErrors && <div className="text-xs text-red-500 mt-2">{bulkErrors}</div>}
+				</Card>
+			</div>
+		</div>
+	);
 };
 
 export default ProKnowledgeList;
