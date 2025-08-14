@@ -100,6 +100,11 @@ const ProNavigation: React.FC = () => {
       icon: <Brain className="w-4 h-4" />,
       description: `${(kbMetrics?.factCount || 0).toLocaleString()} facts`,
       subItems: [
+            {
+              path: '/knowledge/list',
+              label: 'Facts (Paginated)',
+              icon: <Database className="w-4 h-4" />
+            },
         {
           path: '/knowledge/graph',
           label: 'Graph Visualization',

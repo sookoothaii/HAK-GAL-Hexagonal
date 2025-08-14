@@ -29,6 +29,7 @@ import ProGovernorControl from '@/pages/ProGovernorControl';  // Governor Contro
 import ProSettingsEnhanced from '@/pages/ProSettingsEnhanced';
 import ProKnowledgeGraph from '@/components/interaction/ProKnowledgeGraph';
 import ProKnowledgeStats from '@/pages/ProKnowledgeStats';
+import ProKnowledgeList from '@/pages/ProKnowledgeList';
 import HRMDashboard from '@/pages/HRMDashboard';  // HRM Neural Reasoning Dashboard
 
 // Layout Component (Restored)
@@ -90,8 +91,9 @@ function AppContent() {
         {/* Unified Query Interface - Primary Query System */}
         <Route path="/query" element={<ProUnifiedQuery />} />
         <Route path="/governor" element={<ProGovernorControl />} />
-        <Route path="/knowledge" element={<Navigate to="/knowledge/stats" replace />} />
+        <Route path="/knowledge" element={<Navigate to="/knowledge/list" replace />} />
         <Route path="/knowledge/graph" element={<ProKnowledgeGraph />} />
+        <Route path="/knowledge/list" element={<ProKnowledgeList />} />
         <Route path="/knowledge/stats" element={<ProKnowledgeStats />} />
         <Route path="/monitoring" element={<ProSystemMonitoring />} />
         <Route path="/settings" element={<ProSettingsEnhanced />} />
