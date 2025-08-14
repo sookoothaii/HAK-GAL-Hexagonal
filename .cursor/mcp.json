@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "hak_gal_hexagonal": {
+      "command": ".\\.venv_hexa\\Scripts\\python.exe",
+      "args": [
+        "-m",
+        "hak_gal_mcp"
+      ],
+      "env": {
+        "HAKGAL_API_BASE_URL": "http://127.0.0.1:5001",
+        "PYTHONUNBUFFERED": "1"
+      },
+      "disabled": false
+    }
+  }
+}
+
+
