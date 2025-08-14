@@ -51,3 +51,5 @@ PROJECT_HUB/reports/*.json
 # Misc
 *.coverage
 coverage.xml
+
+ARCHIVE_20250814_cleanup/
