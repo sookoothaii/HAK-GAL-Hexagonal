@@ -776,6 +776,87 @@ class HexagonalAPI:
             self._cache['facts_count'] = {'value': count_val, 'ts': now_ts}
             return jsonify({'count': count_val, 'cached': False, 'ttl_sec': 30})
 
+        # ============ Enhanced API (Pagination / Bulk / Stats / Export) ============
+        @self.app.route('/api/facts/paginated', methods=['GET'])
+        def facts_paginated():
+            """Return facts with pagination. Query params: page (1-based), per_page (default 50)."""
+            try:
+                page = max(1, request.args.get('page', 1, type=int))
+                per_page = min(500, max(1, request.args.get('per_page', 50, type=int)))
+                offset = (page - 1) * per_page
+                items = []
+                # Use repository if pagination is available
+                if hasattr(self.fact_repository, 'find_page'):
+                    items = getattr(self.fact_repository, 'find_page')(offset, per_page)  # type: ignore
+                else:
+                    # Fallback to find_all for small pages
+                    items = self.fact_service.get_all_facts(per_page)
+                total = self.fact_repository.count() if hasattr(self.fact_repository, 'count') else None
+                return jsonify({
+                    'page': page,
+                    'per_page': per_page,
+                    'total': total,
+                    'facts': [f.to_dict() for f in items]
+                })
+            except Exception as e:
+                return jsonify({'error': str(e)}), 500
+
+        @self.app.route('/api/facts/bulk', methods=['POST'])
+        def facts_bulk():
+            """Bulk insert facts. Body: { statements: ["Predicate(A,B).", ...] }"""
+            data = request.get_json(silent=True) or {}
+            stmts = data.get('statements') or []
+            if not isinstance(stmts, list) or not stmts:
+                return jsonify({'error': 'Missing statements[]'}), 400
+            # Kill-switch check
+            if self.kill_switch.is_safe():
+                return jsonify({'error': 'Kill-switch SAFE mode active.'}), 503
+            added = 0
+            try:
+                if hasattr(self.fact_repository, 'bulk_insert'):
+                    added = getattr(self.fact_repository, 'bulk_insert')(stmts)  # type: ignore
+                else:
+                    for s in stmts:
+                        ok, _msg = self.fact_service.add_fact(s, {})
+                        if ok:
+                            added += 1
+                return jsonify({'added': added})
+            except Exception as e:
+                return jsonify({'error': str(e), 'added': added}), 500
+
+        @self.app.route('/api/facts/stats', methods=['GET'])
+        def facts_stats():
+            """Basic stats for dashboards: total, sample predicate counts (top 20)."""
+            try:
+                total = self.fact_repository.count() if hasattr(self.fact_repository, 'count') else None
+                preds: list = []
+                if hasattr(self.fact_repository, 'predicate_counts'):
+                    items = getattr(self.fact_repository, 'predicate_counts')(request.args.get('sample_limit', 5000, type=int))  # type: ignore
+                    preds = [{'predicate': p, 'count': c} for p, c in items[:20]]
+                return jsonify({'total': total, 'top_predicates': preds})
+            except Exception as e:
+                return jsonify({'error': str(e)}), 500
+
+        @self.app.route('/api/facts/export', methods=['GET'])
+        def facts_export():
+            """Export first N facts as JSON or JSONL. Query: limit (default 1000), format=json|jsonl."""
+            try:
+                limit = request.args.get('limit', 1000, type=int)
+                fmt = (request.args.get('format') or 'json').lower()
+                statements: list[str] = []
+                if hasattr(self.fact_repository, 'export_limit'):
+                    statements = getattr(self.fact_repository, 'export_limit')(limit)  # type: ignore
+                else:
+                    items = self.fact_service.get_all_facts(limit)
+                    statements = [f.statement for f in items]
+                if fmt == 'jsonl':
+                    # Return JSONL as text/plain
+                    return ('\n'.join([json.dumps({'statement': s}, ensure_ascii=False) for s in statements]) + '\n', 200, {'Content-Type': 'text/plain; charset=utf-8'})
+                else:
+                    return jsonify({'facts': [{'statement': s} for s in statements]})
+            except Exception as e:
+                return jsonify({'error': str(e)}), 500
+
         @self.app.route('/openapi.json', methods=['GET'])
         def openapi_spec():
             """Minimal OpenAPI spec for client typing and tooling."""

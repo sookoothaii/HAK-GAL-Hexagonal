@@ -125,6 +125,26 @@ class SQLiteFactRepository(FactRepository):
             print(f"[SQLite] Find_all error: {e}")
         
         return facts
+
+    def find_page(self, offset: int, limit: int) -> List[Fact]:
+        """Hole Facts mit OFFSET/LIMIT (Pagination)."""
+        facts: List[Fact] = []
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.execute(
+                    'SELECT statement FROM facts LIMIT ? OFFSET ?',
+                    (limit, offset)
+                )
+                for row in cursor:
+                    facts.append(Fact(
+                        statement=row[0],
+                        context={},
+                        metadata={},
+                        confidence=1.0
+                    ))
+        except Exception as e:
+            print(f"[SQLite] Page error: {e}")
+        return facts
     
     def exists(self, statement: str) -> bool:
         """Prüfe ob Fact existiert"""
@@ -149,6 +169,63 @@ class SQLiteFactRepository(FactRepository):
         except Exception as e:
             print(f"[SQLite] Count error: {e}")
             return 0
+
+    def bulk_insert(self, statements: List[str]) -> int:
+        """Füge mehrere Statements (INSERT OR IGNORE) transaktional ein.
+        Gibt Anzahl tatsächlich eingefügter Zeilen zurück.
+        """
+        if not statements:
+            return 0
+        added = 0
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                cur = conn.cursor()
+                cur.executemany(
+                    'INSERT OR IGNORE INTO facts (statement, context, fact_metadata) VALUES (?, "{}", "{}")',
+                    [(s if s.endswith('.') else s + '.',) for s in statements]
+                )
+                conn.commit()
+                try:
+                    added = cur.rowcount if cur.rowcount is not None else 0
+                except Exception:
+                    added = 0
+        except Exception as e:
+            print(f"[SQLite] Bulk insert error: {e}")
+        return max(0, added)
+
+    def export_limit(self, limit: int) -> List[str]:
+        """Exportiere bis zu N Statements als Liste (für JSON/JSONL)."""
+        out: List[str] = []
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                cur = conn.execute('SELECT statement FROM facts LIMIT ?', (limit,))
+                out = [row[0] for row in cur]
+        except Exception as e:
+            print(f"[SQLite] Export error: {e}")
+        return out
+
+    def predicate_counts(self, sample_limit: int = 5000) -> List[tuple]:
+        """Zähle Prädikate im Sample (SQL-basiert) und liefere (predicate, count)."""
+        items: List[tuple] = []
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                # SQLite: substr(statement,1,instr(statement,'(')-1) extrahiert das Prädikat
+                cur = conn.execute(
+                    """
+                    SELECT pred, COUNT(*) as cnt FROM (
+                        SELECT substr(statement, 1, instr(statement,'(')-1) as pred
+                        FROM facts
+                        LIMIT ?
+                    )
+                    GROUP BY pred
+                    ORDER BY cnt DESC
+                    """,
+                    (sample_limit,)
+                )
+                items = [(row[0], int(row[1])) for row in cur if row[0]]
+        except Exception as e:
+            print(f"[SQLite] predicate_counts error: {e}")
+        return items
 
     def delete_by_statement(self, statement: str) -> int:
         """Lösche exakt passendes Statement."""
