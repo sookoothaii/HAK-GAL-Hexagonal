@@ -1,0 +1,217 @@
+[
+  {
+    "id": 242,
+    "original": "HasProperty(PasswordStorage(, HedWith).).",
+    "repaired": "HasProperty(PasswordStorage, HedWith)."
+  },
+  {
+    "id": 262,
+    "original": "HasProperty(-PasswordStorage(, HedWithSalts)).",
+    "repaired": "HasProperty(-PasswordStorage, HedWithSalts)."
+  },
+  {
+    "id": 264,
+    "original": "HasProperty(Storage(, HedWith).).",
+    "repaired": "HasProperty(Storage, HedWith)."
+  },
+  {
+    "id": 266,
+    "original": "HasProperty(Storage(, HedWithSalts)).",
+    "repaired": "HasProperty(Storage, HedWithSalts)."
+  },
+  {
+    "id": 268,
+    "original": "HasProperty(PasswordStorage(, HedWithSalts)).",
+    "repaired": "HasProperty(PasswordStorage, HedWithSalts)."
+  },
+  {
+    "id": 271,
+    "original": "HasProperty(-PasswordStorage(, HedWith).).",
+    "repaired": "HasProperty(-PasswordStorage, HedWith)."
+  },
+  {
+    "id": 280,
+    "original": "HasProperty(PasswordStorage(, Hing)).",
+    "repaired": "HasProperty(PasswordStorage, Hing)."
+  },
+  {
+    "id": 285,
+    "original": "HasProperty(Storage(, Hing)).",
+    "repaired": "HasProperty(Storage, Hing)."
+  },
+  {
+    "id": 294,
+    "original": "HasProperty(-PasswordStorage(, Hing)).",
+    "repaired": "HasProperty(-PasswordStorage, Hing)."
+  },
+  {
+    "id": 348,
+    "original": "HasProperty(UsesCryptographic, Hing(e).).",
+    "repaired": "HasProperty(UsesCryptographic, Hing(e))."
+  },
+  {
+    "id": 499,
+    "original": "HasCapability(Embryos;Pluripotent(, comeny).).",
+    "repaired": "HasCapability(Embryos;Pluripotent, comeny)."
+  },
+  {
+    "id": 500,
+    "original": "HasCapability(EarlyEmbryos;Pluripotent(, comeny).).",
+    "repaired": "HasCapability(EarlyEmbryos;Pluripotent, comeny)."
+  },
+  {
+    "id": 501,
+    "original": "HasCapability(EarlyEmbryos;Pluripotent(, comenyCell).).",
+    "repaired": "HasCapability(EarlyEmbryos;Pluripotent, comenyCell)."
+  },
+  {
+    "id": 502,
+    "original": "HasCapability(Embryos;Pluripotent(, comenyCell).).",
+    "repaired": "HasCapability(Embryos;Pluripotent, comenyCell)."
+  },
+  {
+    "id": 503,
+    "original": "HasCapability(Pluripotent(, comenyCellType)).",
+    "repaired": "HasCapability(Pluripotent, comenyCellType)."
+  },
+  {
+    "id": 504,
+    "original": "HasCapability(Pluripotent(, comenyCell).).",
+    "repaired": "HasCapability(Pluripotent, comenyCell)."
+  },
+  {
+    "id": 505,
+    "original": "HasCapability(Embryos;Pluripotent(, comenyCellType)).",
+    "repaired": "HasCapability(Embryos;Pluripotent, comenyCellType)."
+  },
+  {
+    "id": 506,
+    "original": "HasCapability(EarlyEmbryos;Pluripotent(, comenyCellType)).",
+    "repaired": "HasCapability(EarlyEmbryos;Pluripotent, comenyCellType)."
+  },
+  {
+    "id": 507,
+    "original": "HasCapability(Pluripotent(, comeny).).",
+    "repaired": "HasCapability(Pluripotent, comeny)."
+  },
+  {
+    "id": 539,
+    "original": "HasCapability(RequireSpace(but, CoexistWith).).",
+    "repaired": "HasCapability(RequireSpace(but, CoexistWith))."
+  },
+  {
+    "id": 551,
+    "original": "HasCapability(Space(but, CoexistWith).).",
+    "repaired": "HasCapability(Space(but, CoexistWith))."
+  },
+  {
+    "id": 552,
+    "original": "HasCapability(FarmsRequireSpace(but, CoexistWith).).",
+    "repaired": "HasCapability(FarmsRequireSpace(but, CoexistWith))."
+  },
+  {
+    "id": 583,
+    "original": "HasCapability((rare,But, BredFrom).).",
+    "repaired": "HasCapability((rare,But, BredFrom))."
+  },
+  {
+    "id": 597,
+    "original": "HasCapability((rare,But, Bred).).",
+    "repaired": "HasCapability((rare,But, Bred))."
+  },
+  {
+    "id": 617,
+    "original": "Affects(-Measurement, System(e).).",
+    "repaired": "Affects(-Measurement, System(e))."
+  },
+  {
+    "id": 748,
+    "original": "HasCapability(QuantumInformation, TransferredViaEntanglement(not).).",
+    "repaired": "HasCapability(QuantumInformation, TransferredViaEntanglement(not))."
+  },
+  {
+    "id": 779,
+    "original": "Influences(OfOneInstantly, nother,RegardlessOfDistance(einstein).).",
+    "repaired": "Influences(OfOneInstantly, nother,RegardlessOfDistance(einstein))."
+  },
+  {
+    "id": 786,
+    "original": "Influences(OneInstantly, nother,RegardlessOfDistance(einstein).).",
+    "repaired": "Influences(OneInstantly, nother,RegardlessOfDistance(einstein))."
+  },
+  {
+    "id": 788,
+    "original": "Influences(StateOfOneInstantly, nother,RegardlessOfDistance(einstein).).",
+    "repaired": "Influences(StateOfOneInstantly, nother,RegardlessOfDistance(einstein))."
+  },
+  {
+    "id": 790,
+    "original": "Requires(-ContainingPlasma, dvancedTech(e).).",
+    "repaired": "Requires(-ContainingPlasma, dvancedTech(e))."
+  },
+  {
+    "id": 792,
+    "original": "Requires(ContainingPlasma, dvancedTech(e).).",
+    "repaired": "Requires(ContainingPlasma, dvancedTech(e))."
+  },
+  {
+    "id": 829,
+    "original": "Requires(NewStrand(, Primer)).",
+    "repaired": "Requires(NewStrand, Primer)."
+  },
+  {
+    "id": 839,
+    "original": "Requires(Strand(, Primer)).",
+    "repaired": "Requires(Strand, Primer)."
+  },
+  {
+    "id": 866,
+    "original": "HasCapability(-Pluripotent(, comenyCell).).",
+    "repaired": "HasCapability(-Pluripotent, comenyCell)."
+  },
+  {
+    "id": 867,
+    "original": "HasCapability(-Pluripotent(, comenyCellType),Derived).",
+    "repaired": "HasCapability(-Pluripotent, comenyCellType)."
+  },
+  {
+    "id": 870,
+    "original": "HasCapability(-Pluripotent(, comeny).).",
+    "repaired": "HasCapability(-Pluripotent, comeny)."
+  },
+  {
+    "id": 872,
+    "original": "HasCapability(Pluripotent(, comenyCellType),Derived).",
+    "repaired": "HasCapability(Pluripotent, comenyCellType)."
+  },
+  {
+    "id": 886,
+    "original": "Uses(ResearchFoc, OnBroaderDiseases(e).).",
+    "repaired": "Uses(ResearchFoc, OnBroaderDiseases(e))."
+  },
+  {
+    "id": 934,
+    "original": "Affects(OfMeasurement, SystemingObserved(e).).",
+    "repaired": "Affects(OfMeasurement, SystemingObserved(e))."
+  },
+  {
+    "id": 974,
+    "original": "Affects(ctOfMeasurement, SystemingObserved(e).).",
+    "repaired": "Affects(ctOfMeasurement, SystemingObserved(e))."
+  },
+  {
+    "id": 1079,
+    "original": "HasCapability(-Targets, Cers,ViralInfections(e).).",
+    "repaired": "HasCapability(-Targets, Cers,ViralInfections(e))."
+  },
+  {
+    "id": 1094,
+    "original": "HasProperty(-UsesCryptographic, Hing(e).).",
+    "repaired": "HasProperty(-UsesCryptographic, Hing(e))."
+  },
+  {
+    "id": 1122,
+    "original": "HasCapability(-Targets, Cers(e).).",
+    "repaired": "HasCapability(-Targets, Cers(e))."
+  }
+]

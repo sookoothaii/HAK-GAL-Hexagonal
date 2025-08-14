@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.env
+.venv/
+.venv_*/
+venv/
+.env.*
+.pytest_cache/
+.mypy_cache/
+.cache/
+
+# Node / Frontend
+frontend/node_modules/
+frontend/.vite/
+frontend/dist/
+frontend/.next/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Project artifacts
+backups/
+logs/
+*.log
+*.zip
+*.tar
+*.tar.gz
+*.7z
+*.bak
+
+# Knowledge base data (do not version real data)
+k_assistant.db
+k_assistant_dev.db
+data/*.kb.jsonl
+faiss/
+models/
+*.faiss
+*.pth
+*.dll
+
+# Reports (optional keep)
+PROJECT_HUB/reports/*.json
+
+# Misc
+*.coverage
+coverage.xml

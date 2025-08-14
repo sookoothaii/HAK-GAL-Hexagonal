@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "hak-gal": {
+      "command": "C:\\Python311\\python.exe",
+      "args": ["D:\\MCP Mods\\HAK_GAL_HEXAGONAL\\hak_gal_mcp_v2.py"]
+    }
+  }
+}

@@ -1,0 +1,710 @@
+[
+  {
+    "id": 242,
+    "original": "HasProperty(PasswordStorage(, HedWith).).",
+    "cleaned": "HasProperty(PasswordStorage(, HedWith).).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 262,
+    "original": "HasProperty(-PasswordStorage(, HedWithSalts)).",
+    "cleaned": "HasProperty(-PasswordStorage(, HedWithSalts)).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 264,
+    "original": "HasProperty(Storage(, HedWith).).",
+    "cleaned": "HasProperty(Storage(, HedWith).).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 266,
+    "original": "HasProperty(Storage(, HedWithSalts)).",
+    "cleaned": "HasProperty(Storage(, HedWithSalts)).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 268,
+    "original": "HasProperty(PasswordStorage(, HedWithSalts)).",
+    "cleaned": "HasProperty(PasswordStorage(, HedWithSalts)).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 271,
+    "original": "HasProperty(-PasswordStorage(, HedWith).).",
+    "cleaned": "HasProperty(-PasswordStorage(, HedWith).).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 280,
+    "original": "HasProperty(PasswordStorage(, Hing)).",
+    "cleaned": "HasProperty(PasswordStorage(, Hing)).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 285,
+    "original": "HasProperty(Storage(, Hing)).",
+    "cleaned": "HasProperty(Storage(, Hing)).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 294,
+    "original": "HasProperty(-PasswordStorage(, Hing)).",
+    "cleaned": "HasProperty(-PasswordStorage(, Hing)).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 348,
+    "original": "HasProperty(UsesCryptographic, Hing(e).).",
+    "cleaned": "HasProperty(UsesCryptographic, Hing(e).).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 352,
+    "original": "ConsistsOf(NewDnaMolecule, OneOriginal(parental)Strandnd).",
+    "cleaned": "ConsistsOf(NewDnaMolecule, OneOriginal(parental)Strandnd).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 353,
+    "original": "ConsistsOf(EachNewDnaMolecule, OneOriginal(parental)Strandnd).",
+    "cleaned": "ConsistsOf(EachNewDnaMolecule, OneOriginal(parental)Strandnd).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 356,
+    "original": "ConsistsOf(NewDnaMolecule, OneOriginal(parental)).",
+    "cleaned": "ConsistsOf(NewDnaMolecule, OneOriginal(parental)).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 358,
+    "original": "IsTypeOf(InterspacedShortPalindromicRepeats), RevolutionaryGene-editingTechnologyDerived).",
+    "cleaned": "IsTypeOf(InterspacedShortPalindromicRepeats), RevolutionaryGene-editingTechnologyDerived).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 359,
+    "original": "ConsistsOf(EachNewDnaMolecule, OneOriginal(parental)Strand).",
+    "cleaned": "ConsistsOf(EachNewDnaMolecule, OneOriginal(parental)Strand).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 361,
+    "original": "IsTypeOf(InterspacedShortPalindromicRepeats), RevolutionaryGene-editingTechnologyDerivedFrom).",
+    "cleaned": "IsTypeOf(InterspacedShortPalindromicRepeats), RevolutionaryGene-editingTechnologyDerivedFrom).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 363,
+    "original": "ConsistsOf(EachNewDnaMolecule, OneOriginal(parental)).",
+    "cleaned": "ConsistsOf(EachNewDnaMolecule, OneOriginal(parental)).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 365,
+    "original": "ConsistsOf(NewDnaMolecule, OneOriginal(parental)Strand).",
+    "cleaned": "ConsistsOf(NewDnaMolecule, OneOriginal(parental)Strand).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 367,
+    "original": "ConsistsOf(DnaMolecule, OneOriginal(parental)Strand).",
+    "cleaned": "ConsistsOf(DnaMolecule, OneOriginal(parental)Strand).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 368,
+    "original": "ConsistsOf(DnaMolecule, OneOriginal(parental)).",
+    "cleaned": "ConsistsOf(DnaMolecule, OneOriginal(parental)).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 371,
+    "original": "IsTypeOf(PalindromicRepeats), RevolutionaryGene-editing).",
+    "cleaned": "IsTypeOf(PalindromicRepeats), RevolutionaryGene-editing).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 377,
+    "original": "IsTypeOf(ShortPalindromicRepeats), RevolutionaryGene-editingTechnologyDerived).",
+    "cleaned": "IsTypeOf(ShortPalindromicRepeats), RevolutionaryGene-editingTechnologyDerived).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 378,
+    "original": "IsTypeOf(ShortPalindromicRepeats), RevolutionaryGene-editing).",
+    "cleaned": "IsTypeOf(ShortPalindromicRepeats), RevolutionaryGene-editing).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 383,
+    "original": "ConsistsOf(DnaMolecule, OneOriginal(parental)Strandnd).",
+    "cleaned": "ConsistsOf(DnaMolecule, OneOriginal(parental)Strandnd).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 389,
+    "original": "IsTypeOf(PalindromicRepeats), RevolutionaryGene-editingTechnology).",
+    "cleaned": "IsTypeOf(PalindromicRepeats), RevolutionaryGene-editingTechnology).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 413,
+    "original": "IsTypeOf(ShortPalindromicRepeats), RevolutionaryGene-editingTechnology).",
+    "cleaned": "IsTypeOf(ShortPalindromicRepeats), RevolutionaryGene-editingTechnology).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 423,
+    "original": "IsTypeOf(InterspacedShortPalindromicRepeats), RevolutionaryGene-editingTechnology).",
+    "cleaned": "IsTypeOf(InterspacedShortPalindromicRepeats), RevolutionaryGene-editingTechnology).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 424,
+    "original": "IsTypeOf(InterspacedShortPalindromicRepeats), RevolutionaryGene-editing).",
+    "cleaned": "IsTypeOf(InterspacedShortPalindromicRepeats), RevolutionaryGene-editing).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 426,
+    "original": "IsTypeOf(ShortPalindromicRepeats), RevolutionaryGene-editingTechnologyDerivedFrom).",
+    "cleaned": "IsTypeOf(ShortPalindromicRepeats), RevolutionaryGene-editingTechnologyDerivedFrom).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 431,
+    "original": "IsTypeOf(PalindromicRepeats), RevolutionaryGene-editingTechnologyDerived).",
+    "cleaned": "IsTypeOf(PalindromicRepeats), RevolutionaryGene-editingTechnologyDerived).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 433,
+    "original": "IsTypeOf(PalindromicRepeats), RevolutionaryGene-editingTechnologyDerivedFrom).",
+    "cleaned": "IsTypeOf(PalindromicRepeats), RevolutionaryGene-editingTechnologyDerivedFrom).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 480,
+    "original": "HasCapability(2024),WithThousandsMore, DidatesUnder).",
+    "cleaned": "HasCapability(2024),WithThousandsMore, DidatesUnder).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 487,
+    "original": "HasCapability(2024),WithThousandsMore, DidatesUnderReview).",
+    "cleaned": "HasCapability(2024),WithThousandsMore, DidatesUnderReview).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 499,
+    "original": "HasCapability(Embryos;Pluripotent(, comeny).).",
+    "cleaned": "HasCapability(Embryos;Pluripotent(, comeny).).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 500,
+    "original": "HasCapability(EarlyEmbryos;Pluripotent(, comeny).).",
+    "cleaned": "HasCapability(EarlyEmbryos;Pluripotent(, comeny).).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 501,
+    "original": "HasCapability(EarlyEmbryos;Pluripotent(, comenyCell).).",
+    "cleaned": "HasCapability(EarlyEmbryos;Pluripotent(, comenyCell).).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 502,
+    "original": "HasCapability(Embryos;Pluripotent(, comenyCell).).",
+    "cleaned": "HasCapability(Embryos;Pluripotent(, comenyCell).).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 503,
+    "original": "HasCapability(Pluripotent(, comenyCellType)).",
+    "cleaned": "HasCapability(Pluripotent(, comenyCellType)).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 504,
+    "original": "HasCapability(Pluripotent(, comenyCell).).",
+    "cleaned": "HasCapability(Pluripotent(, comenyCell).).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 505,
+    "original": "HasCapability(Embryos;Pluripotent(, comenyCellType)).",
+    "cleaned": "HasCapability(Embryos;Pluripotent(, comenyCellType)).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 506,
+    "original": "HasCapability(EarlyEmbryos;Pluripotent(, comenyCellType)).",
+    "cleaned": "HasCapability(EarlyEmbryos;Pluripotent(, comenyCellType)).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 507,
+    "original": "HasCapability(Pluripotent(, comeny).).",
+    "cleaned": "HasCapability(Pluripotent(, comeny).).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 518,
+    "original": "Uses((europe)-Foc, OnSatellitesndDeepSpace).",
+    "cleaned": "Uses((europe)-Foc, OnSatellitesndDeepSpace).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 519,
+    "original": "Uses((europe)-Foc, OnSatellitesndDeep).",
+    "cleaned": "Uses((europe)-Foc, OnSatellitesndDeep).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 531,
+    "original": "Uses((europe)-Foc, OnSatellitesnd).",
+    "cleaned": "Uses((europe)-Foc, OnSatellitesnd).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 533,
+    "original": "Uses((europe)-Foc, OnSatellites).",
+    "cleaned": "Uses((europe)-Foc, OnSatellites).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 539,
+    "original": "HasCapability(RequireSpace(but, CoexistWith).).",
+    "cleaned": "HasCapability(RequireSpace(but, CoexistWith).).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 546,
+    "original": "HasCapability(Space(but, CoexistWithgriculture)).",
+    "cleaned": "HasCapability(Space(but, CoexistWithgriculture)).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 551,
+    "original": "HasCapability(Space(but, CoexistWith).).",
+    "cleaned": "HasCapability(Space(but, CoexistWith).).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 552,
+    "original": "HasCapability(FarmsRequireSpace(but, CoexistWith).).",
+    "cleaned": "HasCapability(FarmsRequireSpace(but, CoexistWith).).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 561,
+    "original": "HasCapability(FarmsRequireSpace(but, CoexistWithgriculture)).",
+    "cleaned": "HasCapability(FarmsRequireSpace(but, CoexistWithgriculture)).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 562,
+    "original": "HasCapability(RequireSpace(but, CoexistWithgriculture)).",
+    "cleaned": "HasCapability(RequireSpace(but, CoexistWithgriculture)).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 579,
+    "original": "HasCapability((rare,But, BredFromLithium)).",
+    "cleaned": "HasCapability((rare,But, BredFromLithium)).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 583,
+    "original": "HasCapability((rare,But, BredFrom).).",
+    "cleaned": "HasCapability((rare,But, BredFrom).).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 597,
+    "original": "HasCapability((rare,But, Bred).).",
+    "cleaned": "HasCapability((rare,But, Bred).).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 617,
+    "original": "Affects(-Measurement, System(e).).",
+    "cleaned": "Affects(-Measurement, System(e).).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 739,
+    "original": "Determines(Spin,Polarization)Immediately, State).",
+    "cleaned": "Determines(Spin,Polarization)Immediately, State).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 740,
+    "original": "Determines(Polarization)Immediately, State).",
+    "cleaned": "Determines(Polarization)Immediately, State).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 748,
+    "original": "HasCapability(QuantumInformation, TransferredViaEntanglement(not).).",
+    "cleaned": "HasCapability(QuantumInformation, TransferredViaEntanglement(not).).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 753,
+    "original": "Determines(Spin,Polarization)Immediately, StateOf).",
+    "cleaned": "Determines(Spin,Polarization)Immediately, StateOf).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 757,
+    "original": "Determines(Polarization)Immediately, StateOfOther).",
+    "cleaned": "Determines(Polarization)Immediately, StateOfOther).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 768,
+    "original": "Determines(Spin,Polarization)Immediately, StateOfOther).",
+    "cleaned": "Determines(Spin,Polarization)Immediately, StateOfOther).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 772,
+    "original": "Determines(Polarization)Immediately, StateOf).",
+    "cleaned": "Determines(Polarization)Immediately, StateOf).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 779,
+    "original": "Influences(OfOneInstantly, nother,RegardlessOfDistance(einstein).).",
+    "cleaned": "Influences(OfOneInstantly, nother,RegardlessOfDistance(einstein).).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 786,
+    "original": "Influences(OneInstantly, nother,RegardlessOfDistance(einstein).).",
+    "cleaned": "Influences(OneInstantly, nother,RegardlessOfDistance(einstein).).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 788,
+    "original": "Influences(StateOfOneInstantly, nother,RegardlessOfDistance(einstein).).",
+    "cleaned": "Influences(StateOfOneInstantly, nother,RegardlessOfDistance(einstein).).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 790,
+    "original": "Requires(-ContainingPlasma, dvancedTech(e).).",
+    "cleaned": "Requires(-ContainingPlasma, dvancedTech(e).).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 792,
+    "original": "Requires(ContainingPlasma, dvancedTech(e).).",
+    "cleaned": "Requires(ContainingPlasma, dvancedTech(e).).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 793,
+    "original": "HasCapability(SolarFarms), ImpactEcosystems).",
+    "cleaned": "HasCapability(SolarFarms), ImpactEcosystems).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 820,
+    "original": "Requires(Codes)EssentialBut, ManyPhysicalQubits).",
+    "cleaned": "Requires(Codes)EssentialBut, ManyPhysicalQubits).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 821,
+    "original": "Requires(Codes)EssentialBut, ManyPhysicalQubitsPer).",
+    "cleaned": "Requires(Codes)EssentialBut, ManyPhysicalQubitsPer).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 822,
+    "original": "Requires(Codes)EssentialBut, ManyPhysicalQubitsPerLogical).",
+    "cleaned": "Requires(Codes)EssentialBut, ManyPhysicalQubitsPerLogical).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 823,
+    "original": "Requires(Codes)EssentialBut, ManyPhysical).",
+    "cleaned": "Requires(Codes)EssentialBut, ManyPhysical).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 829,
+    "original": "Requires(NewStrand(, Primer)).",
+    "cleaned": "Requires(NewStrand(, Primer)).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 839,
+    "original": "Requires(Strand(, Primer)).",
+    "cleaned": "Requires(Strand(, Primer)).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 866,
+    "original": "HasCapability(-Pluripotent(, comenyCell).).",
+    "cleaned": "HasCapability(-Pluripotent(, comenyCell).).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 867,
+    "original": "HasCapability(-Pluripotent(, comenyCellType),Derived).",
+    "cleaned": "HasCapability(-Pluripotent(, comenyCellType),Derived).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 868,
+    "original": "Uses((europe)-Foc, OnSatellites,Mars).",
+    "cleaned": "Uses((europe)-Foc, OnSatellites,Mars).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 870,
+    "original": "HasCapability(-Pluripotent(, comeny).).",
+    "cleaned": "HasCapability(-Pluripotent(, comeny).).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 871,
+    "original": "Uses((europe)-Foc, OnSatellites,MarsMissions,nd).",
+    "cleaned": "Uses((europe)-Foc, OnSatellites,MarsMissions,nd).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 872,
+    "original": "HasCapability(Pluripotent(, comenyCellType),Derived).",
+    "cleaned": "HasCapability(Pluripotent(, comenyCellType),Derived).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 886,
+    "original": "Uses(ResearchFoc, OnBroaderDiseases(e).).",
+    "cleaned": "Uses(ResearchFoc, OnBroaderDiseases(e).).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 901,
+    "original": "HasCapability((heatwaves,Hurri, Es,Floods,Droughts)).",
+    "cleaned": "HasCapability((heatwaves,Hurri, Es,Floods,Droughts)).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 903,
+    "original": "HasCapability((heatwaves,Hurri, Es,Floods,Droughts)re).",
+    "cleaned": "HasCapability((heatwaves,Hurri, Es,Floods,Droughts)re).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 906,
+    "original": "HasCapability((heatwaves,Hurri, Es,Floods,Droughts)recoming).",
+    "cleaned": "HasCapability((heatwaves,Hurri, Es,Floods,Droughts)recoming).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 917,
+    "original": "HasProperty((passwordsStoreds, Hes)).",
+    "cleaned": "HasProperty((passwordsStoreds, Hes)).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 925,
+    "original": "HasProperty(uthentication(passwordsStoreds, Hes)).",
+    "cleaned": "HasProperty(uthentication(passwordsStoreds, Hes)).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 934,
+    "original": "Affects(OfMeasurement, SystemingObserved(e).).",
+    "cleaned": "Affects(OfMeasurement, SystemingObserved(e).).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 942,
+    "original": "HasCapability(InstrumentsIncludeS, NingTunnelingMicroscopes(stm)).",
+    "cleaned": "HasCapability(InstrumentsIncludeS, NingTunnelingMicroscopes(stm)).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 953,
+    "original": "HasCapability(InstrumentsIncludeS, NingTunnelingMicroscopes(stm)nd).",
+    "cleaned": "HasCapability(InstrumentsIncludeS, NingTunnelingMicroscopes(stm)nd).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 956,
+    "original": "HasCapability(IncludeS, NingTunnelingMicroscopes(stm)nd).",
+    "cleaned": "HasCapability(IncludeS, NingTunnelingMicroscopes(stm)nd).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 960,
+    "original": "HasCapability(KeyInstrumentsIncludeS, NingTunnelingMicroscopes(stm)).",
+    "cleaned": "HasCapability(KeyInstrumentsIncludeS, NingTunnelingMicroscopes(stm)).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 974,
+    "original": "Affects(ctOfMeasurement, SystemingObserved(e).).",
+    "cleaned": "Affects(ctOfMeasurement, SystemingObserved(e).).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 984,
+    "original": "HasCapability(KeyInstrumentsIncludeS, NingTunnelingMicroscopes(stm)nd).",
+    "cleaned": "HasCapability(KeyInstrumentsIncludeS, NingTunnelingMicroscopes(stm)nd).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 993,
+    "original": "HasCapability(IncludeS, NingTunnelingMicroscopes(stm)).",
+    "cleaned": "HasCapability(IncludeS, NingTunnelingMicroscopes(stm)).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 1009,
+    "original": "Determines(Structure(notComposition), irhavior,OftenFeaturingMicroscopic).",
+    "cleaned": "Determines(Structure(notComposition), irhavior,OftenFeaturingMicroscopic).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 1011,
+    "original": "Determines((notComposition), irhavior,OftenFeaturing).",
+    "cleaned": "Determines((notComposition), irhavior,OftenFeaturing).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 1012,
+    "original": "Determines(irStructure(notComposition), irhavior,OftenFeaturingMicroscopic).",
+    "cleaned": "Determines(irStructure(notComposition), irhavior,OftenFeaturingMicroscopic).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 1015,
+    "original": "Determines((notComposition), irhavior,OftenFeaturingMicroscopic).",
+    "cleaned": "Determines((notComposition), irhavior,OftenFeaturingMicroscopic).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 1016,
+    "original": "Determines(Structure(notComposition), irhavior,Often).",
+    "cleaned": "Determines(Structure(notComposition), irhavior,Often).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 1017,
+    "original": "Determines(irStructure(notComposition), irhavior,OftenFeaturing).",
+    "cleaned": "Determines(irStructure(notComposition), irhavior,OftenFeaturing).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 1018,
+    "original": "Determines(Structure(notComposition), irhavior,OftenFeaturing).",
+    "cleaned": "Determines(Structure(notComposition), irhavior,OftenFeaturing).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 1022,
+    "original": "Determines(irStructure(notComposition), irhavior,Often).",
+    "cleaned": "Determines(irStructure(notComposition), irhavior,Often).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 1025,
+    "original": "Determines((notComposition), irhavior,Often).",
+    "cleaned": "Determines((notComposition), irhavior,Often).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 1028,
+    "original": "HasProperty((solar,Wind)ndP, EOutFossilFuels).",
+    "cleaned": "HasProperty((solar,Wind)ndP, EOutFossilFuels).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 1029,
+    "original": "HasProperty(Wind)ndP, EOutFossilFuels).",
+    "cleaned": "HasProperty(Wind)ndP, EOutFossilFuels).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 1034,
+    "original": "HasProperty(Wind)ndP, EOutFossil).",
+    "cleaned": "HasProperty(Wind)ndP, EOutFossil).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 1038,
+    "original": "HasProperty((solar,Wind)ndP, EOut).",
+    "cleaned": "HasProperty((solar,Wind)ndP, EOut).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 1040,
+    "original": "HasProperty(Wind)ndP, EOut).",
+    "cleaned": "HasProperty(Wind)ndP, EOut).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 1046,
+    "original": "HasProperty((solar,Wind)ndP, EOutFossil).",
+    "cleaned": "HasProperty((solar,Wind)ndP, EOutFossil).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 1053,
+    "original": "IsTypeOf((since1998), CollaborativeLab).",
+    "cleaned": "IsTypeOf((since1998), CollaborativeLab).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 1056,
+    "original": "HasCapability(1),Qubits, ExistIn).",
+    "cleaned": "HasCapability(1),Qubits, ExistIn).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 1058,
+    "original": "HasCapability((0Or1),Qubits, ExistIn).",
+    "cleaned": "HasCapability((0Or1),Qubits, ExistIn).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 1061,
+    "original": "HasCapability(Or1),Qubits, ExistIn).",
+    "cleaned": "HasCapability(Or1),Qubits, ExistIn).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 1069,
+    "original": "IsTypeOf((since1998), CollaborativeLabInvolving).",
+    "cleaned": "IsTypeOf((since1998), CollaborativeLabInvolving).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 1079,
+    "original": "HasCapability(-Targets, Cers,ViralInfections(e).).",
+    "cleaned": "HasCapability(-Targets, Cers,ViralInfections(e).).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 1094,
+    "original": "HasProperty(-UsesCryptographic, Hing(e).).",
+    "cleaned": "HasProperty(-UsesCryptographic, Hing(e).).",
+    "error": "Invalid fact structure"
+  },
+  {
+    "id": 1122,
+    "original": "HasCapability(-Targets, Cers(e).).",
+    "cleaned": "HasCapability(-Targets, Cers(e).).",
+    "error": "Invalid fact structure"
+  }
+]

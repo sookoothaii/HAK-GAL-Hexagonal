@@ -1,0 +1,84 @@
+# Frontend Phase 2: State Architecture Unification Started — KB Handover
+
+Implemented WebSocket consolidation (3→1 connection) and Store Bridge for progressive migration. Created core infrastructure for unified state management while maintaining backward compatibility.
+
+## Health
+- KB lines: 3776
+- KB size(bytes): 354607
+- KB path: D:\MCP Mods\HAK_GAL_HEXAGONAL\data\k_assistant.kb.jsonl
+
+## Top Predicates
+- HasPart: 755
+- HasPurpose: 714
+- Causes: 600
+- HasProperty: 575
+- IsDefinedAs: 389
+- IsSimilarTo: 203
+- IsTypeOf: 201
+- HasLocation: 106
+- ConsistsOf: 88
+- WasDevelopedBy: 66
+- HasAtomicSymbol: 28
+- IsPartOf: 17
+- HasExample: 12
+- IsIn: 8
+- IsInterpretedLanguage: 6
+- IsSymbolOf: 2
+- IsConnectedTo: 2
+- IsHuman: 1
+- all x: 1
+- CapitalOf: 1
+
+## Recent Audit (last 50)
+``````
+{"ts": "2025-08-14 01:02:01", "action": "delete_fact", "payload": {"statement": "IsTypeOf(ImmanuelKant, DeutscherPhilosoph).", "removed": 1}}
+{"ts": "2025-08-14 01:02:29", "action": "delete_fact", "payload": {"statement": "HasPurpose(ImmanuelKant, GrundlageModernerPhilosophie).", "removed": 1}}
+{"ts": "2025-08-14 01:02:34", "action": "delete_fact", "payload": {"statement": "HasPurpose(ImmanuelKant,ModernPhilosophy).", "removed": 1}}
+{"ts": "2025-08-14 01:02:39", "action": "add_fact", "payload": {"statement": "HasPurpose(ImmanuelKant, ModernPhilosophy)", "source": null, "tags": ["syntax_corrected"]}}
+{"ts": "2025-08-14 01:02:43", "action": "delete_fact", "payload": {"statement": "WasDevelopedBy(KopernikanischeWende, ImmanuelKant).", "removed": 1}}
+{"ts": "2025-08-14 01:02:54", "action": "add_fact", "payload": {"statement": "WasDevelopedBy(CopernicanRevolution, ImmanuelKant)", "source": null, "tags": ["english_replacement"]}}
+{"ts": "2025-08-14 01:02:58", "action": "delete_fact", "payload": {"statement": "HasProperty(Critics, LeadToInflation).", "removed": 1}}
+{"ts": "2025-08-14 01:03:03", "action": "add_fact", "payload": {"statement": "Causes(CriticsArgue, InflationRisk)", "source": null, "tags": ["semantic_correction"]}}
+{"ts": "2025-08-14 01:03:08", "action": "delete_fact", "payload": {"statement": "HasProperty(Critics, LeadToExcessiveDebt).", "removed": 1}}
+{"ts": "2025-08-14 01:03:12", "action": "add_fact", "payload": {"statement": "Causes(CriticsArgue, ExcessiveDebtRisk)", "source": null, "tags": ["semantic_correction"]}}
+{"ts": "2025-08-14 01:03:20", "action": "delete_fact", "payload": {"statement": "HasPurpose(PostWWIIEconomicPolicies,InfluenceStimulusPackages).", "removed": 1}}
+{"ts": "2025-08-14 01:03:25", "action": "add_fact", "payload": {"statement": "HasPurpose(PostWWIIEconomicPolicies, InfluenceStimulusPackages)", "source": null, "tags": ["syntax_corrected"]}}
+{"ts": "2025-08-14 01:03:31", "action": "delete_fact", "payload": {"statement": "HasPurpose(KeynesianEconomics,StabilizeEconomicCycles).", "removed": 1}}
+{"ts": "2025-08-14 01:03:35", "action": "add_fact", "payload": {"statement": "HasPurpose(KeynesianEconomics, StabilizeEconomicCycles)", "source": null, "tags": ["syntax_corrected"]}}
+{"ts": "2025-08-14 01:09:03", "action": "backup_kb", "payload": {"id": "20250814010903_BEFORE_RADICAL_CLEANUP_German_entities_a", "path": "D:\\MCP Mods\\HAK_GAL_HEXAGONAL\\backups\\kb_20250814010903_BEFORE_RADICAL_CLEANUP_German_entities_a.jsonl"}}
+{"ts": "2025-08-14 01:09:26", "action": "bulk_translate_predicates", "payload": {"mapping": {"KopernikanischeWende": "CopernicanRevolution", "Phänomene": "Phenomena", "WahrgenommeneWelt": "PerceivedWorld", "BetonungDerAktivenRolleDesGeistes": "EmphasisOnActiveRoleOfMind", "ObjektePassenSichMenschlicherErkenntnisAn": "ObjectsConformToHumanCognition", "AngeboreneKategorien": "InnateCategories", "ModernerPhilosophie": "ModernPhilosophy", "Verstandeskategorien": "CategoriesOfUnderstanding", "KritischePhilosophie": "CriticalPhilosophy", "KritischeTheorie": "CriticalTheory", "Raum": "Space", "Zeit": "Time", "Ethik": "Ethics", "Quantität": "Quantity", "Qualität": "Quality", "Relation": "Relation", "Kausalität": "Causality", "SubjektiveAberUniversellKommunizierbareSchönheit": "SubjectiveButUniversallyCommunicableBeauty", "ModerneEpistemologie": "ModernEpistemology", "ModerneEthik": "ModernEthics", "EinflussAufSpätereDenker": "InfluenceOnLaterThinkers", "StrukturiertDurchAngeboreneKategorien": "StructuredByInnateCategories", "WissenBeginntMitErfahrung": "KnowledgeBeginsWithExperience", "UnerkennbareRealität": "UnknowableReality", "AutonomieDerVernunft": "AutonomyOfReason", "MoralischePflichtEntstehtAusSelbstgegebenenVernunftgesetzen": "MoralDutyArisesFromSelfGivenRationalLaws", "WurzelInInteresselosemVergnügen": "RootedInDisinterestedPleasure", "Ästhetik": "Aesthetics", "KantIdeen": "KantIdeas", "DeutscherPhilosoph": "GermanPhilosopher", "KategorischerImperativ": "CategoricalImperative", "UniversellesMoralgesetz": "UniversalMoralLaw", "GrundlageModernerPhilosophie": "FoundationOfModernPhilosophy"}, "allow": null, "exclude": null, "checked": 3779, "changed": 0, "per_predicate": {}}}
+{"ts": "2025-08-14 01:10:09", "action": "bulk_delete", "payload": {"count": 2, "removed": 2}}
+{"ts": "2025-08-14 01:10:19", "action": "add_fact", "payload": {"statement": "HasPurpose(CopernicanRevolution, EmphasisOnActiveRoleOfMind)", "source": null, "tags": ["cleanup", "german_to_english"]}}
+{"ts": "2025-08-14 01:10:31", "action": "add_fact", "payload": {"statement": "IsDefinedAs(CopernicanRevolution, ObjectsConformToHumanCognition)", "source": null, "tags": ["cleanup", "german_to_english"]}}
+{"ts": "2025-08-14 01:11:10", "action": "bulk_delete", "payload": {"count": 4, "removed": 4}}
+{"ts": "2025-08-14 01:11:23", "action": "add_fact", "payload": {"statement": "HasAtomicSymbol(InnateCategories, Space)", "source": null, "tags": ["cleanup"]}}
+{"ts": "2025-08-14 01:11:43", "action": "add_fact", "payload": {"statement": "HasAtomicSymbol(InnateCategories, Time)", "source": null, "tags": ["cleanup"]}}
+{"ts": "2025-08-14 01:11:52", "action": "add_fact", "payload": {"statement": "HasProperty(CriticalPhilosophy, StructuredByInnateCategories)", "source": null, "tags": ["cleanup"]}}
+{"ts": "2025-08-14 01:12:14", "action": "add_fact", "payload": {"statement": "HasAtomicSymbol(InnateCategories, Causality)", "source": null, "tags": ["cleanup"]}}
+{"ts": "2025-08-14 01:12:44", "action": "delete_fact", "payload": {"statement": "HasPart(ImmanuelKant, DingAnSich)", "removed": 1}}
+{"ts": "2025-08-14 01:12:51", "action": "add_fact", "payload": {"statement": "HasPart(ImmanuelKant, ThingInItself)", "source": null, "tags": ["cleanup", "syntax_fix", "german_to_english"]}}
+{"ts": "2025-08-14 01:13:07", "action": "bulk_delete", "payload": {"count": 3, "removed": 3}}
+{"ts": "2025-08-14 01:13:16", "action": "add_fact", "payload": {"statement": "HasProperty(CategoriesOfUnderstanding, Quantity)", "source": null, "tags": ["cleanup"]}}
+{"ts": "2025-08-14 01:13:26", "action": "add_fact", "payload": {"statement": "HasProperty(CategoriesOfUnderstanding, Quality)", "source": null, "tags": ["cleanup"]}}
+{"ts": "2025-08-14 01:14:37", "action": "delete_fact", "payload": {"statement": "HasProperty(CategoriesOfUnderstanding, Quality)", "removed": 1}}
+{"ts": "2025-08-14 01:14:57", "action": "delete_fact", "payload": {"statement": "HasProperty(CategoriesOfUnderstanding, Quantity)", "removed": 1}}
+{"ts": "2025-08-14 01:15:04", "action": "add_fact", "payload": {"statement": "HasProperty(CategoriesOfUnderstanding,Quality).", "source": null, "tags": ["cleanup", "correct_syntax"]}}
+{"ts": "2025-08-14 01:15:14", "action": "add_fact", "payload": {"statement": "HasProperty(CategoriesOfUnderstanding,Quantity).", "source": null, "tags": ["cleanup", "correct_syntax"]}}
+{"ts": "2025-08-14 01:15:20", "action": "add_fact", "payload": {"statement": "HasProperty(CategoriesOfUnderstanding,Relation).", "source": null, "tags": ["cleanup", "correct_syntax"]}}
+{"ts": "2025-08-14 01:15:42", "action": "bulk_delete", "payload": {"count": 15, "removed": 15}}
+{"ts": "2025-08-14 01:15:50", "action": "add_fact", "payload": {"statement": "HasPurpose(ImmanuelKant,ModernPhilosophy).", "source": null, "tags": ["cleanup", "correct_syntax"]}}
+{"ts": "2025-08-14 01:15:56", "action": "add_fact", "payload": {"statement": "HasPurpose(CopernicanRevolution,EmphasisOnActiveRoleOfMind).", "source": null, "tags": ["cleanup", "correct_syntax"]}}
+{"ts": "2025-08-14 01:16:06", "action": "add_fact", "payload": {"statement": "IsDefinedAs(CopernicanRevolution,ObjectsConformToHumanCognition).", "source": null, "tags": ["cleanup", "correct_syntax"]}}
+{"ts": "2025-08-14 01:16:15", "action": "add_fact", "payload": {"statement": "HasAtomicSymbol(InnateCategories,Space).", "source": null, "tags": ["cleanup", "correct_syntax"]}}
+{"ts": "2025-08-14 01:16:21", "action": "add_fact", "payload": {"statement": "HasAtomicSymbol(InnateCategories,Time).", "source": null, "tags": ["cleanup", "correct_syntax"]}}
+{"ts": "2025-08-14 01:16:28", "action": "add_fact", "payload": {"statement": "HasProperty(CriticalPhilosophy,StructuredByInnateCategories).", "source": null, "tags": ["cleanup", "correct_syntax"]}}
+{"ts": "2025-08-14 01:16:40", "action": "add_fact", "payload": {"statement": "HasAtomicSymbol(InnateCategories,Causality).", "source": null, "tags": ["cleanup", "correct_syntax"]}}
+{"ts": "2025-08-14 01:16:48", "action": "add_fact", "payload": {"statement": "HasPart(ImmanuelKant,ThingInItself).", "source": null, "tags": ["cleanup", "correct_syntax"]}}
+{"ts": "2025-08-14 01:16:53", "action": "add_fact", "payload": {"statement": "WasDevelopedBy(CategoricalImperative,ImmanuelKant).", "source": null, "tags": ["cleanup", "correct_syntax"]}}
+{"ts": "2025-08-14 01:17:01", "action": "add_fact", "payload": {"statement": "IsDefinedAs(CategoricalImperative,UniversalMoralLaw).", "source": null, "tags": ["cleanup", "correct_syntax"]}}
+{"ts": "2025-08-14 01:17:07", "action": "add_fact", "payload": {"statement": "HasPurpose(KeynesianEconomics,StabilizeEconomicCycles).", "source": null, "tags": ["cleanup", "correct_syntax"]}}
+{"ts": "2025-08-14 01:17:16", "action": "add_fact", "payload": {"statement": "HasPurpose(PostWWIIEconomicPolicies,InfluenceStimulusPackages).", "source": null, "tags": ["cleanup", "correct_syntax"]}}
+{"ts": "2025-08-14 02:11:41", "action": "add_fact", "payload": {"statement": "TestFact(MCP_Port_Test, Port5001)"}}
+{"ts": "2025-08-14 02:12:53", "action": "bulk_delete", "payload": {"count": 1, "removed": 0, "errors": 1}}
+{"ts": "2025-08-14 02:30:22", "action": "add_fact", "payload": {"statement": "TestFact(SQLiteIntegration, PortComplete5001)"}}
+``````

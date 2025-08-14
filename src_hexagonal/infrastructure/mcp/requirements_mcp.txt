@@ -1,0 +1,4 @@
+# MCP Server Requirements
+# Diese sind zusätzlich zu den bestehenden HAK_GAL requirements
+
+httpx>=0.25.0  # Für async HTTP calls zur HAK_GAL API
