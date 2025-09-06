@@ -4,59 +4,61 @@ __pycache__/
 *$py.class
 *.so
 .Python
-env/
-venv/
 .venv/
-.venv_hexa/
+venv/
+env/
 ENV/
-env.bak/
-venv.bak/
+.env
+*.egg-info/
+dist/
+build/
 
-# IDEs
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Frontend
+frontend/dist/
+frontend/.vite/
+*.local
+
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
-.project
-.pydevproject
-
-# Node
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-.pnpm-debug.log*
-dist/
-build/
-
-# Environment
-.env
-.env.local
-.env.*.local
-secrets.json
 
 # Database
 *.db-journal
-*.db-wal
 *.db-shm
-
-# Backups
-*.backup
-*.bak
-*.backup_*
-*.REDUCED_*
-*.broken_*
-*_backup_*
-backup*/
+*.db-wal
+hexagonal_kb_backup_*.db
+hexagonal_kb_recovered.db
 
 # Logs
-*.log
 logs/
-agent_responses/
-cursor_exchange/
-claude_desktop_exchange/
+*.log
+mcp_write_audit.log
+agent_responses/error/
+cursor_exchange/response_*.json
+claude_desktop_exchange/response_*.json
+
+# Backups
+backups/
+backup_*/
+*_backup_*/
+*.backup
+*.bak
+
+# Temp
+temp/
+tmp/
+*.tmp
+exec_*.py
 
 # OS
 .DS_Store
@@ -64,39 +66,19 @@ Thumbs.db
 desktop.ini
 
 # Project specific
-hexagonal_kb.db.backup*
-temp_benchmarks_*
-PROJECT_HUB/**/*.jsonl
-PROJECT_HUB/**/snapshots/
+agent_responses/success/
+cursor_exchange/task_*.json
+claude_desktop_exchange/request_*.json
+performance/
+validation_reports/
+test_results/
+*_BACKUP_*/
+*_backup_20*/
+PROJECT_HUB_backup_*/
 
-# Test & Coverage
-.coverage
-.pytest_cache/
-htmlcov/
-.tox/
-*.cover
-.hypothesis/
-
-# Compiled files
-*.com
-*.class
-*.dll
-*.exe
-*.o
-*.so
-
-# Archives
-*.7z
-*.dmg
-*.gz
-*.iso
-*.jar
-*.rar
-*.tar
-*.zip
-
-# Temporary
-tmp/
-temp/
-.temp/
-*.tmp
+# Sensitive
+claude_config_*.json
+mcp_config.json
+monitoring_*.json
+.env.local
+.env.production
