@@ -10480,3 +10480,734 @@ sooko\\AppData\\Local\\Temp\\hakgal_mcp_exec"}
 {"ts": "2025-09-06T13:15:12.936767Z", "level": "DEBUG", "logger": "__main__", "message": "Code execution stdout: === SCHRITT 1: Letzten Commit r?ckg?ngig machen ===\n? Commit r?ckg?ngig gemacht (?nderungen bleiben erhalten)\n\n=== SCHRITT 2: .gitignore aktualisieren ===\n? .gitignore aktualisiert\n? .gitignore staged\n"}
 {"ts": "2025-09-06T13:15:12.936767Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 106, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"[OK] Code executed successfully\\n\\n**Language:** python\\n**Return Code:** 0\\n**Execution Time:** 0.186s\\n\\n**STDOUT:**\\n`"}
 {"ts": "2025-09-06T13:15:28.351522Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"execute_code\",\"arguments\":{\"code\":\"\\nimport subprocess\\nimport os\\n\\nos.chdir(r\\\"D:\\\\MCP Mods\\\\HAK_GAL_HEXAGONAL\\\")\\n\\nprint(\\\"=== SCHRITT 3: Dateien ohne venv"}
+{"ts": "2025-09-06T13:15:29.076133Z", "level": "DEBUG", "logger": "__main__", "message": "Code execution stdout: === SCHRITT 3: Dateien ohne venv und gro?e Files hinzuf?gen ===\n\nAlle Dateien unstagen...\nSelektiv hinzuf?gen (ohne .venv_hexa, etc.)...\n\nStatus: 1\nFehler: warning: in the working copy of '.gitignore', CRLF will be replaced by LF the next time Git touches it\nwarning: in the working copy of 'PROJECT_HUB/README.md', CRLF will be replaced by LF the next time Git touches it\nwarning: in the working copy of 'PROJECT_HUB/TECHNICAL_HANDOVER_COMPLETE.md', CRLF will be replaced by LF the next time Git tou"}
+{"ts": "2025-09-06T13:15:29.077133Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 107, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"[OK] Code executed successfully\\n\\n**Language:** python\\n**Return Code:** 0\\n**Execution Time:** 0.723s\\n\\n**STDOUT:**\\n`"}
+{"ts": "2025-09-06T13:18:27.316740Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"execute_code\",\"arguments\":{\"language\":\"python\",\"code\":\"\\nimport subprocess\\nimport os\\n\\nos.chdir(r\\\"D:\\\\MCP Mods\\\\HAK_GAL_HEXAGONAL\\\")\\n\\n# Git Status pr\u00fcfen\\"}
+{"ts": "2025-09-06T13:18:27.590358Z", "level": "DEBUG", "logger": "__main__", "message": "Code execution stdout: === Git Status Check ===\nTotal files in status: 1008\n\n=== Checking for large files ===\n? No large files found in git status\n\nStaged files: 1008\n\n=== Ready to commit ===\nWould commit with message: 'cleanup: Major restructuring (without venv)'\n"}
+{"ts": "2025-09-06T13:18:27.590358Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 108, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"[OK] Code executed successfully\\n\\n**Language:** python\\n**Return Code:** 0\\n**Execution Time:** 0.272s\\n\\n**STDOUT:**\\n`"}
+{"ts": "2025-09-06T13:18:47.859171Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"execute_code\",\"arguments\":{\"code\":\"\\nimport subprocess\\nimport os\\n\\nos.chdir(r\\\"D:\\\\MCP Mods\\\\HAK_GAL_HEXAGONAL\\\")\\n\\nprint(\\\"=== SCHRITT 4: Commit erstellen "}
+{"ts": "2025-09-06T13:18:48.315942Z", "level": "DEBUG", "logger": "__main__", "message": "Code execution stdout: === SCHRITT 4: Commit erstellen ===\nCommitting 1008 files without venv...\n\nReturn code: 0\n[main aed0e30a] cleanup: Major restructuring (without venv)\n 1008 files changed, 170232 insertions(+), 238544 deletions(-)\n delete mode 100644 .cursor/mcp.json\n delete mode 100644 .gitattributes\n delete mode 100644 CHANGELOG.md\n...\n delete mode 100644 workflows/kb_maintenance_workflow.json\n delete mode 100644 workflows/multi_agent_research_workflow.json\n delete mode 100644 workflows/system_health_monitoring"}
+{"ts": "2025-09-06T13:18:48.315942Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 109, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"[OK] Code executed successfully\\n\\n**Language:** python\\n**Return Code:** 0\\n**Execution Time:** 0.456s\\n\\n**STDOUT:**\\n`"}
+{"ts": "2025-09-06T13:19:10.283800Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"execute_code\",\"arguments\":{\"code\":\"\\nimport subprocess\\nimport os\\n\\nos.chdir(r\\\"D:\\\\MCP Mods\\\\HAK_GAL_HEXAGONAL\\\")\\n\\nprint(\\\"=== SCHRITT 5: Push versuchen =="}
+{"ts": "2025-09-06T13:19:16.687938Z", "level": "DEBUG", "logger": "__main__", "message": "Code execution stdout: === SCHRITT 5: Push versuchen ===\nVersuche zu pushen...\n(Dies k?nnte fehlschlagen wegen der Gr??e der Historie)\n\nReturn code: 0\n\nSTDERR:\nEnumerating objects: 928, done.\nCounting objects:   0% (1/926)\nCounting objects:   1% (10/926)\nCounting objects:   2% (19/926)\nCounting objects:   3% (28/926)\nCounting objects:   4% (38/926)\nCounting objects:   5% (47/926)\nCounting objects:   6% (56/926)\nCounting objects:   7% (65/926)\nCounting objects:   8% (75/926)\nCounting objects:   9% (84/926)\nCounting obj"}
+{"ts": "2025-09-06T13:19:16.687938Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 110, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"[OK] Code executed successfully\\n\\n**Language:** python\\n**Return Code:** 0\\n**Execution Time:** 6.404s\\n\\n**STDOUT:**\\n`"}
+{"ts": "2025-09-06T13:19:38.553129Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"execute_code\",\"arguments\":{\"code\":\"\\nimport subprocess\\nimport os\\n\\nos.chdir(r\\\"D:\\\\MCP Mods\\\\HAK_GAL_HEXAGONAL\\\")\\n\\nprint(\\\"=== FINALER STATUS ===\\\")\\n\\n# G"}
+{"ts": "2025-09-06T13:19:40.640494Z", "level": "DEBUG", "logger": "__main__", "message": "Code execution stdout: === FINALER STATUS ===\nLetzter Commit:\n  aed0e30a cleanup: Major restructuring (without venv)\n\nRemote Status:\n  ## main...origin/main\n M mcp_server.jsonl\n\nWichtige Verzeichnisse (ohne .venv_hexa):\n  src_hexagonal: 2.6 MB\n  frontend: 208.4 MB\n  scripts: 2.2 MB\n  PROJECT_HUB: 1.7 MB\n\n=== ZUSAMMENFASSUNG ===\n? Push erfolgreich\n? .venv_hexa wurde aus dem Repository entfernt\n? Neue Commits sind klein (~100 MB statt 2.74 GB)\n\n??  Git-Historie enth?lt noch die alten gro?en Dateien\n   Empfehlung: Sp?ter"}
+{"ts": "2025-09-06T13:19:40.640494Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 111, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"[OK] Code executed successfully\\n\\n**Language:** python\\n**Return Code:** 0\\n**Execution Time:** 2.086s\\n\\n**STDOUT:**\\n`"}
+{"ts": "2025-09-06T13:31:30.560175Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":85,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T13:31:30.561185Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 85, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T13:31:30.563184Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":86,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T13:31:30.563184Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T13:31:30.563184Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 86, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T13:31:30.566182Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":87,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T13:31:30.566182Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 87, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T13:31:30.597513Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":88,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T13:31:30.597513Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 88, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T13:31:30.599512Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":89,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T13:31:30.600512Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T13:31:30.600512Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 89, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T13:31:30.601190Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":90,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T13:31:30.601190Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 90, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T13:32:46.931058Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"execute_code\",\"arguments\":{\"code\":\"\\nimport os\\nimport subprocess\\n\\nos.chdir(r\\\"D:\\\\MCP Mods\\\\HAK_GAL_HEXAGONAL\\\")\\n\\nprint(\\\"=== SUCHE NACH C++ DATEIEN ===\\\""}
+{"ts": "2025-09-06T13:32:48.155873Z", "level": "DEBUG", "logger": "__main__", "message": "Code execution stdout: === SUCHE NACH C++ DATEIEN ===\n\nGefundene C++ Source-Dateien: 3\n  .\\native\\mojo_kernels\\build\\CMakeFiles\\4.0.3\\CompilerIdCXX\\CMakeCXXCompilerId.cpp\n  .\\native\\mojo_kernels\\build\\CMakeFiles\\4.1.0\\CompilerIdCXX\\CMakeCXXCompilerId.cpp\n  .\\native\\mojo_kernels\\src\\mojo_kernels.cpp\n\nGefundene C++ Header-Dateien: 0\n\n=== GIT STATUS F?R C++ DATEIEN ===\nKeine C++ Dateien im Git-Status gefunden\n"}
+{"ts": "2025-09-06T13:32:48.155873Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 112, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"[OK] Code executed successfully\\n\\n**Language:** python\\n**Return Code:** 0\\n**Execution Time:** 1.224s\\n\\n**STDOUT:**\\n`"}
+{"ts": "2025-09-06T13:33:12.634720Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"execute_code\",\"arguments\":{\"code\":\"\\nimport os\\nimport subprocess\\n\\nos.chdir(r\\\"D:\\\\MCP Mods\\\\HAK_GAL_HEXAGONAL\\\")\\n\\nprint(\\\"=== ERWEITERTE SUCHE NACH C/C++ "}
+{"ts": "2025-09-06T13:33:13.744831Z", "level": "DEBUG", "logger": "__main__", "message": "Code execution stdout: === ERWEITERTE SUCHE NACH C/C++ CODE ===\nGefundene C/C++ Dateien nach Typ:\n\n.cpp: 3 Dateien\n  .\\native\\mojo_kernels\\build\\CMakeFiles\\4.0.3\\CompilerIdCXX\\CMakeCXXCompilerId.cpp\n  .\\native\\mojo_kernels\\build\\CMakeFiles\\4.1.0\\CompilerIdCXX\\CMakeCXXCompilerId.cpp\n  .\\native\\mojo_kernels\\src\\mojo_kernels.cpp\n\n=== TOTAL: 3 C/C++ Dateien ===\n\n=== GIT STATUS DES NATIVE VERZEICHNISSES ===\nDateien im native/ Verzeichnis im Git: 4\n  native/README.md\n  native/mojo_kernels/CMakeLists.txt\n  native/mojo_kernel"}
+{"ts": "2025-09-06T13:33:13.744831Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 113, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"[OK] Code executed successfully\\n\\n**Language:** python\\n**Return Code:** 0\\n**Execution Time:** 1.110s\\n\\n**STDOUT:**\\n`"}
+{"ts": "2025-09-06T13:33:50.554142Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"execute_code\",\"arguments\":{\"code\":\"\\nimport os\\n\\nos.chdir(r\\\"D:\\\\MCP Mods\\\\HAK_GAL_HEXAGONAL\\\")\\n\\nprint(\\\"=== ANALYSE DER CODE-VERTEILUNG ===\\\")\\n\\n# Z\u00e4hle a"}
+{"ts": "2025-09-06T13:33:52.730582Z", "level": "DEBUG", "logger": "__main__", "message": "Code execution stdout: === ANALYSE DER CODE-VERTEILUNG ===\n\nCode-Dateien nach Typ:\n.py: 402 Dateien (72.7%)\n.tsx: 101 Dateien (18.3%)\n.ts: 41 Dateien (7.4%)\n.js: 8 Dateien (1.4%)\n.cpp: 1 Dateien (0.2%) - 65 Zeilen\n\nTotal: 553 Code-Dateien\n\n=== SUCHE NACH MOJO CODE ===\nKeine Mojo-Dateien gefunden\n\n=== HINWEISE AUF FEHLENDE C++ DATEIEN ===\n\nReferenz zu C++ in README.md gefunden\n  > ??? native/             # C++ performance modules...\n"}
+{"ts": "2025-09-06T13:33:52.730582Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 114, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"[OK] Code executed successfully\\n\\n**Language:** python\\n**Return Code:** 0\\n**Execution Time:** 2.175s\\n\\n**STDOUT:**\\n`"}
+{"ts": "2025-09-06T13:36:14.240905Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"execute_code\",\"arguments\":{\"code\":\"\\nimport os\\nimport subprocess\\n\\nos.chdir(r\\\"D:\\\\MCP Mods\\\\HAK_GAL_HEXAGONAL\\\")\\n\\nprint(\\\"=== DETAILLIERTE ANALYSE DES NAT"}
+{"ts": "2025-09-06T13:36:14.372317Z", "level": "DEBUG", "logger": "__main__", "message": "Code execution stdout: === DETAILLIERTE ANALYSE DES NATIVE VERZEICHNISSES ===\n\n1. ALLE DATEIEN IM NATIVE VERZEICHNIS:\nGefunden: 90 Dateien total\n\n.bin: 2 Dateien\n  native\\mojo_kernels\\build\\CMakeFiles\\4.0.3\\CMakeDetermineCompilerABI_CXX.bin\n  native\\mojo_kernels\\build\\CMakeFiles\\4.1.0\\CMakeDetermineCompilerABI_CXX.bin\n\n.check_cache: 1 Dateien\n  native\\mojo_kernels\\build\\CMakeFiles\\cmake.check_cache\n\n.cmake: 7 Dateien\n  native\\mojo_kernels\\build\\cmake_install.cmake\n  native\\mojo_kernels\\build\\CMakeFiles\\4.0.3\\CMakeCXXC"}
+{"ts": "2025-09-06T13:36:14.372317Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 115, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"[OK] Code executed successfully\\n\\n**Language:** python\\n**Return Code:** 0\\n**Execution Time:** 0.131s\\n\\n**STDOUT:**\\n`"}
+{"ts": "2025-09-06T13:43:57.809110Z", "level": "INFO", "logger": "__main__", "message": "Meta-Tools successfully loaded"}
+{"ts": "2025-09-06T13:43:57.809110Z", "level": "DEBUG", "logger": "__main__", "message": "[DEBUG] SENTRY_DSN from env (masked len): 95"}
+{"ts": "2025-09-06T13:44:00.704151Z", "level": "INFO", "logger": "sentry_integration", "message": "Sentry SDK initialized successfully"}
+{"ts": "2025-09-06T13:44:00.704151Z", "level": "INFO", "logger": "__main__", "message": "[Sentry] Integration loaded: samui-science-lab"}
+{"ts": "2025-09-06T13:44:00.705151Z", "level": "WARNING", "logger": "__main__", "message": "Niche-Tools not available: No module named 'niche_mcp_tools'"}
+{"ts": "2025-09-06T13:44:00.706151Z", "level": "INFO", "logger": "__main__", "message": "MCP Server initialized with DB: D:\\MCP Mods\\HAK_GAL_HEXAGONAL\\hexagonal_kb.db"}
+{"ts": "2025-09-06T13:44:00.707629Z", "level": "INFO", "logger": "__main__", "message": "Execute code temp dir: C:\\Users\\sooko\\AppData\\Local\\Temp\\hakgal_mcp_exec"}
+{"ts": "2025-09-06T13:44:00.708265Z", "level": "INFO", "logger": "__main__", "message": "Database connected: 6632 facts found"}
+{"ts": "2025-09-06T13:44:00.708265Z", "level": "DEBUG", "logger": "asyncio", "message": "Using proactor: IocpProactor"}
+{"ts": "2025-09-06T13:44:00.708265Z", "level": "INFO", "logger": "__main__", "message": "MCP Server starting - ULTIMATE VERSION with 64 tools..."}
+{"ts": "2025-09-06T13:44:00.708265Z", "level": "INFO", "logger": "__main__", "message": "Execute code support: ['python', 'javascript', 'bash', 'powershell']"}
+{"ts": "2025-09-06T13:44:00.711789Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2025-06-18\",\"capabilities\":{\"tools\":true,\"prompts\":true,\"resources\":false,\"logging\":false,\"elicitation\":{},\"roots\":{\"listChanged\":false}},\"clientInf"}
+{"ts": "2025-09-06T13:44:00.711789Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 0, \"result\": {\"protocolVersion\": \"2025-06-18\", \"capabilities\": {\"tools\": {\"listChanged\": true}, \"resources\": {}, \"prompts\": {}}, \"serverInfo\": {\"name\": \"HAK_GAL MCP Ultimate\","}
+{"ts": "2025-09-06T13:44:00.728464Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"notifications/initialized\",\"jsonrpc\":\"2.0\"}"}
+{"ts": "2025-09-06T13:44:00.728464Z", "level": "WARNING", "logger": "__main__", "message": "Unknown method: notifications/initialized"}
+{"ts": "2025-09-06T13:44:00.746949Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/list\",\"jsonrpc\":\"2.0\",\"id\":1}"}
+{"ts": "2025-09-06T13:44:00.746949Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 64 tools."}
+{"ts": "2025-09-06T13:44:00.747590Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 1, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}}"}
+{"ts": "2025-09-06T13:44:00.755051Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/list\",\"jsonrpc\":\"2.0\",\"id\":2}"}
+{"ts": "2025-09-06T13:44:00.755051Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 64 tools."}
+{"ts": "2025-09-06T13:44:00.755051Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 2, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}}"}
+{"ts": "2025-09-06T13:44:00.774927Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"prompts/list\",\"jsonrpc\":\"2.0\",\"id\":3}"}
+{"ts": "2025-09-06T13:44:00.775599Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 3, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T13:44:00.792497Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"prompts/list\",\"jsonrpc\":\"2.0\",\"id\":4}"}
+{"ts": "2025-09-06T13:44:00.792497Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 4, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T13:44:54.959156Z", "level": "INFO", "logger": "__main__", "message": "MCP Server stopped"}
+{"ts": "2025-09-06T13:45:12.241055Z", "level": "INFO", "logger": "__main__", "message": "Meta-Tools successfully loaded"}
+{"ts": "2025-09-06T13:45:12.242055Z", "level": "DEBUG", "logger": "__main__", "message": "[DEBUG] SENTRY_DSN from env (masked len): 95"}
+{"ts": "2025-09-06T13:45:15.029060Z", "level": "INFO", "logger": "sentry_integration", "message": "Sentry SDK initialized successfully"}
+{"ts": "2025-09-06T13:45:15.029579Z", "level": "INFO", "logger": "__main__", "message": "[Sentry] Integration loaded: samui-science-lab"}
+{"ts": "2025-09-06T13:45:15.030655Z", "level": "WARNING", "logger": "__main__", "message": "Niche-Tools not available: No module named 'niche_mcp_tools'"}
+{"ts": "2025-09-06T13:45:15.031691Z", "level": "INFO", "logger": "__main__", "message": "MCP Server initialized with DB: D:\\MCP Mods\\HAK_GAL_HEXAGONAL\\hexagonal_kb.db"}
+{"ts": "2025-09-06T13:45:15.032216Z", "level": "INFO", "logger": "__main__", "message": "Execute code temp dir: C:\\Users\\sooko\\AppData\\Local\\Temp\\hakgal_mcp_exec"}
+{"ts": "2025-09-06T13:45:15.033346Z", "level": "INFO", "logger": "__main__", "message": "Database connected: 6632 facts found"}
+{"ts": "2025-09-06T13:45:15.033865Z", "level": "DEBUG", "logger": "asyncio", "message": "Using proactor: IocpProactor"}
+{"ts": "2025-09-06T13:45:15.034917Z", "level": "INFO", "logger": "__main__", "message": "MCP Server starting - ULTIMATE VERSION with 64 tools..."}
+{"ts": "2025-09-06T13:45:15.035438Z", "level": "INFO", "logger": "__main__", "message": "Execute code support: ['python', 'javascript', 'bash', 'powershell']"}
+{"ts": "2025-09-06T13:45:15.035438Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2025-06-18\",\"capabilities\":{\"tools\":true,\"prompts\":true,\"resources\":false,\"logging\":false,\"elicitation\":{},\"roots\":{\"listChanged\":false}},\"clientInf"}
+{"ts": "2025-09-06T13:45:15.035438Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 0, \"result\": {\"protocolVersion\": \"2025-06-18\", \"capabilities\": {\"tools\": {\"listChanged\": true}, \"resources\": {}, \"prompts\": {}}, \"serverInfo\": {\"name\": \"HAK_GAL MCP Ultimate\","}
+{"ts": "2025-09-06T13:45:15.068026Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"notifications/initialized\",\"jsonrpc\":\"2.0\"}"}
+{"ts": "2025-09-06T13:45:15.068026Z", "level": "WARNING", "logger": "__main__", "message": "Unknown method: notifications/initialized"}
+{"ts": "2025-09-06T13:45:15.080332Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/list\",\"jsonrpc\":\"2.0\",\"id\":1}"}
+{"ts": "2025-09-06T13:45:15.080332Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 64 tools."}
+{"ts": "2025-09-06T13:45:15.080332Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 1, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}}"}
+{"ts": "2025-09-06T13:45:15.080332Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/list\",\"jsonrpc\":\"2.0\",\"id\":2}"}
+{"ts": "2025-09-06T13:45:15.081340Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 64 tools."}
+{"ts": "2025-09-06T13:45:15.081340Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 2, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}}"}
+{"ts": "2025-09-06T13:45:15.087263Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"prompts/list\",\"jsonrpc\":\"2.0\",\"id\":3}"}
+{"ts": "2025-09-06T13:45:15.087919Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 3, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T13:45:15.087919Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"prompts/list\",\"jsonrpc\":\"2.0\",\"id\":4}"}
+{"ts": "2025-09-06T13:45:15.087919Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 4, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T13:45:42.803916Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"get_system_status\",\"arguments\":{},\"_meta\":{\"progressToken\":5}},\"jsonrpc\":\"2.0\",\"id\":5}"}
+{"ts": "2025-09-06T13:45:42.804876Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 5, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"Status: Operational\\nDatenbank: D:\\\\MCP Mods\\\\HAK_GAL_HEXAGONAL\\\\hexagonal_kb.db\\nFakten: 6,632\\nServer: HAK_GAL MCP Ultima"}
+{"ts": "2025-09-06T13:45:44.879114Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"get_facts_count\",\"arguments\":{},\"_meta\":{\"progressToken\":6}},\"jsonrpc\":\"2.0\",\"id\":6}"}
+{"ts": "2025-09-06T13:45:44.880108Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 6, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"Anzahl Fakten in der Datenbank: 6,632\"}]}}"}
+{"ts": "2025-09-06T13:45:49.462145Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"get_recent_facts\",\"arguments\":{\"count\":5},\"_meta\":{\"progressToken\":7}},\"jsonrpc\":\"2.0\",\"id\":7}"}
+{"ts": "2025-09-06T13:45:49.463145Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 7, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"Neueste Fakten:\\n- ToolCount(HAK_GAL_MCP_Ultimate, 67, confirmed_2025_09_06).\\n- GitRepositoryStatus(HAK_GAL_HEXAGONAL, 202"}
+{"ts": "2025-09-06T14:15:28.999992Z", "level": "INFO", "logger": "__main__", "message": "Meta-Tools successfully loaded"}
+{"ts": "2025-09-06T14:15:29.003036Z", "level": "DEBUG", "logger": "__main__", "message": "[DEBUG] SENTRY_DSN from env (masked len): 20"}
+{"ts": "2025-09-06T14:15:29.003036Z", "level": "WARNING", "logger": "__main__", "message": "[Sentry] Integration not available: Invalid SENTRY_DSN format. Expected 'https://<publicKey>@de.sentry.io/<projectId>'"}
+{"ts": "2025-09-06T14:15:29.004032Z", "level": "WARNING", "logger": "__main__", "message": "Niche-Tools not available: No module named 'niche_mcp_tools'"}
+{"ts": "2025-09-06T14:15:29.005949Z", "level": "INFO", "logger": "__main__", "message": "MCP Server initialized with DB: D:\\MCP Mods\\HAK_GAL_HEXAGONAL\\hexagonal_kb.db"}
+{"ts": "2025-09-06T14:15:29.005949Z", "level": "INFO", "logger": "__main__", "message": "Execute code temp dir: C:\\Users\\sooko\\AppData\\Local\\Temp\\hakgal_mcp_exec"}
+{"ts": "2025-09-06T14:15:29.009223Z", "level": "INFO", "logger": "__main__", "message": "Database connected: 6632 facts found"}
+{"ts": "2025-09-06T14:15:29.009223Z", "level": "DEBUG", "logger": "asyncio", "message": "Using proactor: IocpProactor"}
+{"ts": "2025-09-06T14:15:29.009223Z", "level": "INFO", "logger": "__main__", "message": "MCP Server starting - ULTIMATE VERSION with 64 tools..."}
+{"ts": "2025-09-06T14:15:29.009223Z", "level": "INFO", "logger": "__main__", "message": "Execute code support: ['python', 'javascript', 'bash', 'powershell']"}
+{"ts": "2025-09-06T14:58:30.203950Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"grep\",\"arguments\":{\"contextLines\":3,\"ignoreCase\":true,\"path\":\"D:\\\\MCP Mods\\\\hak_gal_user\\\\src_hexagonal\",\"pattern\":\"MultiLLM\"}},\"jsonrpc\":\"2.0\",\"id\":116}"}
+{"ts": "2025-09-06T14:58:30.296990Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 116, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"D:\\\\MCP Mods\\\\hak_gal_user\\\\src_hexagonal\\\\hexagonal_api_enhanced.py.backup_20250818_080026:474:\\n\\nD:\\\\MCP Mods\\\\hak_gal"}
+{"ts": "2025-09-06T14:58:37.119931Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"read_file\",\"arguments\":{\"path\":\"D:\\\\MCP Mods\\\\hak_gal_user\\\\src_hexagonal\\\\adapters\\\\llm_providers.py\"}},\"jsonrpc\":\"2.0\",\"id\":117}"}
+{"ts": "2025-09-06T14:58:37.119931Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 117, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"\\\"\\\"\\\"\\nLLM Providers for Deep Explanations - FIXED FOR GEMINI-1.5-FLASH\\n==============================================="}
+{"ts": "2025-09-06T14:58:55.421359Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"edit_file\",\"arguments\":{\"path\":\"D:\\\\MCP Mods\\\\hak_gal_user\\\\.env\",\"newText\":\"PRIMARY_LLM=gemini\",\"oldText\":\"PRIMARY_LLM=deepseek\"}},\"jsonrpc\":\"2.0\",\"id\":118}"}
+{"ts": "2025-09-06T14:58:55.423366Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 118, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"OK: edited\"}]}}"}
+{"ts": "2025-09-06T14:59:00.257063Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"read_file\",\"arguments\":{\"path\":\"D:\\\\MCP Mods\\\\hak_gal_user\\\\.env\"}},\"jsonrpc\":\"2.0\",\"id\":119}"}
+{"ts": "2025-09-06T14:59:00.257063Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 119, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"# HAK/GAL HEXAGONAL - Environment Configuration\\n# This file is loaded by the hexagonal API server\\n\\n# HAK/GAL API Key ("}
+{"ts": "2025-09-06T14:59:07.639088Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"multi_edit\",\"arguments\":{\"auth_token\":\"none\",\"edits\":[{\"oldText\":\"OLLAMA_MODEL=qwen2.5:7b\\nPRIMARY_LLM=ollama\\nPRIMARY_LLM=deepseek\\nFALLBACK_LLM=gemini\\nSECON"}
+{"ts": "2025-09-06T14:59:07.639088Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 120, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"Write disabled.\"}]}}"}
+{"ts": "2025-09-06T14:59:23.814005Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"create_file\",\"arguments\":{\"auth_token\":\"none\",\"content\":\"#!/usr/bin/env python\\n# -*- coding: utf-8 -*-\\n\\\"\\\"\\\"\\nDeepSeek API Proxy - FAST VERSION with reduced"}
+{"ts": "2025-09-06T14:59:23.814005Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 121, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"Write disabled.\"}]}}"}
+{"ts": "2025-09-06T14:59:41.887493Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"grep\",\"arguments\":{\"contextLines\":2,\"path\":\"D:\\\\MCP Mods\\\\hak_gal_user\\\\.env\",\"pattern\":\"HAKGAL_API_KEY\"}},\"jsonrpc\":\"2.0\",\"id\":122}"}
+{"ts": "2025-09-06T14:59:41.889512Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 122, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"<no matches>\"}]}}"}
+{"ts": "2025-09-06T14:59:59.790569Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"grep\",\"arguments\":{\"contextLines\":3,\"ignoreCase\":false,\"path\":\"D:\\\\MCP Mods\\\\hak_gal_user\\\\src_hexagonal\",\"pattern\":\"HAKGAL_API_KEY\"}},\"jsonrpc\":\"2.0\",\"id\":123"}
+{"ts": "2025-09-06T14:59:59.840275Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 123, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"D:\\\\MCP Mods\\\\hak_gal_user\\\\src_hexagonal\\\\hexagonal_api_enhanced_clean.py:56:            if env_path.exists():\\n\\nD:\\\\MC"}
+{"ts": "2025-09-06T15:00:08.079718Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"grep\",\"arguments\":{\"contextLines\":5,\"path\":\"D:\\\\MCP Mods\\\\hak_gal_user\\\\ultimate_mcp\",\"pattern\":\"HAKGAL_WRITE_ENABLED\"}},\"jsonrpc\":\"2.0\",\"id\":124}"}
+{"ts": "2025-09-06T15:00:08.108162Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 124, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"D:\\\\MCP Mods\\\\hak_gal_user\\\\ultimate_mcp\\\\hakgal_mcp_ultimate.py:162:            sys.stdin.reconfigure(encoding='utf-8')\\"}
+{"ts": "2025-09-06T15:00:26.944117Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"grep\",\"arguments\":{\"contextLines\":10,\"path\":\"D:\\\\MCP Mods\\\\hak_gal_user\\\\ultimate_mcp\",\"pattern\":\"def _check_write_permission\"}},\"jsonrpc\":\"2.0\",\"id\":125}"}
+{"ts": "2025-09-06T15:00:26.955419Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 125, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"<no matches>\"}]}}"}
+{"ts": "2025-09-06T15:00:32.355159Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"grep\",\"arguments\":{\"contextLines\":5,\"path\":\"D:\\\\MCP Mods\\\\hak_gal_user\\\\ultimate_mcp\",\"pattern\":\"auth_token\"}},\"jsonrpc\":\"2.0\",\"id\":126}"}
+{"ts": "2025-09-06T15:00:32.368232Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 126, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"D:\\\\MCP Mods\\\\hak_gal_user\\\\ultimate_mcp\\\\hakgal_mcp_ultimate.py:554:                    \\\"type\\\": \\\"object\\\",\\n\\nD:\\\\MCP"}
+{"ts": "2025-09-06T15:00:45.837687Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"grep\",\"arguments\":{\"contextLines\":10,\"path\":\"D:\\\\MCP Mods\\\\hak_gal_user\\\\ultimate_mcp\",\"pattern\":\"def _is_write_allowed\"}},\"jsonrpc\":\"2.0\",\"id\":127}"}
+{"ts": "2025-09-06T15:00:45.850955Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 127, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"D:\\\\MCP Mods\\\\hak_gal_user\\\\ultimate_mcp\\\\hakgal_mcp_ultimate.py:225:        try:\\n\\nD:\\\\MCP Mods\\\\hak_gal_user\\\\ultimate"}
+{"ts": "2025-09-06T15:01:48.283240Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"add_fact\",\"arguments\":{\"auth_token\":\"515f57956e7bd15ddc3817573598f190\",\"statement\":\"TestFact(HAK_GAL_Write_Token, Successfully_Verified).\",\"source\":\"Claude Tes"}
+{"ts": "2025-09-06T15:01:48.295476Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 128, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"OK: fact added to SQLite\"}]}}"}
+{"ts": "2025-09-06T15:01:57.091600Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"delete_fact\",\"arguments\":{\"auth_token\":\"515f57956e7bd15ddc3817573598f190\",\"statement\":\"TestFact(HAK_GAL_Write_Token, Successfully_Verified).\"}},\"jsonrpc\":\"2.0\""}
+{"ts": "2025-09-06T15:01:57.103605Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 129, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"OK: removed 1 (SQLite)\"}]}}"}
+{"ts": "2025-09-06T15:02:38.146612Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":91,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:02:38.148494Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 91, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:02:38.152816Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":96,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:02:38.152816Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 96, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:02:38.153968Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":95,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:02:38.154968Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:02:38.157971Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 95, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:02:38.157971Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":92,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:02:38.158966Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:02:38.158966Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 92, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:02:38.159962Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":93,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:02:38.159962Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 93, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:02:38.171958Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":94,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:02:38.171958Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 94, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:30:29.652552Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"read_file\",\"arguments\":{\"path\":\"D:\\\\MCP Mods\\\\hak_gal_user\\\\.env\"}},\"jsonrpc\":\"2.0\",\"id\":130}"}
+{"ts": "2025-09-06T15:30:29.653550Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 130, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"# HAK/GAL HEXAGONAL - Environment Configuration\\n# This file is loaded by the hexagonal API server\\n\\n# HAK/GAL API Key ("}
+{"ts": "2025-09-06T15:30:41.285090Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"edit_file\",\"arguments\":{\"auth_token\":\"515f57956e7bd15ddc3817573598f190\",\"path\":\"D:\\\\MCP Mods\\\\hak_gal_user\\\\.env\",\"oldText\":\"# Primary LLM preference (use Deep"}
+{"ts": "2025-09-06T15:30:41.286091Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 131, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"OK: edited\"}]}}"}
+{"ts": "2025-09-06T15:31:09.516601Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"create_file\",\"arguments\":{\"auth_token\":\"515f57956e7bd15ddc3817573598f190\",\"content\":\"# HAK/GAL HEXAGONAL - Environment Configuration\\n# This file is loaded by "}
+{"ts": "2025-09-06T15:31:09.516601Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 132, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"OK: file created\"}]}}"}
+{"ts": "2025-09-06T15:31:26.820746Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"create_file\",\"arguments\":{\"auth_token\":\"515f57956e7bd15ddc3817573598f190\",\"content\":\"# .env Bereinigung - 06.09.2025\\n\\n## Durchgef\u00fchrte \u00c4nderungen:\\n\\n### 1. "}
+{"ts": "2025-09-06T15:31:26.821977Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 133, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"OK: file created\"}]}}"}
+{"ts": "2025-09-06T15:31:36.930993Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"read_file\",\"arguments\":{\"path\":\"D:\\\\MCP Mods\\\\hak_gal_user\\\\.env\"}},\"jsonrpc\":\"2.0\",\"id\":134}"}
+{"ts": "2025-09-06T15:31:36.930993Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 134, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"# HAK/GAL HEXAGONAL - Environment Configuration\\n# This file is loaded by the hexagonal API server\\n\\n# HAK/GAL API Key ("}
+{"ts": "2025-09-06T15:31:49.574161Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"create_file\",\"arguments\":{\"auth_token\":\"515f57956e7bd15ddc3817573598f190\",\"content\":\"@echo off\\necho ========================================\\necho HAK-GAL HEX"}
+{"ts": "2025-09-06T15:31:49.574161Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 135, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"OK: file created\"}]}}"}
+{"ts": "2025-09-06T15:31:54.610232Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"read_file\",\"arguments\":{\"path\":\"D:\\\\MCP Mods\\\\hak_gal_user\\\\claude_desktop_config.json\"}},\"jsonrpc\":\"2.0\",\"id\":136}"}
+{"ts": "2025-09-06T15:31:54.610232Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 136, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"{\\n  \\\"mcpServers\\\": {\\n    \\\"hak-gal\\\": {\\n      \\\"command\\\": \\\"python\\\",\\n      \\\"args\\\": [\\\"D:\\\\\\\\MCP Mods\\\\\\\\HAK_GAL_"}
+{"ts": "2025-09-06T15:32:04.807298Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"edit_file\",\"arguments\":{\"auth_token\":\"515f57956e7bd15ddc3817573598f190\",\"newText\":\"{\\n  \\\"mcpServers\\\": {\\n    \\\"hak-gal\\\": {\\n      \\\"command\\\": \\\"python\\\",\\n"}
+{"ts": "2025-09-06T15:32:04.808247Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 137, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"OK: edited\"}]}}"}
+{"ts": "2025-09-06T15:34:30.581249Z", "level": "INFO", "logger": "__main__", "message": "Meta-Tools successfully loaded"}
+{"ts": "2025-09-06T15:34:30.582250Z", "level": "DEBUG", "logger": "__main__", "message": "[DEBUG] SENTRY_DSN from env (masked len): 95"}
+{"ts": "2025-09-06T15:34:32.795645Z", "level": "INFO", "logger": "sentry_integration", "message": "Sentry SDK initialized successfully"}
+{"ts": "2025-09-06T15:34:32.795645Z", "level": "INFO", "logger": "__main__", "message": "[Sentry] Integration loaded: samui-science-lab"}
+{"ts": "2025-09-06T15:34:32.796608Z", "level": "WARNING", "logger": "__main__", "message": "Niche-Tools not available: No module named 'niche_mcp_tools'"}
+{"ts": "2025-09-06T15:34:32.797608Z", "level": "INFO", "logger": "__main__", "message": "MCP Server initialized with DB: D:\\MCP Mods\\HAK_GAL_HEXAGONAL\\hexagonal_kb.db"}
+{"ts": "2025-09-06T15:34:32.797608Z", "level": "INFO", "logger": "__main__", "message": "Execute code temp dir: C:\\Users\\sooko\\AppData\\Local\\Temp\\hakgal_mcp_exec"}
+{"ts": "2025-09-06T15:34:32.800561Z", "level": "INFO", "logger": "__main__", "message": "Database connected: 6632 facts found"}
+{"ts": "2025-09-06T15:34:32.801560Z", "level": "DEBUG", "logger": "asyncio", "message": "Using proactor: IocpProactor"}
+{"ts": "2025-09-06T15:34:32.803214Z", "level": "INFO", "logger": "__main__", "message": "MCP Server starting - ULTIMATE VERSION with 64 tools..."}
+{"ts": "2025-09-06T15:34:32.803214Z", "level": "INFO", "logger": "__main__", "message": "Execute code support: ['python', 'javascript', 'bash', 'powershell']"}
+{"ts": "2025-09-06T15:34:32.803214Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2025-06-18\",\"capabilities\":{\"tools\":true,\"prompts\":true,\"resources\":false,\"logging\":false,\"elicitation\":{},\"roots\":{\"listChanged\":false}},\"clientInf"}
+{"ts": "2025-09-06T15:34:32.803214Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 0, \"result\": {\"protocolVersion\": \"2025-06-18\", \"capabilities\": {\"tools\": {\"listChanged\": true}, \"resources\": {}, \"prompts\": {}}, \"serverInfo\": {\"name\": \"HAK_GAL MCP Ultimate\","}
+{"ts": "2025-09-06T15:34:32.804247Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"notifications/initialized\",\"jsonrpc\":\"2.0\"}"}
+{"ts": "2025-09-06T15:34:32.804750Z", "level": "WARNING", "logger": "__main__", "message": "Unknown method: notifications/initialized"}
+{"ts": "2025-09-06T15:34:32.804750Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/list\",\"jsonrpc\":\"2.0\",\"id\":1}"}
+{"ts": "2025-09-06T15:34:32.804750Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 64 tools."}
+{"ts": "2025-09-06T15:34:32.805755Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 1, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}}"}
+{"ts": "2025-09-06T15:34:32.806754Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"prompts/list\",\"jsonrpc\":\"2.0\",\"id\":2}"}
+{"ts": "2025-09-06T15:34:32.806754Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 2, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:34:36.011796Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/list\",\"jsonrpc\":\"2.0\",\"id\":3}"}
+{"ts": "2025-09-06T15:34:36.012847Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 64 tools."}
+{"ts": "2025-09-06T15:34:36.012847Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 3, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}}"}
+{"ts": "2025-09-06T15:34:36.012847Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/list\",\"jsonrpc\":\"2.0\",\"id\":4}"}
+{"ts": "2025-09-06T15:34:36.012847Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 64 tools."}
+{"ts": "2025-09-06T15:34:36.013846Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 4, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}}"}
+{"ts": "2025-09-06T15:34:36.013846Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"prompts/list\",\"jsonrpc\":\"2.0\",\"id\":5}"}
+{"ts": "2025-09-06T15:34:36.013846Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 5, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:34:36.015847Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"prompts/list\",\"jsonrpc\":\"2.0\",\"id\":6}"}
+{"ts": "2025-09-06T15:34:36.015847Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 6, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:36:26.475768Z", "level": "INFO", "logger": "__main__", "message": "MCP Server stopped"}
+{"ts": "2025-09-06T15:38:20.383217Z", "level": "INFO", "logger": "__main__", "message": "Meta-Tools successfully loaded"}
+{"ts": "2025-09-06T15:38:20.384215Z", "level": "DEBUG", "logger": "__main__", "message": "[DEBUG] SENTRY_DSN from env (masked len): 95"}
+{"ts": "2025-09-06T15:38:22.012281Z", "level": "INFO", "logger": "sentry_integration", "message": "Sentry SDK initialized successfully"}
+{"ts": "2025-09-06T15:38:22.012281Z", "level": "INFO", "logger": "__main__", "message": "[Sentry] Integration loaded: samui-science-lab"}
+{"ts": "2025-09-06T15:38:22.012281Z", "level": "WARNING", "logger": "__main__", "message": "Niche-Tools not available: No module named 'niche_mcp_tools'"}
+{"ts": "2025-09-06T15:38:22.012281Z", "level": "INFO", "logger": "__main__", "message": "MCP Server initialized with DB: D:\\MCP Mods\\HAK_GAL_HEXAGONAL\\hexagonal_kb.db"}
+{"ts": "2025-09-06T15:38:22.012281Z", "level": "INFO", "logger": "__main__", "message": "Execute code temp dir: C:\\Users\\sooko\\AppData\\Local\\Temp\\hakgal_mcp_exec"}
+{"ts": "2025-09-06T15:38:22.021590Z", "level": "INFO", "logger": "__main__", "message": "Database connected: 6632 facts found"}
+{"ts": "2025-09-06T15:38:22.021590Z", "level": "DEBUG", "logger": "asyncio", "message": "Using proactor: IocpProactor"}
+{"ts": "2025-09-06T15:38:22.022820Z", "level": "INFO", "logger": "__main__", "message": "MCP Server starting - ULTIMATE VERSION with 64 tools..."}
+{"ts": "2025-09-06T15:38:22.022820Z", "level": "INFO", "logger": "__main__", "message": "Execute code support: ['python', 'javascript', 'bash', 'powershell']"}
+{"ts": "2025-09-06T15:38:22.022820Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2025-06-18\",\"capabilities\":{\"tools\":true,\"prompts\":true,\"resources\":false,\"logging\":false,\"elicitation\":{},\"roots\":{\"listChanged\":false}},\"clientInf"}
+{"ts": "2025-09-06T15:38:22.022820Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 0, \"result\": {\"protocolVersion\": \"2025-06-18\", \"capabilities\": {\"tools\": {\"listChanged\": true}, \"resources\": {}, \"prompts\": {}}, \"serverInfo\": {\"name\": \"HAK_GAL MCP Ultimate\","}
+{"ts": "2025-09-06T15:38:22.026822Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"notifications/initialized\",\"jsonrpc\":\"2.0\"}"}
+{"ts": "2025-09-06T15:38:22.026822Z", "level": "WARNING", "logger": "__main__", "message": "Unknown method: notifications/initialized"}
+{"ts": "2025-09-06T15:38:22.028823Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/list\",\"jsonrpc\":\"2.0\",\"id\":1}"}
+{"ts": "2025-09-06T15:38:22.028823Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 64 tools."}
+{"ts": "2025-09-06T15:38:22.029815Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 1, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}}"}
+{"ts": "2025-09-06T15:38:22.031998Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"prompts/list\",\"jsonrpc\":\"2.0\",\"id\":2}"}
+{"ts": "2025-09-06T15:38:22.031998Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 2, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:38:57.792345Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"get_system_status\",\"arguments\":{},\"_meta\":{\"progressToken\":3}},\"jsonrpc\":\"2.0\",\"id\":3}"}
+{"ts": "2025-09-06T15:38:57.792345Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 3, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"Status: Operational\\nDatenbank: D:\\\\MCP Mods\\\\HAK_GAL_HEXAGONAL\\\\hexagonal_kb.db\\nFakten: 6,632\\nServer: HAK_GAL MCP Ultima"}
+{"ts": "2025-09-06T15:38:58.151314Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"get_facts_count\",\"arguments\":{},\"_meta\":{\"progressToken\":4}},\"jsonrpc\":\"2.0\",\"id\":4}"}
+{"ts": "2025-09-06T15:38:58.151314Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 4, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"Anzahl Fakten in der Datenbank: 6,632\"}]}}"}
+{"ts": "2025-09-06T15:42:39.082543Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"get_system_status\",\"arguments\":{},\"_meta\":{\"progressToken\":5}},\"jsonrpc\":\"2.0\",\"id\":5}"}
+{"ts": "2025-09-06T15:42:39.083042Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 5, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"Status: Operational\\nDatenbank: D:\\\\MCP Mods\\\\HAK_GAL_HEXAGONAL\\\\hexagonal_kb.db\\nFakten: 6,632\\nServer: HAK_GAL MCP Ultima"}
+{"ts": "2025-09-06T15:42:39.486623Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"health_check\",\"arguments\":{},\"_meta\":{\"progressToken\":6}},\"jsonrpc\":\"2.0\",\"id\":6}"}
+{"ts": "2025-09-06T15:42:39.487047Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 6, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"Status: OK\\nDB exists: True\\nDB Fakten: 6,632\\nWrite enabled: True\\nTotal Tools: 66\\nExecute code ready: True\\nTemp dir: C:"}
+{"ts": "2025-09-06T15:42:40.139246Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"get_facts_count\",\"arguments\":{},\"_meta\":{\"progressToken\":7}},\"jsonrpc\":\"2.0\",\"id\":7}"}
+{"ts": "2025-09-06T15:42:40.141510Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 7, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"Anzahl Fakten in der Datenbank: 6,632\"}]}}"}
+{"ts": "2025-09-06T15:49:37.429932Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":0,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2025-06-18\",\"capabilities\":{},\"clientInfo\":{\"name\":\"mcp-client-sse\",\"version\":\"1.0.0\"}}}"}
+{"ts": "2025-09-06T15:49:37.429932Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 0, \"result\": {\"protocolVersion\": \"2025-06-18\", \"capabilities\": {\"tools\": {\"listChanged\": true}, \"resources\": {}, \"prompts\": {}}, \"serverInfo\": {\"name\": \"HAK_GAL MCP Ultimate\","}
+{"ts": "2025-09-06T15:49:37.441787Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"method\":\"notifications/initialized\"}"}
+{"ts": "2025-09-06T15:49:37.442786Z", "level": "WARNING", "logger": "__main__", "message": "Unknown method: notifications/initialized"}
+{"ts": "2025-09-06T15:49:37.449540Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:49:37.449980Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 1, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:49:37.452778Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:49:37.452778Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:49:37.452778Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 2, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}}"}
+{"ts": "2025-09-06T15:49:37.457740Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:49:37.458818Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 3, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:49:37.467791Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":4,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:49:37.467791Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 4, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:49:37.469886Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":5,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:49:37.470340Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:49:37.470340Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 5, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}}"}
+{"ts": "2025-09-06T15:49:37.470340Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":6,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:49:37.470340Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 6, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:49:37.489637Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":7,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:49:37.489637Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 7, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:49:37.498720Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":8,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:49:37.498720Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:49:37.499723Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 8, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}}"}
+{"ts": "2025-09-06T15:49:37.499723Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":9,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:49:37.499723Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 9, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:49:37.502718Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":10,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:49:37.502718Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 10, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:49:37.502718Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":13,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:49:37.502718Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 13, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:49:37.509717Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":11,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:49:37.509717Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:49:37.509717Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 11, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:49:37.509717Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":12,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:49:37.509717Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 12, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:49:37.509717Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":14,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:49:37.509717Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:49:37.509717Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 14, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:49:37.509717Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":15,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:49:37.509717Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 15, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:49:37.517703Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":16,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:49:37.517703Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 16, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:49:37.517703Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":17,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:49:37.518716Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:49:37.518716Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 17, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:49:37.518716Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":18,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:49:37.518716Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 18, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:49:37.519716Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":19,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:49:37.519716Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 19, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:49:37.530068Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":20,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:49:37.530068Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:49:37.537699Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 20, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:49:37.537699Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":21,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:49:37.537699Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 21, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:49:37.537699Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":22,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:49:37.537699Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 22, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:49:37.537699Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":23,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:49:37.538785Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:49:37.538785Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 23, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:49:37.543710Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":24,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:49:37.543710Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 24, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:49:37.543710Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":25,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:49:37.543710Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 25, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:49:37.543710Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":26,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:49:37.543710Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:49:37.544704Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 26, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:49:37.544704Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":27,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:49:37.544704Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 27, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:49:37.560749Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":28,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:49:37.560749Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 28, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:49:37.560749Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":29,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:49:37.561750Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:49:37.561750Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 29, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:49:37.561750Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":30,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:49:37.561750Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 30, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:49:37.562767Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":31,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:49:37.562767Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 31, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:49:37.568653Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":32,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:49:37.568653Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:49:37.568653Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 32, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:49:37.569648Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":33,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:49:37.569648Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 33, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:49:37.600822Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":34,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:49:37.601742Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 34, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:49:37.602743Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":35,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:49:37.603824Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:49:37.603824Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 35, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:49:37.604738Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":36,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:49:37.604738Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 36, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:49:37.609370Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":37,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:49:37.610169Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 37, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:49:37.610169Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":38,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:49:37.610169Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:49:37.610169Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 38, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:49:37.610169Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":39,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:49:37.610169Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 39, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:49:37.610169Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":40,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:49:37.610169Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 40, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:49:37.610169Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":41,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:49:37.610169Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:49:37.610169Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 41, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:49:37.610169Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":42,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:49:37.610169Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 42, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:49:37.682330Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":43,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:49:37.682330Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 43, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:49:37.684390Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":44,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:49:37.685441Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:49:37.685441Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 44, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:49:37.686347Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":45,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:49:37.686347Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 45, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:49:37.689498Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":46,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:49:37.689498Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 46, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:49:37.689498Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":47,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:49:37.689498Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:49:37.689498Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 47, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:49:37.689498Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":48,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:49:37.689498Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 48, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:49:37.706957Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":49,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:49:37.707634Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 49, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:49:37.708734Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":50,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:49:37.708734Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:49:37.709589Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 50, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:49:37.709589Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":51,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:49:37.709589Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 51, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:49:37.749635Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":52,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:49:37.749635Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 52, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:49:37.749635Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":53,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:49:37.749635Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:49:37.749635Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 53, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:49:37.759038Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":54,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:49:37.759038Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 54, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:49:37.766120Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":55,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:49:37.766120Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 55, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:49:37.768198Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":56,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:49:37.768198Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:49:37.768198Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 56, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:49:37.781074Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":57,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:49:37.781074Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 57, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:49:37.788950Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":58,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:49:37.788950Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 58, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:49:37.789652Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":59,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:49:37.789652Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:49:37.789652Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 59, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:49:37.807780Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":60,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:49:37.808363Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 60, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:57:37.510617Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":0,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2025-06-18\",\"capabilities\":{},\"clientInfo\":{\"name\":\"mcp-client-sse\",\"version\":\"1.0.0\"}}}"}
+{"ts": "2025-09-06T15:57:37.511637Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 0, \"result\": {\"protocolVersion\": \"2025-06-18\", \"capabilities\": {\"tools\": {\"listChanged\": true}, \"resources\": {}, \"prompts\": {}}, \"serverInfo\": {\"name\": \"HAK_GAL MCP Ultimate\","}
+{"ts": "2025-09-06T15:57:37.522416Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"method\":\"notifications/initialized\"}"}
+{"ts": "2025-09-06T15:57:37.522416Z", "level": "WARNING", "logger": "__main__", "message": "Unknown method: notifications/initialized"}
+{"ts": "2025-09-06T15:57:37.527511Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:57:37.528504Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 1, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:57:37.530503Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:57:37.530503Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:57:37.531511Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 2, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}}"}
+{"ts": "2025-09-06T15:57:37.532261Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:57:37.532261Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 3, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:57:37.552316Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":4,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:57:37.553388Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 4, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:57:37.554392Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":5,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:57:37.554392Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:57:37.554392Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 5, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}}"}
+{"ts": "2025-09-06T15:57:37.558399Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":6,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:57:37.558399Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 6, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:57:37.625388Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":7,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:57:37.625388Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 7, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:57:37.628381Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":8,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:57:37.628381Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:57:37.629158Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 8, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}}"}
+{"ts": "2025-09-06T15:57:37.629158Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":9,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:57:37.629673Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 9, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:57:37.630229Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":11,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:57:37.630776Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:57:37.631314Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 11, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:57:37.637826Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":10,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:57:37.637826Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 10, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:57:37.637826Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":12,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:57:37.638411Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 12, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:57:37.647793Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":13,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:57:37.648339Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 13, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:57:37.648339Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":14,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:57:37.648339Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:57:37.648865Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 14, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:57:37.649409Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":15,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:57:37.649409Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 15, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:57:37.649409Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":16,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:57:37.649963Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 16, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:57:37.649963Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":17,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:57:37.649963Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:57:37.650483Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 17, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:57:37.652178Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":18,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:57:37.652178Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 18, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:57:37.652883Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":19,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:57:37.652883Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 19, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:57:37.652883Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":20,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:57:37.652883Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:57:37.653625Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 20, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:57:37.653625Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":21,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:57:37.654232Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 21, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:57:37.669780Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":22,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:57:37.669780Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 22, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:57:37.669780Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":23,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:57:37.669780Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:57:37.670789Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 23, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:57:37.670789Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":24,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:57:37.670789Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 24, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:57:37.707588Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":25,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:57:37.707588Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 25, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:57:37.708185Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":26,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:57:37.708185Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:57:37.709273Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 26, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:57:37.713012Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":27,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:57:37.713012Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 27, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:57:37.713012Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":28,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:57:37.713012Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 28, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:57:37.713012Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":29,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:57:37.713012Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:57:37.713012Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 29, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:57:37.713012Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":30,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:57:37.713012Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 30, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:57:37.733120Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":31,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:57:37.733120Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 31, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:57:37.742449Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":32,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:57:37.742449Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:57:37.743543Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 32, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:57:37.743543Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":33,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:57:37.743543Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 33, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:57:37.819213Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":34,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:57:37.819213Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 34, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:57:37.822217Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":35,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:57:37.822217Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:57:37.822217Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 35, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:57:37.823314Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":36,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:57:37.823314Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 36, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:57:37.823314Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":37,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:57:37.823314Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 37, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:57:37.826326Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":38,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:57:37.826326Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:57:37.827332Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 38, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:57:37.827332Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":39,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:57:37.827332Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 39, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:57:37.827332Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":40,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:57:37.828315Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 40, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:57:37.828315Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":41,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:57:37.828315Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:57:37.828315Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 41, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:57:37.833761Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":42,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:57:37.833761Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 42, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:57:37.866343Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":43,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:57:37.866343Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 43, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:57:37.870095Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":44,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:57:37.871043Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:57:37.871043Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 44, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:57:37.871043Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":45,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:57:37.871043Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 45, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:57:37.873238Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":46,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:57:37.873238Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 46, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:57:37.873238Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":47,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:57:37.873238Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:57:37.873238Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 47, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:57:37.873238Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":48,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:57:37.882323Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 48, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:57:37.882323Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":49,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:57:37.882323Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 49, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:57:37.882323Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":50,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:57:37.882323Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:57:37.883336Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 50, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:57:37.883336Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":51,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:57:37.883336Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 51, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:57:37.893287Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":52,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:57:37.893287Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 52, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:57:37.893287Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":53,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:57:37.893287Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:57:37.893287Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 53, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:57:37.893287Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":54,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:57:37.893287Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 54, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:57:37.907527Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":55,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:57:37.907527Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 55, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:57:37.907527Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":56,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:57:37.908529Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:57:37.908529Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 56, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:57:37.908529Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":57,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:57:37.908529Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 57, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:57:37.909519Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":58,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:57:37.909519Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 58, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:57:37.912295Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":59,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:57:37.912295Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:57:37.912295Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 59, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:57:37.913300Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":60,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:57:37.913300Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 60, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:59:37.407206Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":0,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2025-06-18\",\"capabilities\":{},\"clientInfo\":{\"name\":\"mcp-client-sse\",\"version\":\"1.0.0\"}}}"}
+{"ts": "2025-09-06T15:59:37.407206Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 0, \"result\": {\"protocolVersion\": \"2025-06-18\", \"capabilities\": {\"tools\": {\"listChanged\": true}, \"resources\": {}, \"prompts\": {}}, \"serverInfo\": {\"name\": \"HAK_GAL MCP Ultimate\","}
+{"ts": "2025-09-06T15:59:37.417080Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"method\":\"notifications/initialized\"}"}
+{"ts": "2025-09-06T15:59:37.417080Z", "level": "WARNING", "logger": "__main__", "message": "Unknown method: notifications/initialized"}
+{"ts": "2025-09-06T15:59:37.422081Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:59:37.422081Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 1, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:59:37.424080Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:59:37.424080Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:59:37.424080Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 2, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}}"}
+{"ts": "2025-09-06T15:59:37.429606Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:59:37.429606Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 3, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:59:37.444083Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":4,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:59:37.444083Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 4, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:59:37.446075Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":5,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:59:37.446075Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:59:37.447075Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 5, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}}"}
+{"ts": "2025-09-06T15:59:37.447075Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":6,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:59:37.447075Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 6, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:59:37.479101Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":7,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:59:37.479101Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 7, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:59:37.483235Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":8,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:59:37.484243Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:59:37.484243Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 8, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}}"}
+{"ts": "2025-09-06T15:59:37.484243Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":9,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:59:37.484243Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 9, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:59:37.486234Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":10,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:59:37.486234Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 10, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:59:37.487242Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":11,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:59:37.487242Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:59:37.487242Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 11, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:59:37.499042Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":12,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:59:37.499042Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 12, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:59:37.499042Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":13,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:59:37.500049Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 13, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:59:37.500049Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":14,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:59:37.500049Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:59:37.500049Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 14, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:59:37.501048Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":15,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:59:37.501048Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 15, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:59:37.503054Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":16,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:59:37.503054Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 16, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:59:37.503054Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":17,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:59:37.503054Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:59:37.504047Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 17, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:59:37.504047Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":18,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:59:37.504047Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 18, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:59:37.504047Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":19,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:59:37.504047Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 19, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:59:37.509548Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":20,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:59:37.519058Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:59:37.519058Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 20, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:59:37.519058Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":21,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:59:37.520064Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 21, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:59:37.520064Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":22,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:59:37.520064Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 22, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:59:37.520064Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":23,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:59:37.520064Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:59:37.521062Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 23, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:59:37.529668Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":24,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:59:37.529668Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 24, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:59:37.529668Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":25,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:59:37.529668Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 25, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:59:37.529668Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":26,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:59:37.529668Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:59:37.529668Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 26, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:59:37.529668Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":27,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:59:37.529668Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 27, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:59:37.529668Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":28,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:59:37.529668Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 28, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:59:37.529668Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":29,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:59:37.529668Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:59:37.529668Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 29, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:59:37.529668Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":30,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:59:37.529668Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 30, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:59:37.529668Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":31,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:59:37.539069Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 31, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:59:37.542537Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":32,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:59:37.542537Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:59:37.543537Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 32, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:59:37.543537Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":33,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:59:37.543537Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 33, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:59:37.583150Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":34,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:59:37.583150Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 34, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:59:37.585150Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":35,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:59:37.586149Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:59:37.586149Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 35, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:59:37.586149Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":36,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:59:37.586149Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 36, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:59:37.589054Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":37,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:59:37.589054Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 37, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:59:37.589660Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":38,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:59:37.589660Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:59:37.589660Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 38, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:59:37.589660Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":39,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:59:37.589660Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 39, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:59:37.601119Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":40,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:59:37.601119Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 40, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:59:37.601119Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":41,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:59:37.601119Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:59:37.602108Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 41, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:59:37.602108Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":42,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:59:37.602108Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 42, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:59:37.610024Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":43,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:59:37.610024Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 43, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:59:37.610024Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":44,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:59:37.610024Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:59:37.610024Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 44, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:59:37.610024Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":45,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:59:37.610024Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 45, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:59:37.610024Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":46,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:59:37.610024Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 46, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:59:37.628141Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":47,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:59:37.628141Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:59:37.629008Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 47, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:59:37.629008Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":48,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:59:37.629008Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 48, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:59:37.629008Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":49,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:59:37.629008Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 49, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:59:37.629008Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":50,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:59:37.629988Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:59:37.629988Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 50, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:59:37.629988Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":51,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:59:37.629988Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 51, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:59:37.668986Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":52,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:59:37.668986Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 52, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:59:37.671071Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":53,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:59:37.672078Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:59:37.672078Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 53, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:59:37.672078Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":54,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:59:37.673078Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 54, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:59:37.675084Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":55,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:59:37.676078Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 55, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:59:37.676078Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":56,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:59:37.676078Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:59:37.676078Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 56, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:59:37.677070Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":57,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:59:37.677070Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 57, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T15:59:37.677070Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":58,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T15:59:37.677070Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 58, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T15:59:37.682070Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":59,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T15:59:37.683078Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T15:59:37.683078Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 59, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T15:59:37.683078Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":60,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T15:59:37.684077Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 60, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T16:02:53.922911Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":61,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T16:02:53.922911Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 61, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T16:02:53.925918Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":62,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T16:02:53.925918Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T16:02:53.926905Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 62, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T16:02:53.927906Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":63,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T16:02:53.927906Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 63, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T16:02:53.942202Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":64,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T16:02:53.942202Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 64, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T16:02:53.944868Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":65,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T16:02:53.945855Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T16:02:53.945855Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 65, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T16:02:53.945855Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":66,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T16:02:53.946852Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 66, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T16:09:10.744346Z", "level": "INFO", "logger": "__main__", "message": "MCP Server stopped"}
+{"ts": "2025-09-06T16:12:40.376844Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":67,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T16:12:40.376844Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 67, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T16:12:40.379135Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":68,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T16:12:40.379135Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T16:12:40.379135Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 68, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T16:12:40.439061Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":69,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T16:12:40.439061Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 69, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T16:12:40.459061Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":70,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T16:12:40.468239Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 70, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T16:12:40.468239Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":71,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T16:12:40.468642Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T16:12:40.468967Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 71, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T16:12:40.468967Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":72,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T16:12:40.468967Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 72, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T16:14:42.398866Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"get_system_status\",\"arguments\":{},\"_meta\":{\"progressToken\":8}},\"jsonrpc\":\"2.0\",\"id\":8}"}
+{"ts": "2025-09-06T16:14:42.399866Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 8, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"Status: Operational\\nDatenbank: D:\\\\MCP Mods\\\\HAK_GAL_HEXAGONAL\\\\hexagonal_kb.db\\nFakten: 6,632\\nServer: HAK_GAL MCP Ultima"}
+{"ts": "2025-09-06T16:14:44.337706Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"get_facts_count\",\"arguments\":{},\"_meta\":{\"progressToken\":9}},\"jsonrpc\":\"2.0\",\"id\":9}"}
+{"ts": "2025-09-06T16:14:44.347014Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 9, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"Anzahl Fakten in der Datenbank: 6,632\"}]}}"}
+{"ts": "2025-09-06T16:14:44.765855Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/call\",\"params\":{\"name\":\"health_check\",\"arguments\":{},\"_meta\":{\"progressToken\":10}},\"jsonrpc\":\"2.0\",\"id\":10}"}
+{"ts": "2025-09-06T16:14:44.768083Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 10, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"Status: OK\\nDB exists: True\\nDB Fakten: 6,632\\nWrite enabled: True\\nTotal Tools: 66\\nExecute code ready: True\\nTemp dir: C"}
+{"ts": "2025-09-06T17:25:33.728133Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/list\",\"jsonrpc\":\"2.0\",\"id\":11}"}
+{"ts": "2025-09-06T17:25:33.729131Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 64 tools."}
+{"ts": "2025-09-06T17:25:33.730183Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 11, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T17:25:33.730183Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"tools/list\",\"jsonrpc\":\"2.0\",\"id\":12}"}
+{"ts": "2025-09-06T17:25:33.730786Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 64 tools."}
+{"ts": "2025-09-06T17:25:33.731197Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 12, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T17:25:33.731197Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"prompts/list\",\"jsonrpc\":\"2.0\",\"id\":13}"}
+{"ts": "2025-09-06T17:25:33.731197Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 13, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T17:25:33.731197Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"method\":\"prompts/list\",\"jsonrpc\":\"2.0\",\"id\":14}"}
+{"ts": "2025-09-06T17:25:33.731197Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 14, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T17:27:22.418237Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":73,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T17:27:22.418237Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 73, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T17:27:22.421237Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":74,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T17:27:22.421237Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T17:27:22.422238Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 74, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T17:27:22.423238Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":75,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T17:27:22.423238Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 75, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T17:27:22.439984Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":76,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T17:27:22.441094Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 76, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T17:27:22.441094Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":77,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T17:27:22.442094Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T17:27:22.442094Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 77, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T17:27:22.446093Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":78,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T17:27:22.446093Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 78, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T17:29:32.088167Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":79,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T17:29:32.089155Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 79, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T17:29:32.091156Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":80,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T17:29:32.092155Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T17:29:32.092155Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 80, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T17:29:32.092155Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":81,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T17:29:32.093155Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 81, \"result\": {\"prompts\": []}}"}
+{"ts": "2025-09-06T17:29:32.096154Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":82,\"method\":\"resources/list\"}"}
+{"ts": "2025-09-06T17:29:32.097154Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 82, \"result\": {\"resources\": []}}"}
+{"ts": "2025-09-06T17:29:32.098155Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":83,\"method\":\"tools/list\"}"}
+{"ts": "2025-09-06T17:29:32.098155Z", "level": "DEBUG", "logger": "__main__", "message": "Listed 67 tools."}
+{"ts": "2025-09-06T17:29:32.099155Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 83, \"result\": {\"tools\": [{\"name\": \"get_facts_count\", \"description\": \"Hole die aktuelle Anzahl der Fakten aus der SQLite DB\", \"inputSchema\": {\"type\": \"object\", \"properties\": {}"}
+{"ts": "2025-09-06T17:29:32.106160Z", "level": "DEBUG", "logger": "__main__", "message": "Received: {\"jsonrpc\":\"2.0\",\"id\":84,\"method\":\"prompts/list\"}"}
+{"ts": "2025-09-06T17:29:32.106160Z", "level": "DEBUG", "logger": "__main__", "message": "Sent: {\"jsonrpc\": \"2.0\", \"id\": 84, \"result\": {\"prompts\": []}}"}

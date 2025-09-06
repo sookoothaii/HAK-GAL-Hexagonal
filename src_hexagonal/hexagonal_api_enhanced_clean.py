@@ -9,8 +9,9 @@ Nach HAK/GAL Verfassung: NO FAKE DATA, ONLY REAL RESULTS
 # are patched for cooperative multitasking, preventing hangs with SocketIO.
 try:
     import eventlet
-    eventlet.monkey_patch()
-    print("[OK] Eventlet monkey-patching applied.")
+    # SELECTIVE patching: Keep DNS working but patch threading for WebSockets
+    eventlet.monkey_patch(thread=True, time=True, socket=False, select=False)
+    print("[OK] Eventlet monkey-patching applied (DNS-safe mode).")
 except ImportError:
     print("[WARNING] Eventlet not found. WebSocket may hang under load.")
 # --- End of Patching ---
@@ -48,6 +49,7 @@ def require_api_key(f):
         # Try multiple possible .env locations
         env_paths = [
             Path(__file__).resolve().parents[1] / '.env',
+            Path("D:/MCP Mods/hak_gal_user/.env"),
             Path("D:/MCP Mods/HAK_GAL_HEXAGONAL/.env"),
             Path(__file__).resolve().parents[2] / 'HAK_GAL_HEXAGONAL' / '.env'
         ]
@@ -83,6 +85,7 @@ from core.domain.entities import Query
 from src_hexagonal.api_endpoints_extension import create_extended_endpoints
 from src_hexagonal.missing_endpoints import register_missing_endpoints
 from adapters.agent_adapters import get_agent_adapter
+from src_hexagonal.llm_config_routes import init_llm_config_routes
 
 
 # Import infrastructure if available
@@ -123,31 +126,31 @@ class HexagonalAPI:
         self.hex_root = Path(__file__).resolve().parents[1]
         self.suite_root = (self.hex_root.parent / 'HAK_GAL_SUITE')
 
-        # Load environment from HAK_GAL_SUITE/.env if present
-        try:
-            env_path = self.suite_root / '.env'
-            if env_path.exists():
-                try:
-                    from dotenv import load_dotenv
-                    load_dotenv(dotenv_path=str(env_path), override=False)
-                    print(f"[ENV] Loaded environment from {env_path}")
-                except Exception:
-                    # Manual parser
-                    for line in env_path.read_text(encoding='utf-8', errors='ignore').splitlines():
-                        line = line.strip()
-                        if not line or line.startswith('#'):
-                            continue
-                        if line.lower().startswith('export '):
-                            line = line[7:].strip()
-                        if '=' in line:
-                            key, val = line.split('=', 1)
-                            key = key.strip()
-                            val = val.strip().strip('"').strip("'")
-                            if key and key not in os.environ:
-                                os.environ[key] = val
-                    print(f"[ENV] Loaded environment (manual) from {env_path}")
-        except Exception as e:
-            print(f"[ENV] Failed to load .env: {e}")
+        # Load environment from HAK_GAL_SUITE/.env if present (DISABLED - causes conflicts)
+        # try:
+        #     env_path = self.suite_root / '.env'
+        #     if env_path.exists():
+        #         try:
+        #             from dotenv import load_dotenv
+        #             load_dotenv(dotenv_path=str(env_path), override=False)
+        #             print(f"[ENV] Loaded environment from {env_path}")
+        #         except Exception:
+        #             # Manual parser
+        #             for line in env_path.read_text(encoding='utf-8', errors='ignore').splitlines():
+        #                 line = line.strip()
+        #                 if not line or line.startswith('#'):
+        #                     continue
+        #                 if line.lower().startswith('export '):
+        #                     line = line[7:].strip()
+        #                 if '=' in line:
+        #                     key, val = line.split('=', 1)
+        #                     key = key.strip()
+        #                     val = val.strip().strip('"').strip("'")
+        #                     if key and key not in os.environ:
+        #                         os.environ[key] = val
+        #             print(f"[ENV] Loaded environment (manual) from {env_path}")
+        # except Exception as e:
+        #     print(f"[ENV] Failed to load .env: {e}")
 
         # Dependency Injection
         if use_legacy:
@@ -222,6 +225,7 @@ class HexagonalAPI:
         self._register_missing_endpoints()
         self._register_agent_bus_routes() # Register the new agent bus routes
         self._register_engine_routes() # Register engine API routes
+        self._register_llm_config_routes() # Register LLM configuration routes
         
         # Ensure CORS headers on every response
         @self.app.after_request
@@ -682,23 +686,42 @@ class HexagonalAPI:
             explanation = None
             llm_used = None
             
-            # Try Gemini first if not in Ollama-only mode
+            # Try MultiLLMProvider first (Gemini -> DeepSeek -> Claude -> Ollama)
             if not USE_LOCAL_OLLAMA_ONLY and USE_HYBRID_LLM:
                 try:
-                    print("[MultiLLM] Trying Gemini (1/2)...")
-                    # Quick network check first
-                    import socket
-                    try:
-                        # Test connection to Google
-                        socket.create_connection(("generativelanguage.googleapis.com", 443), timeout=2)
-                    except (socket.timeout, socket.error, OSError) as e:
-                        print(f"[Gemini] No internet connection: {e}. Skipping to Ollama...")
-                        raise RuntimeError("No internet connection")
+                    print("[MultiLLM] Trying custom chain: Groq -> DeepSeek -> Gemini -> Claude -> Ollama...")
+                    from adapters.llm_providers import MultiLLMProvider
+                    multi_llm = MultiLLMProvider()
                     
-                    # Import Gemini provider
+                    if multi_llm.is_available():
+                        print("[MultiLLM] Available, generating response...")
+                        response = multi_llm.generate_response(prompt)
+                        # MultiLLM returns tuple (text, provider_name)
+                        if isinstance(response, tuple) and len(response) >= 1:
+                            explanation = response[0]  # Extract text from tuple
+                            llm_used = response[1]    # Extract provider name
+                        else:
+                            explanation = response
+                            llm_used = 'MultiLLM'
+                        print(f"[MultiLLM] Success with {llm_used} (length: {len(explanation)})")
+                    else:
+                        raise RuntimeError("MultiLLM not available")
+                        
+                except Exception as e:
+                    print(f"[DeepSeek] Failed: {e}. Trying Gemini (2/3)...")
                     try:
-                        from adapters.llm_providers import MultiLLMProvider
-                        gemini_llm = MultiLLMProvider()
+                        # Quick network check first
+                        import socket
+                        try:
+                            # Test connection to Google
+                            socket.create_connection(("generativelanguage.googleapis.com", 443), timeout=2)
+                        except (socket.timeout, socket.error, OSError) as e:
+                            print(f"[Gemini] No internet connection: {e}. Skipping to Ollama...")
+                            raise RuntimeError("No internet connection")
+                        
+                        # Import Gemini provider
+                        from adapters.llm_providers import GeminiProvider
+                        gemini_llm = GeminiProvider()
                         
                         # Check if Gemini is available (has API key)
                         if gemini_llm.is_available():
@@ -743,7 +766,7 @@ class HexagonalAPI:
                                 raise RuntimeError(f"Gemini call failed: {e}")
                                 
                     except (ImportError, TimeoutError, RuntimeError, Exception) as e:
-                        print(f"[Gemini] Failed: {e}. Falling back to Ollama...")
+                        print(f"[Gemini] Failed: {e}. Trying Ollama (3/3)...")
                         # Continue to Ollama fallback
                         
                 except Exception as e:
@@ -752,9 +775,10 @@ class HexagonalAPI:
             # Fallback to Ollama if MultiLLMProvider failed (for offline capability)
             if explanation is None:
                 try:
-                    print("[LLM] MultiLLMProvider failed, trying direct Ollama fallback...")
+                    print("[LLM] Trying Ollama (3/3) - Final fallback...")
                     from adapters.ollama_adapter import OllamaProvider
-                    ollama_llm = OllamaProvider(model="qwen2.5:14b-instruct-q4_K_M", timeout=60)
+                    ollama_model = os.environ.get("OLLAMA_MODEL", "qwen2.5:7b")
+                    ollama_llm = OllamaProvider(model=ollama_model, timeout=60)
                     
                     if ollama_llm.is_available():
                         print("[LLM] Ollama is available, generating response...")
@@ -772,7 +796,7 @@ class HexagonalAPI:
                         'explanation': 'No LLM service available. Please check API keys and ensure Ollama is running for offline mode.',
                         'suggested_facts': [],
                         'message': f'All LLM providers failed: {e}',
-                        'llm_attempted': ['MultiLLMProvider', 'Ollama']
+                        'llm_attempted': ['DeepSeek', 'Gemini', 'Ollama']
                     }), 503
             
             # Process the explanation (from either Gemini or Ollama)
@@ -1185,6 +1209,14 @@ class HexagonalAPI:
                 if self.cursor_adapter and hasattr(self.cursor_adapter, 'register_websocket_client'):
                     self.cursor_adapter.register_websocket_client(request.sid)
     
+    def _register_llm_config_routes(self):
+        """Register LLM configuration routes"""
+        try:
+            init_llm_config_routes(self.app)
+            print("[OK] LLM configuration routes registered")
+        except Exception as e:
+            print(f"[WARNING] Failed to register LLM config routes: {e}")
+    
     def run(self, host='127.0.0.1', port=5002, debug=False):
         """Start Flask Application"""
         print("=" * 60)
@@ -1224,6 +1256,7 @@ def create_app(use_legacy=False, enable_all=True):
     
     # Try multiple .env locations
     env_paths = [
+        Path("D:/MCP Mods/hak_gal_user/.env"),
         Path("D:/MCP Mods/HAK_GAL_HEXAGONAL/.env"),
         Path(__file__).parent.parent / '.env',
         Path.cwd() / '.env'

@@ -28,6 +28,9 @@ frontend/.vite/
 # IDE
 .vscode/
 .idea/
+.gemini/
+.claude/
+.cursor/
 *.swp
 *.swo
 *~

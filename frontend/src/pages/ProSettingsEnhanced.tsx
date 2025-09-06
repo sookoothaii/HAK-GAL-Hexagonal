@@ -41,6 +41,7 @@ import {
   GitBranch,
   Rocket
 } from 'lucide-react';
+import { LLMConfiguration } from '@/components/llm/LLMConfiguration';
 import { cn } from '@/lib/utils';
 
 const LEARNING_PRESETS = {
@@ -270,8 +271,9 @@ const ProSettingsEnhanced: React.FC = () => {
       </div>
 
       <Tabs defaultValue="general" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="general">General</TabsTrigger>
+          <TabsTrigger value="llm">LLM</TabsTrigger>
           <TabsTrigger value="learning">Learning</TabsTrigger>
           <TabsTrigger value="performance">Performance</TabsTrigger>
           <TabsTrigger value="experimental">Experimental</TabsTrigger>
@@ -376,6 +378,16 @@ const ProSettingsEnhanced: React.FC = () => {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* LLM Settings */}
+        <TabsContent value="llm" className="space-y-4">
+          <LLMConfiguration 
+            onConfigChange={(config) => {
+              // Handle configuration changes
+              console.log('LLM configuration changed:', config);
+            }}
+          />
         </TabsContent>
 
         {/* Learning Settings */}
