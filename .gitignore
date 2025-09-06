@@ -82,3 +82,12 @@ mcp_config.json
 monitoring_*.json
 .env.local
 .env.production
+
+
+# Native builds
+native/mojo_kernels/build/
+native/mojo_kernels/Release/
+native/mojo_kernels/Debug/
+native/mojo_kernels/*.dll
+native/mojo_kernels/*.pyd
+native/mojo_kernels/*.so

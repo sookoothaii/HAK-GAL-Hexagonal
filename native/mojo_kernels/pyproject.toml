@@ -1,0 +1,40 @@
+[build-system]
+requires = [
+  "scikit-build-core>=0.7.0",
+  "pybind11>=2.10",
+  "cmake>=3.18",
+  # Ninja optional auf Windows (CMake nutzt MSVC), auf anderen Plattformen empfohlen
+  "ninja; platform_system != 'Windows'",
+]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "mojo-kernels"
+version = "0.1.0"
+description = "Native mojo_kernels for HAK-GAL Hexagonal (pybind11 extension)"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "HAK-GAL", email = "devnull@example.com" }]
+license = { text = "Proprietary" }
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: C++",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX",
+]
+
+[project.urls]
+Homepage = "https://example.invalid/hak-gal"
+
+[tool.scikit-build]
+build-dir = "build"
+wheel.expand-macos-universal-tags = true
+cmake.minimum-version = "3.18"
+sdist.include = ["CMakeLists.txt", "src/"]
+sdist.exclude = ["build/**", "dist/**"]
+
+[tool.scikit-build.cmake]
+verbose = false
+
+
