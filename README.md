@@ -159,3 +159,11 @@ Built through collaboration between human and AI intelligence, following HAK-GAL
 ---
 
 *Version 2.0 - Complete rewrite with hexagonal architecture and MCP protocol*
+
+
+## ⚠️ WICHTIGER HINWEIS
+
+Die Knowledge Base Datei (`hexagonal_kb.db`) ist NICHT im Repository enthalten!
+Siehe [DATABASE_SETUP.md](DATABASE_SETUP.md) für Installationsanweisungen.
+
+Das System funktioniert OHNE diese Datei NICHT!

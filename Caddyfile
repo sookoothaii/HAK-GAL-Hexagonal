@@ -1,0 +1,94 @@
+{
+    admin off
+}
+
+:8088 {
+    # Log for debugging
+    log {
+        output stdout
+        level INFO
+    }
+    
+    # CRITICAL: Vite client module - MUST have correct Content-Type
+    handle /@vite/client {
+        reverse_proxy 127.0.0.1:5173
+        header Content-Type "application/javascript"
+    }
+    
+    # Vite HMR and modules
+    handle /@vite/* {
+        reverse_proxy 127.0.0.1:5173
+        header Content-Type "application/javascript"
+    }
+    
+    # Source files (JS/TS/CSS modules)
+    handle /src/* {
+        reverse_proxy 127.0.0.1:5173
+        header Content-Type "application/javascript"
+    }
+    
+    # Node modules
+    handle /node_modules/* {
+        reverse_proxy 127.0.0.1:5173
+    }
+    
+    # CSS files - FIX: Path matcher instead of extension
+    handle_path /*.css {
+        reverse_proxy 127.0.0.1:5173
+        header Content-Type "text/css"
+    }
+    
+    # Assets (images, fonts, etc)
+    handle /assets/* {
+        reverse_proxy 127.0.0.1:5173
+    }
+    
+    # Knowledge-Base URL Rewrites (Frontend Compatibility)
+    @kb_page {
+        path /api/knowledge-base/page*
+    }
+    handle @kb_page {
+        rewrite * /api/facts{query}
+        reverse_proxy 127.0.0.1:5002
+    }
+    
+    @kb_raw {
+        path /api/knowledge-base/raw
+    }
+    rewrite @kb_raw /api/facts?limit=1000
+    
+    @kb_status {
+        path /api/knowledge-base/status
+    }
+    rewrite @kb_status /api/facts/count
+    
+    # API requests to backend
+    handle /api/* {
+        reverse_proxy 127.0.0.1:5002 {
+            # Forward the API key for authentication
+            header_up X-API-Key {header.X-API-Key}
+            # INCREASE PROXY TIMEOUT for long-running tasks
+            lb_timeout 5m
+        }
+    }
+    
+    # Health endpoint
+    handle /health {
+        reverse_proxy 127.0.0.1:5002
+    }
+    
+    # WebSocket for real-time updates
+    handle /socket.io/* {
+        reverse_proxy 127.0.0.1:5002 {
+            # WebSocket specific headers
+            header_up Upgrade {http.request.header.Upgrade}
+            header_up Connection {http.request.header.Connection}
+            header_up Host {http.request.host}
+        }
+    }
+    
+    # Default: Everything else goes to Vite (index.html, etc)
+    handle {
+        reverse_proxy 127.0.0.1:5173
+    }
+}
