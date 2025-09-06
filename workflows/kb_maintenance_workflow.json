@@ -1,0 +1,154 @@
+{
+  "id": "kb-maintenance-daily",
+  "name": "Knowledge Base Wartung",
+  "description": "Tägliche KB-Qualitätsprüfung und Bereinigung",
+  "nodes": [
+    {
+      "id": "trigger_1",
+      "type": "schedule_trigger",
+      "position": { "x": 100, "y": 100 },
+      "data": {
+        "schedule": "0 2 * * *",
+        "description": "Täglich um 2:00 Uhr"
+      }
+    },
+    {
+      "id": "facts_count_1",
+      "type": "get_facts_count",
+      "position": { "x": 100, "y": 200 },
+      "data": {}
+    },
+    {
+      "id": "branch_1",
+      "type": "branch",
+      "position": { "x": 100, "y": 300 },
+      "data": {
+        "condition": "{{facts_count_1.count}} > 5000"
+      }
+    },
+    {
+      "id": "consistency_1",
+      "type": "consistency_check",
+      "position": { "x": 250, "y": 400 },
+      "data": {
+        "limit": 1000
+      }
+    },
+    {
+      "id": "duplicates_1",
+      "type": "analyze_duplicates",
+      "position": { "x": 250, "y": 500 },
+      "data": {
+        "threshold": 0.95,
+        "max_pairs": 200
+      }
+    },
+    {
+      "id": "semantic_1",
+      "type": "semantic_similarity",
+      "position": { "x": 250, "y": 600 },
+      "data": {
+        "statement": "{{duplicates_1.first_duplicate}}",
+        "threshold": 0.9,
+        "limit": 50
+      }
+    },
+    {
+      "id": "delegate_1",
+      "type": "delegate_task",
+      "position": { "x": 250, "y": 700 },
+      "data": {
+        "target_agent": "gemini",
+        "task_description": "Analysiere diese potenziellen Duplikate und empfehle welche gelöscht werden sollten: {{duplicates_1.results}}",
+        "context": {
+          "duplicates": "{{duplicates_1.results}}",
+          "total_facts": "{{facts_count_1.count}}"
+        }
+      }
+    },
+    {
+      "id": "if_duplicates",
+      "type": "if_condition",
+      "position": { "x": 250, "y": 800 },
+      "data": {
+        "condition": "{{duplicates_1.duplicate_count}} > 0"
+      }
+    },
+    {
+      "id": "bulk_delete_1",
+      "type": "bulk_delete",
+      "position": { "x": 400, "y": 900 },
+      "data": {
+        "statements": "{{delegate_1.recommended_deletions}}",
+        "auth_token": "{{env.WRITE_TOKEN}}"
+      }
+    },
+    {
+      "id": "comment_1",
+      "type": "comment",
+      "position": { "x": 50, "y": 400 },
+      "data": {
+        "text": "KB noch klein genug, keine Wartung nötig"
+      }
+    },
+    {
+      "id": "merge_1",
+      "type": "merge",
+      "position": { "x": 100, "y": 1000 },
+      "data": {
+        "strategy": "first"
+      }
+    },
+    {
+      "id": "vacuum_1",
+      "type": "db_vacuum",
+      "position": { "x": 100, "y": 1100 },
+      "data": {}
+    },
+    {
+      "id": "checkpoint_1",
+      "type": "db_checkpoint",
+      "position": { "x": 100, "y": 1200 },
+      "data": {
+        "mode": "TRUNCATE"
+      }
+    },
+    {
+      "id": "metrics_1",
+      "type": "metrics_collector",
+      "position": { "x": 100, "y": 1300 },
+      "data": {
+        "metric_name": "kb_maintenance_duration",
+        "value": "{{workflow.duration_ms}}"
+      }
+    },
+    {
+      "id": "add_fact_1",
+      "type": "add_fact",
+      "position": { "x": 100, "y": 1400 },
+      "data": {
+        "statement": "MaintenanceRun({{workflow.timestamp}}, success, {{duplicates_1.duplicate_count}} duplicates_found).",
+        "auth_token": "{{env.WRITE_TOKEN}}"
+      }
+    }
+  ],
+  "edges": [
+    { "id": "e1", "source": "trigger_1", "target": "facts_count_1" },
+    { "id": "e2", "source": "facts_count_1", "target": "branch_1" },
+    { "id": "e3", "source": "branch_1", "sourceHandle": "true", "target": "consistency_1" },
+    { "id": "e4", "source": "consistency_1", "target": "duplicates_1" },
+    { "id": "e5", "source": "duplicates_1", "target": "semantic_1" },
+    { "id": "e6", "source": "semantic_1", "target": "delegate_1" },
+    { "id": "e7", "source": "delegate_1", "target": "if_duplicates" },
+    { "id": "e8", "source": "if_duplicates", "sourceHandle": "true", "target": "bulk_delete_1" },
+    { "id": "e9", "source": "branch_1", "sourceHandle": "false", "target": "comment_1" },
+    { "id": "e10", "source": "bulk_delete_1", "target": "merge_1" },
+    { "id": "e11", "source": "if_duplicates", "sourceHandle": "false", "target": "merge_1" },
+    { "id": "e12", "source": "comment_1", "target": "merge_1" },
+    { "id": "e13", "source": "merge_1", "target": "vacuum_1" },
+    { "id": "e14", "source": "vacuum_1", "target": "checkpoint_1" },
+    { "id": "e15", "source": "checkpoint_1", "target": "metrics_1" },
+    { "id": "e16", "source": "metrics_1", "target": "add_fact_1" }
+  ],
+  "version": "1.0"
+}

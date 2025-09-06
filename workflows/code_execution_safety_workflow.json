@@ -1,0 +1,176 @@
+{
+  "id": "code-execution-safety",
+  "name": "Sichere Code-Ausführung mit Monitoring",
+  "description": "Code von externen Quellen sicher ausführen mit Fehlerbehandlung",
+  "nodes": [
+    {
+      "id": "http_request_1",
+      "type": "http_request",
+      "position": { "x": 100, "y": 100 },
+      "data": {
+        "method": "POST",
+        "endpoint": "webhook",
+        "description": "Empfange Code-Execution Request"
+      }
+    },
+    {
+      "id": "extract_1",
+      "type": "extract",
+      "position": { "x": 100, "y": 200 },
+      "data": {
+        "source": "{{http_request_1.body}}",
+        "fields": ["code", "language", "timeout", "user_id"]
+      }
+    },
+    {
+      "id": "validate_1",
+      "type": "validate_data",
+      "position": { "x": 100, "y": 300 },
+      "data": {
+        "schema": {
+          "code": { "type": "string", "required": true, "maxLength": 10000 },
+          "language": { "type": "string", "enum": ["python", "javascript", "bash"], "required": true },
+          "timeout": { "type": "number", "min": 1, "max": 60, "default": 30 },
+          "user_id": { "type": "string", "required": true }
+        }
+      }
+    },
+    {
+      "id": "rate_limit_1",
+      "type": "rate_limiter",
+      "position": { "x": 100, "y": 400 },
+      "data": {
+        "key": "{{extract_1.user_id}}",
+        "limit": 10,
+        "window": 3600,
+        "description": "Max 10 Executions pro Stunde pro User"
+      }
+    },
+    {
+      "id": "try_catch_1",
+      "type": "try_catch",
+      "position": { "x": 100, "y": 500 },
+      "data": {}
+    },
+    {
+      "id": "execute_1",
+      "type": "execute_code",
+      "position": { "x": 300, "y": 600 },
+      "data": {
+        "code": "{{extract_1.code}}",
+        "language": "{{extract_1.language}}",
+        "timeout": "{{extract_1.timeout}}"
+      }
+    },
+    {
+      "id": "branch_success",
+      "type": "branch",
+      "position": { "x": 300, "y": 700 },
+      "data": {
+        "condition": "{{execute_1.exit_code}} == 0"
+      }
+    },
+    {
+      "id": "set_var_success",
+      "type": "set_variable",
+      "position": { "x": 450, "y": 800 },
+      "data": {
+        "name": "result",
+        "value": "{{execute_1.output}}"
+      }
+    },
+    {
+      "id": "set_var_error",
+      "type": "set_variable",
+      "position": { "x": 150, "y": 800 },
+      "data": {
+        "name": "result",
+        "value": "{{execute_1.error}}"
+      }
+    },
+    {
+      "id": "log_error_1",
+      "type": "log_error",
+      "position": { "x": 50, "y": 600 },
+      "data": {
+        "message": "Code execution failed: {{error.message}}"
+      }
+    },
+    {
+      "id": "set_var_catch",
+      "type": "set_variable",
+      "position": { "x": 50, "y": 700 },
+      "data": {
+        "name": "result",
+        "value": "Execution failed: {{error.message}}"
+      }
+    },
+    {
+      "id": "merge_3",
+      "type": "merge",
+      "position": { "x": 100, "y": 900 },
+      "data": {
+        "strategy": "first"
+      }
+    },
+    {
+      "id": "string_template_2",
+      "type": "string_template",
+      "position": { "x": 100, "y": 1000 },
+      "data": {
+        "template": "{\n  \"user_id\": \"{{extract_1.user_id}}\",\n  \"execution_id\": \"{{workflow.id}}\",\n  \"language\": \"{{extract_1.language}}\",\n  \"success\": {{execute_1.exit_code == 0}},\n  \"result\": \"{{result}}\",\n  \"execution_time_ms\": {{execute_1.execution_time}},\n  \"timestamp\": \"{{workflow.timestamp}}\"\n}"
+      }
+    },
+    {
+      "id": "webhook_send_1",
+      "type": "webhook_send",
+      "position": { "x": 100, "y": 1100 },
+      "data": {
+        "url": "{{http_request_1.callback_url}}",
+        "method": "POST",
+        "body": "{{string_template_2.output}}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "id": "metrics_2",
+      "type": "metrics_collector",
+      "position": { "x": 100, "y": 1200 },
+      "data": {
+        "metric_name": "code_execution_{{extract_1.language}}",
+        "value": "{{execute_1.execution_time}}"
+      }
+    },
+    {
+      "id": "add_fact_3",
+      "type": "add_fact",
+      "position": { "x": 100, "y": 1300 },
+      "data": {
+        "statement": "CodeExecution({{extract_1.user_id}}, {{extract_1.language}}, {{workflow.timestamp}}, {{execute_1.exit_code}}).",
+        "auth_token": "{{env.WRITE_TOKEN}}"
+      }
+    }
+  ],
+  "edges": [
+    { "id": "e1", "source": "http_request_1", "target": "extract_1" },
+    { "id": "e2", "source": "extract_1", "target": "validate_1" },
+    { "id": "e3", "source": "validate_1", "target": "rate_limit_1" },
+    { "id": "e4", "source": "rate_limit_1", "target": "try_catch_1" },
+    { "id": "e5", "source": "try_catch_1", "sourceHandle": "try", "target": "execute_1" },
+    { "id": "e6", "source": "execute_1", "target": "branch_success" },
+    { "id": "e7", "source": "branch_success", "sourceHandle": "true", "target": "set_var_success" },
+    { "id": "e8", "source": "branch_success", "sourceHandle": "false", "target": "set_var_error" },
+    { "id": "e9", "source": "try_catch_1", "sourceHandle": "catch", "target": "log_error_1" },
+    { "id": "e10", "source": "log_error_1", "target": "set_var_catch" },
+    { "id": "e11", "source": "set_var_success", "target": "merge_3" },
+    { "id": "e12", "source": "set_var_error", "target": "merge_3" },
+    { "id": "e13", "source": "set_var_catch", "target": "merge_3" },
+    { "id": "e14", "source": "merge_3", "target": "string_template_2" },
+    { "id": "e15", "source": "string_template_2", "target": "webhook_send_1" },
+    { "id": "e16", "source": "webhook_send_1", "target": "metrics_2" },
+    { "id": "e17", "source": "metrics_2", "target": "add_fact_3" }
+  ],
+  "version": "1.0"
+}

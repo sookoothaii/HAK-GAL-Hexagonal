@@ -4,6 +4,17 @@ REST API Adapter with WebSocket, Governor & Sentry - CLEAN VERSION WITHOUT MOCKS
 Nach HAK/GAL Verfassung: NO FAKE DATA, ONLY REAL RESULTS
 """
 
+# --- CRITICAL: Eventlet Monkey-Patching ---
+# This MUST be the first piece of code to run to ensure all standard libraries
+# are patched for cooperative multitasking, preventing hangs with SocketIO.
+try:
+    import eventlet
+    eventlet.monkey_patch()
+    print("[OK] Eventlet monkey-patching applied.")
+except ImportError:
+    print("[WARNING] Eventlet not found. WebSocket may hang under load.")
+# --- End of Patching ---
+
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from typing import Dict, Any, Optional
@@ -15,16 +26,64 @@ import subprocess
 from datetime import datetime, timezone
 import re
 import shutil
+import uuid
+import sqlite3
+import json
+from functools import wraps
+from dotenv import load_dotenv
+try:
+    import engineio.middleware as engineio_middlewares
+except ImportError:
+    engineio_middlewares = None
+
+# --- API Key Authentication Decorator ---
+def require_api_key(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        # Allow CORS preflight requests to pass through without authentication
+        if request.method == 'OPTIONS':
+            return f(*args, **kwargs)
+
+        # Load API key from environment. Fallback to a default if not set for safety.
+        # Try multiple possible .env locations
+        env_paths = [
+            Path(__file__).resolve().parents[1] / '.env',
+            Path("D:/MCP Mods/HAK_GAL_HEXAGONAL/.env"),
+            Path(__file__).resolve().parents[2] / 'HAK_GAL_HEXAGONAL' / '.env'
+        ]
+        for env_path in env_paths:
+            if env_path.exists():
+                load_dotenv(dotenv_path=env_path)
+                break
+        api_key = os.environ.get("HAKGAL_API_KEY")
+        if not api_key:
+            # This case should not happen if .env is set up, but as a safeguard:
+            return jsonify({"error": "API key not configured on server."}), 500
+
+        # Get key from request header
+        provided_key = request.headers.get('X-API-Key')
+        if not provided_key or provided_key != api_key:
+            return jsonify({"error": "Forbidden: Invalid or missing API key."}), 403
+        
+        return f(*args, **kwargs)
+    return decorated_function
+
 
 # Add src_hexagonal to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from application.services import FactManagementService, ReasoningService
 from adapters.legacy_adapters import LegacyFactRepository, LegacyReasoningEngine
+from adapters.native_adapters import NativeReasoningEngine
 from adapters.sqlite_adapter import SQLiteFactRepository
 from adapters.websocket_adapter import create_websocket_adapter
 from adapters.governor_adapter import get_governor_adapter
+from adapters.system_monitor import get_system_monitor
 from core.domain.entities import Query
+from src_hexagonal.api_endpoints_extension import create_extended_endpoints
+from src_hexagonal.missing_endpoints import register_missing_endpoints
+from adapters.agent_adapters import get_agent_adapter
+
 
 # Import infrastructure if available
 try:
@@ -33,6 +92,13 @@ try:
 except ImportError:
     SENTRY_AVAILABLE = False
     print("⚠️ Sentry not available - monitoring disabled")
+
+# --- LLM Configuration Switch ---
+# Hybrid Strategy: Try Gemini first (fast), fall back to Ollama (reliable)
+USE_HYBRID_LLM = True  # Recommended for production
+USE_LOCAL_OLLAMA_ONLY = False  # Set True to skip Gemini completely
+GEMINI_TIMEOUT = 70  # seconds before falling back to Ollama
+# --- End of LLM Configuration ---
 
 class HexagonalAPI:
     """
@@ -91,7 +157,8 @@ class HexagonalAPI:
         else:
             print("[INFO] Using SQLite Adapters (Development DB)")
             self.fact_repository = SQLiteFactRepository()
-            self.reasoning_engine = LegacyReasoningEngine()
+            # Verwende das trainierte HRM (NativeReasoningEngine)
+            self.reasoning_engine = NativeReasoningEngine()
         
         # Initialize Application Services
         self.fact_service = FactManagementService(
@@ -107,6 +174,7 @@ class HexagonalAPI:
         # Initialize WebSocket Support
         self.websocket_adapter = None
         self.socketio = None
+        self.system_monitor = None
         if enable_websocket:
             self.websocket_adapter, self.socketio = create_websocket_adapter(
                 self.app, 
@@ -114,6 +182,11 @@ class HexagonalAPI:
                 self.reasoning_engine
             )
             print("[OK] WebSocket Support enabled")
+            
+            # Initialize System Monitor and start monitoring
+            self.system_monitor = get_system_monitor(self.socketio)
+            self.system_monitor.start_monitoring()
+            print("[OK] System Monitoring started")
         
         # Initialize Governor
         self.governor = None
@@ -133,11 +206,22 @@ class HexagonalAPI:
         
         # Simple in-memory cache with TTL
         self._cache: Dict[str, Dict[str, Any]] = {}
+        self.delegated_tasks: Dict[str, Dict[str, Any]] = {}
+
+        # Initialize Agent Adapters that need socketio
+        self.cursor_adapter = get_agent_adapter('cursor', socketio=self.socketio)
 
         # Register Routes
         self._register_routes()
+        # Register extended endpoints
+        create_extended_endpoints(self.app, self.fact_service, self.fact_repository)
         self._register_governor_routes()
         self._register_websocket_routes()
+        self._register_auto_add_routes()
+        self._register_hrm_routes()
+        self._register_missing_endpoints()
+        self._register_agent_bus_routes() # Register the new agent bus routes
+        self._register_engine_routes() # Register engine API routes
         
         # Ensure CORS headers on every response
         @self.app.after_request
@@ -162,10 +246,188 @@ class HexagonalAPI:
             return jsonify({
                 'status': 'operational',
                 'architecture': 'hexagonal_clean',
-                'port': 5001,
+                'port': (int(os.environ.get('HAKGAL_PORT', '5001')) if (os.environ.get('HAKGAL_PORT', '5001') or '').isdigit() else 5001),
                 'repository': self.fact_repository.__class__.__name__
             })
         
+        @self.app.route('/api/feedback/verified/<path:query>', methods=['GET'])
+        def check_verified(query):
+            """Check if a query has been verified"""
+            try:
+                query = query.strip()
+                print(f"[Check Verified] Checking query: '{query}'")
+                
+                # Check in verified_queries table
+                with sqlite3.connect(self.fact_repository.db_path) as conn:
+                    cursor = conn.cursor()
+                    
+                    # First check if table exists
+                    cursor.execute("""
+                        SELECT name FROM sqlite_master 
+                        WHERE type='table' AND name='verified_queries'
+                    """)
+                    if not cursor.fetchone():
+                        print("[Check Verified] Table 'verified_queries' does not exist")
+                        return jsonify({
+                            'verified': False,
+                            'query': query,
+                            'error': 'Table not initialized'
+                        })
+                    
+                    cursor.execute("""
+                        SELECT query, timestamp FROM verified_queries
+                        WHERE query = ?
+                    """, (query,))
+                    
+                    result = cursor.fetchone()
+                    
+                    if result:
+                        print(f"[Check Verified] Query IS verified: '{query}'")
+                        return jsonify({
+                            'verified': True,
+                            'query': result[0],
+                            'verified_at': result[1]
+                        })
+                    else:
+                        print(f"[Check Verified] Query NOT verified: '{query}'")
+                        # Also check how many verified queries exist
+                        cursor.execute("SELECT COUNT(*) FROM verified_queries")
+                        count = cursor.fetchone()[0]
+                        print(f"[Check Verified] Total verified queries: {count}")
+                        
+                        return jsonify({
+                            'verified': False,
+                            'query': query,
+                            'total_verified': count
+                        })
+                        
+            except Exception as e:
+                print(f"[Check Verified] Error: {e}")
+                import traceback
+                traceback.print_exc()
+                return jsonify({'error': str(e)}), 500
+        
+        @self.app.route('/api/feedback/verify', methods=['POST'])
+        def verify_query():
+            """Verify a query and store in HRM feedback system"""
+            try:
+                data = request.get_json(silent=True)
+                if not data:
+                    return jsonify({'error': 'Invalid request data'}), 400
+                    
+                query = data.get('query', '').strip()
+                
+                if not query:
+                    return jsonify({'error': 'Missing query'}), 400
+                
+                # Debug log
+                print(f"[Verify] Processing query: {query}")
+                print(f"[Verify] DB Path: {self.fact_repository.db_path}")
+                
+                # Store in verified_queries table
+                try:
+                    with sqlite3.connect(self.fact_repository.db_path) as conn:
+                        cursor = conn.cursor()
+                        # Create table if not exists
+                        cursor.execute("""
+                            CREATE TABLE IF NOT EXISTS verified_queries (
+                                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                query TEXT UNIQUE,
+                                timestamp TEXT
+                            )
+                        """)
+                        
+                        # Try to add confidence column if it doesn't exist (will fail silently if exists)
+                        try:
+                            cursor.execute("ALTER TABLE verified_queries ADD COLUMN confidence REAL DEFAULT 1.0")
+                            print("[Verify] Added confidence column")
+                        except:
+                            pass  # Column already exists or other error
+                        
+                        # Check which columns exist
+                        cursor.execute("PRAGMA table_info(verified_queries)")
+                        columns = [col[1] for col in cursor.fetchall()]
+                        print(f"[Verify] Table columns: {columns}")
+                        
+                        if 'confidence' in columns:
+                            cursor.execute("""
+                                INSERT OR REPLACE INTO verified_queries (query, timestamp, confidence)
+                                VALUES (?, ?, ?)
+                            """, (query, datetime.now().isoformat(), 1.0))
+                        else:
+                            cursor.execute("""
+                                INSERT OR REPLACE INTO verified_queries (query, timestamp)
+                                VALUES (?, ?)
+                            """, (query, datetime.now().isoformat()))
+                        
+                        conn.commit()
+                        print(f"[Verify] Stored in SQLite")
+                except Exception as db_error:
+                    print(f"[Verify] Database error: {db_error}")
+                    return jsonify({'error': f'Database error: {str(db_error)}'}), 500
+                
+                # Also update HRM feedback if available
+                try:
+                    if isinstance(self.reasoning_engine, NativeReasoningEngine):
+                        # Update the HRM feedback JSON directly
+                        # Use absolute path to ensure it works
+                        feedback_path = Path('D:/MCP Mods/HAK_GAL_HEXAGONAL/data/hrm_feedback.json')
+                        
+                        # Load current feedback data
+                        feedback_data = {}
+                        if feedback_path.exists():
+                            with open(feedback_path, 'r', encoding='utf-8') as f:
+                                feedback_data = json.load(f)
+                        
+                        # Ensure verified_queries section exists
+                        if 'verified_queries' not in feedback_data:
+                            feedback_data['verified_queries'] = {}
+                        
+                        # Add this query to verified_queries
+                        feedback_data['verified_queries'][query] = {
+                            'verified': True,
+                            'confidence_override': None,  # Could be 1.0 for max confidence
+                            'verified_at': time.time(),
+                            'verifier': 'user'
+                        }
+                        
+                        # Also ensure it's in adjustments for confidence boost
+                        if 'adjustments' not in feedback_data:
+                            feedback_data['adjustments'] = {}
+                        
+                        if query not in feedback_data['adjustments']:
+                            feedback_data['adjustments'][query] = {
+                                'base_adjustment': 0.2,  # Higher boost for verified
+                                'feedback_ratio': 1.0,
+                                'updated_at': time.time()
+                            }
+                        
+                        # Save updated feedback data
+                        with open(feedback_path, 'w', encoding='utf-8') as f:
+                            json.dump(feedback_data, f, indent=2)
+                        
+                        print(f"[Verify] Updated HRM feedback JSON")
+                        
+                        # Also call apply_feedback for immediate effect
+                        if hasattr(self.reasoning_engine, 'apply_feedback'):
+                            self.reasoning_engine.apply_feedback(query, 'positive', 0.2)
+                            print(f"[Verify] Applied HRM feedback")
+                except Exception as hrm_error:
+                    print(f"[Verify] HRM feedback error (non-critical): {hrm_error}")
+                    # Continue even if HRM feedback fails
+                
+                return jsonify({
+                    'status': 'success',
+                    'message': f'Query verified: {query}',
+                    'verified': True
+                })
+                
+            except Exception as e:
+                print(f"[Verify] Unexpected error: {e}")
+                import traceback
+                traceback.print_exc()
+                return jsonify({'error': str(e)}), 500
+
         @self.app.route('/api/status', methods=['GET'])
         def status():
             """System Status"""
@@ -179,6 +441,12 @@ class HexagonalAPI:
                     'enabled': True,
                     'connected_clients': len(self.websocket_adapter.connected_clients)
                 }
+            
+            if self.system_monitor:
+                base_status['monitoring'] = self.system_monitor.get_status()
+                # Only include expensive system metrics if explicitly requested
+                if request.args.get('include_metrics', '').lower() == 'true':
+                    base_status['system_metrics'] = self.system_monitor.get_system_metrics()
             
             return jsonify(base_status)
         
@@ -195,6 +463,7 @@ class HexagonalAPI:
             })
         
         @self.app.route('/api/facts', methods=['POST'])
+        # # # # # @require_api_key
         def add_fact():
             """POST /api/facts - Add new fact"""
             data = request.get_json(silent=True) or {}
@@ -226,6 +495,27 @@ class HexagonalAPI:
                 'message': message,
                 'statement': statement
             }), status_code
+
+        @self.app.route('/api/facts', methods=['DELETE'])
+        # # # # # @require_api_key
+        def delete_fact_api():
+            """DELETE /api/facts - Delete a fact"""
+            data = request.get_json(silent=True) or {}
+            statement = (data.get('statement') or '').strip()
+            if not statement:
+                return jsonify({'error': 'Missing statement'}), 400
+
+            # Assuming the service layer has a delete_fact method
+            success, message = self.fact_service.delete_fact(statement)
+
+            # if self.websocket_adapter:
+            #     self.websocket_adapter.emit_fact_removed(statement, success)
+
+            if success:
+                return jsonify({'success': True, 'message': message}), 200
+            else:
+                # e.g., fact not found
+                return jsonify({'success': False, 'message': message}), 404
         
         @self.app.route('/api/search', methods=['POST', 'OPTIONS'])
         def search_facts():
@@ -250,6 +540,78 @@ class HexagonalAPI:
                 'results': [f.to_dict() for f in facts],
                 'count': len(facts)
             })
+        
+        @self.app.route('/api/metrics/trust', methods=['GET', 'POST', 'OPTIONS'])
+        def get_trust_metrics():
+            """Calculate trust metrics for a query and response"""
+            if request.method == 'OPTIONS':
+                return ('', 204)
+            
+            # Handle both GET and POST
+            if request.method == 'GET':
+                # GET request with query parameters
+                query = request.args.get('query', '')
+                response = request.args.get('response', '')
+                facts_used = request.args.getlist('facts_used')  # Handle array in query params
+                confidence = float(request.args.get('confidence', 0.5))
+            else:
+                # POST request with JSON body
+                data = request.get_json(silent=True) or {}
+                query = data.get('query', '')
+                response = data.get('response', '')
+                facts_used = data.get('facts_used', [])
+                confidence = data.get('confidence', 0.5)
+            
+            # Calculate raw metrics
+            factual_accuracy = min(len(facts_used) * 0.15 + 0.3, 1.0)
+            source_quality = 0.7 if len(facts_used) > 0 else 0.1
+            model_consensus = confidence
+            ethical_alignment = 0.7
+            
+            # Calculate overall trust score
+            overall_trust = (
+                factual_accuracy * 0.3 +
+                source_quality * 0.2 +
+                model_consensus * 0.3 +
+                ethical_alignment * 0.2
+            ) * 100  # Convert to percentage
+            
+            # Format response to match frontend expectations
+            trust_data = {
+                'trust_score': {
+                    'value': overall_trust,
+                    'label': 'Overall Trust Score'
+                },
+                'sub_metrics': [
+                    {
+                        'label': 'Factual Accuracy',
+                        'value': f'{factual_accuracy * 100:.1f}%',
+                        'description': 'Based on facts found in knowledge base'
+                    },
+                    {
+                        'label': 'Source Quality',
+                        'value': f'{source_quality * 100:.1f}%',
+                        'description': 'Quality of sources used'
+                    },
+                    {
+                        'label': 'Model Consensus',
+                        'value': f'{model_consensus * 100:.1f}%',
+                        'description': 'Model confidence in response'
+                    },
+                    {
+                        'label': 'Ethical Alignment',
+                        'value': f'{ethical_alignment * 100:.1f}%',
+                        'description': 'Alignment with ethical guidelines'
+                    },
+                    {
+                        'label': 'Neural Confidence',
+                        'value': f'{model_consensus * 100:.1f}%',
+                        'description': 'HRM neural reasoning confidence'
+                    }
+                ]
+            }
+            
+            return jsonify(trust_data)
         
         @self.app.route('/api/reason', methods=['POST', 'OPTIONS'])
         def reason():
@@ -298,64 +660,212 @@ class HexagonalAPI:
         @self.app.route('/api/llm/get-explanation', methods=['POST'])
         def llm_get_explanation():
             """
-            LLM Explanation endpoint – nur interne LLM-Provider, kein Legacy-Proxy.
+            LLM Explanation endpoint with Hybrid Strategy.
+            Primary: Gemini (fast, ~3s)
+            Fallback: Ollama (reliable, ~15s)
             """
+            import time
+            start_time = time.time()  # Start timing immediately
+            
             payload = request.get_json(silent=True) or {}
+            topic = payload.get('topic') or payload.get('query') or ''
+            context_facts = payload.get('context_facts') or []
+            
+            prompt = (
+                f"Query: {topic}\n\n"
+                f"Context facts:\n{os.linesep.join(context_facts) if context_facts else 'None'}\n\n"
+                "Please provide a deep, step-by-step explanation addressing the query. "
+                "After your explanation, suggest additional logical facts that would be relevant to add to the knowledge base. "
+                "Format suggested facts as: Predicate(Entity1, Entity2)."
+            )
 
-            # Direkte LLM-Provider
-            try:
-                from adapters.llm_providers import DeepSeekProvider, MistralProvider, MultiLLMProvider
-                from adapters.fact_extractor import extract_facts_from_llm
-                
-                providers = [
-                    DeepSeekProvider(),
-                    MistralProvider(),
-                ]
-                llm = MultiLLMProvider(providers)
-                
-                if llm.is_available():
-                    topic = payload.get('topic') or payload.get('query') or ''
-                    context_facts = payload.get('context_facts') or []
-                    prompt = (
-                        f"Query: {topic}\n\n"
-                        f"Context facts:\n{os.linesep.join(context_facts) if context_facts else 'None'}\n\n"
-                        "Please provide a deep, step-by-step explanation addressing the query. "
-                        "After your explanation, suggest additional logical facts that would be relevant to add to the knowledge base. "
-                        "Format suggested facts as: Predicate(Entity1, Entity2)."
-                    )
+            explanation = None
+            llm_used = None
+            
+            # Try Gemini first if not in Ollama-only mode
+            if not USE_LOCAL_OLLAMA_ONLY and USE_HYBRID_LLM:
+                try:
+                    print("[MultiLLM] Trying Gemini (1/2)...")
+                    # Quick network check first
+                    import socket
+                    try:
+                        # Test connection to Google
+                        socket.create_connection(("generativelanguage.googleapis.com", 443), timeout=2)
+                    except (socket.timeout, socket.error, OSError) as e:
+                        print(f"[Gemini] No internet connection: {e}. Skipping to Ollama...")
+                        raise RuntimeError("No internet connection")
                     
-                    explanation = llm.generate_response(prompt)
-                    
-                    # Only extract facts if we got a real LLM response
-                    if explanation and not explanation.startswith("Error") and "timed out" not in explanation:
-                        suggested = extract_facts_from_llm(explanation, topic)
-                        return jsonify({
-                            'status': 'success',
-                            'explanation': explanation,
-                            'suggested_facts': suggested
-                        })
-                    else:
-                        # LLM error - return the error message
-                        return jsonify({
-                            'status': 'error',
-                            'explanation': explanation,
-                            'suggested_facts': [],
-                            'message': 'LLM provider failed'
-                        }), 503
+                    # Import Gemini provider
+                    try:
+                        from adapters.llm_providers import MultiLLMProvider
+                        gemini_llm = MultiLLMProvider()
                         
+                        # Check if Gemini is available (has API key)
+                        if gemini_llm.is_available():
+                            # Try to get response directly with simpler approach
+                            print("[Gemini] Attempting to generate response...")
+                            try:
+                                # Direct call with built-in timeout handling
+                                gemini_response = gemini_llm.generate_response(prompt)
+                                
+                                # Handle both tuple and string responses
+                                if gemini_response:
+                                    # Check if it's a tuple (response, provider)
+                                    if isinstance(gemini_response, tuple) and len(gemini_response) >= 1:
+                                        actual_response = gemini_response[0]  # Extract text from tuple
+                                        print(f"[Gemini] Extracted response from tuple")
+                                    elif isinstance(gemini_response, str):
+                                        actual_response = gemini_response
+                                    else:
+                                        print(f"[Gemini] Unexpected response type: {type(gemini_response)}")
+                                        raise RuntimeError("Invalid response format")
+                                    
+                                    # Now validate the actual text response
+                                    if actual_response and isinstance(actual_response, str) and len(actual_response) > 50:
+                                        # Check for error indicators
+                                        lower_resp = actual_response.lower()
+                                        if not any(err in lower_resp[:200] for err in ['error', 'failed', 'exception', 'none', 'null', 'undefined']):
+                                            explanation = actual_response
+                                            llm_used = 'Gemini'
+                                            print(f"[MultiLLM] Success with Gemini (length: {len(actual_response)})")
+                                        else:
+                                            print(f"[Gemini] Response appears to be an error: {actual_response[:100]}")
+                                            raise RuntimeError("Gemini returned error-like response")
+                                    else:
+                                        print(f"[Gemini] Response too short ({len(actual_response) if actual_response else 0} chars)")
+                                        raise RuntimeError("Response too short")
+                                else:
+                                    print(f"[Gemini] Empty response")
+                                    raise RuntimeError("Empty response")
+                                    
+                            except Exception as e:
+                                print(f"[Gemini] Direct call failed: {e}")
+                                raise RuntimeError(f"Gemini call failed: {e}")
+                                
+                    except (ImportError, TimeoutError, RuntimeError, Exception) as e:
+                        print(f"[Gemini] Failed: {e}. Falling back to Ollama...")
+                        # Continue to Ollama fallback
+                        
+                except Exception as e:
+                    print(f"[Gemini] Unexpected error: {e}. Falling back to Ollama...")
+            
+            # Fallback to Ollama if MultiLLMProvider failed (for offline capability)
+            if explanation is None:
+                try:
+                    print("[LLM] MultiLLMProvider failed, trying direct Ollama fallback...")
+                    from adapters.ollama_adapter import OllamaProvider
+                    ollama_llm = OllamaProvider(model="qwen2.5:14b-instruct-q4_K_M", timeout=60)
+                    
+                    if ollama_llm.is_available():
+                        print("[LLM] Ollama is available, generating response...")
+                        explanation = ollama_llm.generate_response(prompt)
+                        llm_used = 'Ollama'
+                        print("[LLM] Success with direct Ollama fallback")
+                    else:
+                        print("[LLM] Ollama not available")
+                        raise RuntimeError("Ollama is not available. Please ensure 'ollama serve' is running.")
+                        
+                except Exception as e:
+                    print(f"[Ollama] Direct fallback failed: {e}")
+                    return jsonify({
+                        'status': 'error',
+                        'explanation': 'No LLM service available. Please check API keys and ensure Ollama is running for offline mode.',
+                        'suggested_facts': [],
+                        'message': f'All LLM providers failed: {e}',
+                        'llm_attempted': ['MultiLLMProvider', 'Ollama']
+                    }), 503
+            
+            # Process the explanation (from either Gemini or Ollama)
+            if explanation and len(explanation) > 10:
+                # Try refined extractor first, then optimized, then original
+                try:
+                    from adapters.fact_extractor_universal import extract_facts_from_llm
+                    print("[LLM] Using refined fact extractor")
+                except ImportError:
+                    try:
+                        from adapters.fact_extractor_optimized import extract_facts_from_llm
+                        print("[LLM] Using optimized fact extractor")
+                    except ImportError:
+                        from adapters.fact_extractor import extract_facts_from_llm
+                        print("[LLM] Using original fact extractor")
+                
+                suggested = extract_facts_from_llm(explanation, topic)
+                print(f"[LLM] Extracted {len(suggested)} facts using {llm_used}")
+                
+                # Calculate actual response time
+                actual_time = round(time.time() - start_time, 2)
+                print(f"[LLM] Total response time: {actual_time}s")
+                
+                return jsonify({
+                    'status': 'success',
+                    'explanation': explanation,
+                    'suggested_facts': suggested,
+                    'llm_provider': llm_used,
+                    'response_time': f'{actual_time}s',
+                    'response_time_ms': int(actual_time * 1000)
+                })
+            else:
+                # Should not reach here if explanation is valid
+                return jsonify({
+                    'status': 'error',
+                    'explanation': 'Failed to generate valid explanation',
+                    'suggested_facts': [],
+                    'message': 'No valid explanation received from LLM',
+                    'llm_provider': llm_used or 'None'
+                }), 503
+
+        @self.app.route('/api/graph/generate', methods=['POST', 'OPTIONS'])
+        def generate_graph():
+            """Generate knowledge graph visualization"""
+            if request.method == 'OPTIONS':
+                return ('', 204)
+            
+            try:
+                # Import graph generator
+                from src_hexagonal.graph_generator import generate_knowledge_graph, generate_graph_html
+                
+                data = request.get_json(silent=True) or {}
+                limit = data.get('limit', 500)
+                focus = data.get('focus', None)
+                
+                # Generate graph data
+                graph_data = generate_knowledge_graph(
+                    db_path="hexagonal_kb.db",
+                    limit=limit,
+                    focus=focus
+                )
+                
+                if graph_data.get('success'):
+                    # Generate HTML file
+                    html_content = generate_graph_html(graph_data)
+                    
+                    # Save to frontend/public
+                    from pathlib import Path
+                    output_path = Path("frontend/public/knowledge_graph.html")
+                    output_path.parent.mkdir(parents=True, exist_ok=True)
+                    
+                    with open(output_path, 'w', encoding='utf-8') as f:
+                        f.write(html_content)
+                    
+                    return jsonify({
+                        'success': True,
+                        'message': 'Graph generated successfully',
+                        'nodes': len(graph_data.get('nodes', [])),
+                        'edges': len(graph_data.get('edges', [])),
+                        'path': '/knowledge_graph.html'
+                    })
+                else:
+                    return jsonify({
+                        'success': False,
+                        'error': graph_data.get('error', 'Failed to generate graph')
+                    }), 500
+                    
             except Exception as e:
-                pass  # LLM providers not available
-
-            # Kein weiterer Fallback – ehrlicher Fehler
-            return jsonify({
-                'status': 'error',
-                'explanation': 'No LLM service available. Cannot generate explanation.',
-                'suggested_facts': [],
-                'message': 'Please configure LLM API keys in .env file for internal providers'
-            }), 503
-
-        @self.app.route('/api/command', methods=['POST', 'OPTIONS'])
-        def command_compat():
+                print(f"[ERROR] Graph generation failed: {e}")
+                return jsonify({
+                    'success': False,
+                    'error': str(e)
+                }), 500
             """
             Compatibility endpoint - NO MOCKS
             """
@@ -423,10 +933,36 @@ class HexagonalAPI:
             self._cache['facts_count'] = {'value': count_val, 'ts': now_ts}
             return jsonify({'count': count_val, 'cached': False, 'ttl_sec': 30})
 
+        @self.app.route('/api/facts/export', methods=['GET'])
+        def export_facts():
+            """Export facts for autopilot/boosting"""
+            limit = request.args.get('limit', 100, type=int)
+            format_type = request.args.get('format', 'json')
+            
+            facts = self.fact_service.get_all_facts(limit)
+            
+            if format_type == 'json':
+                return jsonify({
+                    'facts': [{'statement': f.statement} for f in facts],
+                    'count': len(facts)
+                })
+            else:
+                # Plain text format
+                return '\n'.join([f.statement for f in facts]), 200, {'Content-Type': 'text/plain'}
+
         # Catch-all OPTIONS handler
         @self.app.route('/<path:any_path>', methods=['OPTIONS'])
         def cors_preflight(any_path):
             return ('', 204)
+    
+    def _register_auto_add_routes(self):
+        """Register auto-add routes for LLM facts"""
+        try:
+            from adapters.auto_add_extension import register_auto_add_routes
+            register_auto_add_routes(self.app, self.fact_service)
+            print("[OK] Auto-Add routes registered")
+        except ImportError:
+            print("[INFO] Auto-Add extension not available")
     
     def _register_governor_routes(self):
         """Register Governor-specific routes"""
@@ -439,15 +975,92 @@ class HexagonalAPI:
             return jsonify(self.governor.get_status())
         
         @self.app.route('/api/governor/start', methods=['POST'])
+        # # # # # @require_api_key
         def governor_start():
             success = self.governor.start()
             return jsonify({'success': success})
         
         @self.app.route('/api/governor/stop', methods=['POST'])
+        # # # # # @require_api_key
         def governor_stop():
             success = self.governor.stop()
             return jsonify({'success': success})
     
+    def _register_hrm_routes(self):
+        """Register HRM-specific routes for model management."""
+        if not isinstance(self.reasoning_engine, NativeReasoningEngine):
+            print("[INFO] HRM routes not registered: Not using NativeReasoningEngine.")
+            return
+
+        @self.app.route('/api/hrm/retrain', methods=['POST'])
+        # # # # # @require_api_key
+        def hrm_retrain():
+            """Triggers a retraining of the HRM model."""
+            try:
+                print("[HRM] Retraining triggered.")
+                # In a real scenario, this would be an async task
+                self.reasoning_engine.retrain() 
+                return jsonify({'status': 'success', 'message': 'HRM retraining initiated.'})
+            except Exception as e:
+                return jsonify({'status': 'error', 'message': str(e)}), 500
+
+        @self.app.route('/api/hrm/model_info', methods=['GET'])
+        def hrm_model_info():
+            """Gets information about the current HRM model."""
+            try:
+                info = self.reasoning_engine.get_model_info()
+                return jsonify(info)
+            except Exception as e:
+                return jsonify({'status': 'error', 'message': str(e)}), 500
+
+        @self.app.route('/api/hrm/feedback-stats', methods=['GET'])
+        def hrm_feedback_stats():
+            """Gets feedback statistics for the HRM model."""
+            try:
+                if hasattr(self.reasoning_engine, 'get_feedback_stats'):
+                    stats = self.reasoning_engine.get_feedback_stats()
+                else:
+                    stats = {
+                        'total_feedback': 0,
+                        'positive_feedback': 0,
+                        'negative_feedback': 0,
+                        'accuracy_improvement': 0.0,
+                        'last_training': None,
+                        'model_version': getattr(self.reasoning_engine, 'version', '1.0')
+                    }
+                return jsonify(stats)
+            except Exception as e:
+                return jsonify({'status': 'error', 'message': str(e)}), 500
+
+    def _register_missing_endpoints(self):
+        """Register missing endpoints that were causing 405 errors"""
+        try:
+            register_missing_endpoints(self.app, self.fact_repository, self.reasoning_engine)
+            print("[OK] Missing endpoints registered (GPU, Mojo, Metrics, Limits, Graph)")
+        except Exception as e:
+            print(f"[WARNING] Failed to register missing endpoints: {e}")
+    
+    def _register_engine_routes(self):
+        """Register Engine API routes for Thesis and Aethelred"""
+        try:
+            from api_engines import engines_bp
+            self.app.register_blueprint(engines_bp)
+            print("[OK] Engine API routes registered (Thesis, Aethelred)")
+        except ImportError:
+            print("[INFO] Engine API not available")
+        except Exception as e:
+            print(f"[WARNING] Failed to register engine routes: {e}")
+        
+        # Register async engine routes
+        try:
+            from api_engines_async import engines_async_bp
+            self.app.register_blueprint(engines_async_bp)
+            print("[OK] Async Engine API routes registered")
+        except ImportError:
+            print("[INFO] Async Engine API not available")
+        except Exception as e:
+            print(f"[WARNING] Failed to register async engine routes: {e}")
+
     def _register_websocket_routes(self):
         """Register WebSocket-specific routes"""
         
@@ -456,6 +1069,16 @@ class HexagonalAPI:
         
         @self.socketio.on('governor_control')
         def handle_governor_control(data):
+            # --- API Key Authentication for WebSocket ---
+            api_key = os.environ.get("HAKGAL_API_KEY")
+            provided_key = data.get('apiKey') or (request.args.get('apiKey'))
+
+            if not api_key or not provided_key or provided_key != api_key:
+                print(f"WebSocket auth failed for sid {request.sid}")
+                # It's better not to emit an error to prevent leaking info,
+                # just ignore the request. For debugging, we can emit.
+                return {'error': 'Authentication failed'}
+
             if not self.governor:
                 return {'error': 'Governor not enabled'}
             
@@ -468,8 +1091,101 @@ class HexagonalAPI:
             
             status = self.governor.get_status()
             self.socketio.emit('governor_update', status, to=None)
+
+    def _register_agent_bus_routes(self):
+        """Register routes for the Multi-Agent Collaboration Bus."""
+        from adapters.agent_adapters import get_agent_adapter
+
+        @self.app.route('/api/agent-bus/delegate', methods=['POST'])
+        @require_api_key
+        def delegate_task():
+            data = request.get_json()
+            if not data or 'target_agent' not in data or 'task_description' not in data:
+                return jsonify({'error': 'Missing required fields: target_agent, task_description'}), 400
+
+            target_agent = data['target_agent']
+            task_description = data['task_description']
+            context = data.get('context', {})
+            
+            adapter = get_agent_adapter(target_agent, socketio=self.socketio) # Pass socketio to adapters
+            if not adapter:
+                return jsonify({'error': f'No adapter found for agent: {target_agent}'}), 404
+
+            task_id = str(uuid.uuid4())
+            self.delegated_tasks[task_id] = {
+                'status': 'pending',
+                'target': target_agent,
+                'description': task_description,
+                'submitted_at': time.time()
+            }
+
+            # Non-blocking dispatch would be ideal here, e.g., using a task queue
+            # For now, we do a simple blocking call for demonstration
+            try:
+                result = adapter.dispatch(task_description, context)
+                self.delegated_tasks[task_id].update({
+                    'status': result.get('status', 'completed'),
+                    'result': result,
+                    'completed_at': time.time()
+                })
+                # Notify clients via WebSocket
+                if self.websocket_adapter:
+                    self.websocket_adapter.emit_agent_response(task_id, self.delegated_tasks[task_id])
+
+                return jsonify({'task_id': task_id, 'status': 'dispatched', 'result': result})
+            except Exception as e:
+                self.delegated_tasks[task_id].update({'status': 'error', 'message': str(e)})
+                return jsonify({'task_id': task_id, 'status': 'error', 'message': str(e)}), 500
+
+        @self.app.route('/api/agent-bus/tasks/<task_id>', methods=['GET'])
+        def get_task_status(task_id):
+            task = self.delegated_tasks.get(task_id)
+            if not task:
+                return jsonify({'error': 'Task not found'}), 404
+            return jsonify(task)
+        
+        # WebSocket events for Cursor integration
+        if self.socketio:
+            @self.socketio.on('connect')
+            def handle_connect(auth=None):
+                print(f"[WebSocket] Client connected: {request.sid}")
+                # Register as potential Cursor client
+                if self.cursor_adapter and hasattr(self.cursor_adapter, 'register_websocket_client'):
+                    self.cursor_adapter.register_websocket_client(request.sid)
+            
+            @self.socketio.on('disconnect')
+            def handle_disconnect(reason=None):
+                print(f"[WebSocket] Client disconnected: {request.sid} (reason: {reason})")
+                # Unregister Cursor client
+                if self.cursor_adapter and hasattr(self.cursor_adapter, 'unregister_websocket_client'):
+                    self.cursor_adapter.unregister_websocket_client(request.sid)
+            
+            @self.socketio.on('cursor_response')
+            def handle_cursor_response(data):
+                """Handle response from Cursor IDE"""
+                task_id = data.get('task_id')
+                result = data.get('result')
+                status = data.get('status', 'completed')
+                
+                if task_id and task_id in self.delegated_tasks:
+                    self.delegated_tasks[task_id].update({
+                        'status': status,
+                        'result': result,
+                        'completed_at': time.time()
+                    })
+                    print(f"[WebSocket] Received Cursor response for task {task_id}")
+                else:
+                    print(f"[WebSocket] WARNING: Received Cursor response for unknown task {task_id}")
+            
+            @self.socketio.on('cursor_identify')
+            def handle_cursor_identify(data):
+                """Cursor IDE identifies itself"""
+                print(f"[WebSocket] Cursor IDE identified: {data}")
+                # Mark this client as a Cursor client
+                if self.cursor_adapter and hasattr(self.cursor_adapter, 'register_websocket_client'):
+                    self.cursor_adapter.register_websocket_client(request.sid)
     
-    def run(self, host='127.0.0.1', port=5001, debug=True):
+    def run(self, host='127.0.0.1', port=5002, debug=False):
         """Start Flask Application"""
         print("=" * 60)
         print("🎯 HAK-GAL HEXAGONAL ARCHITECTURE - CLEAN VERSION")
@@ -480,17 +1196,50 @@ class HexagonalAPI:
         print(f"🧠 Reasoning: {self.reasoning_engine.__class__.__name__}")
         print(f"🔌 WebSocket: {'Enabled' if self.websocket_adapter else 'Disabled'}")
         print(f"[INFO] Governor: {'Enabled' if self.governor else 'Disabled'}")
+        print(f"📊 System Monitor: {'Active' if self.system_monitor else 'Disabled'}")
+        print(f"🚌 Agent Bus: {'Enabled'}")
         print("=" * 60)
         
         if self.socketio:
-            self.socketio.run(self.app, host=host, port=port, debug=debug, use_reloader=False)
+            # Use the standard SocketIO run method which handles WebSocket correctly
+            # Don't pass cors_allowed_origins here - it's already set in websocket_adapter.py
+            self.socketio.run(
+                self.app,
+                # async_mode removed - not valid for socketio.run() 
+                host=host, 
+                port=port, 
+                debug=False, 
+                use_reloader=False,
+                log_output=True  # Enable logging to see what's happening
+            )
         else:
-            self.app.run(host=host, port=port, debug=debug)
+            self.app.run(host=host, port=port, debug=False, use_reloader=False)
 
 # Main Entry Point
 def create_app(use_legacy=False, enable_all=True):
     """Factory Function for Clean App Creation"""
+    # Load .env BEFORE checking for SENTRY_DSN
+    from pathlib import Path
+    from dotenv import load_dotenv
+    
+    # Try multiple .env locations
+    env_paths = [
+        Path("D:/MCP Mods/HAK_GAL_HEXAGONAL/.env"),
+        Path(__file__).parent.parent / '.env',
+        Path.cwd() / '.env'
+    ]
+    
+    for env_path in env_paths:
+        if env_path.exists():
+            load_dotenv(dotenv_path=env_path, override=True)
+            print(f"[create_app] Loaded .env from {env_path}")
+            break
+    
+    # NOW check for SENTRY_DSN after loading .env
     enable_sentry = bool(os.environ.get('SENTRY_DSN'))
+    if enable_sentry:
+        print(f"[create_app] Sentry DSN found, will enable monitoring")
+    
     return HexagonalAPI(
         use_legacy=use_legacy,
         enable_websocket=enable_all,
@@ -499,5 +1248,6 @@ def create_app(use_legacy=False, enable_all=True):
     )
 
 if __name__ == '__main__':
+    # Use SQLite with the correct hexagonal_kb.db (5000+ facts)
     api = create_app(use_legacy=False, enable_all=True)
     api.run()

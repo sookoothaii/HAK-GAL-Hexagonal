@@ -1,0 +1,200 @@
+{
+  "id": "system-health-monitoring",
+  "name": "System Health Monitoring & Alerting",
+  "description": "Überwacht System-Metriken und alarmiert bei Problemen",
+  "nodes": [
+    {
+      "id": "timer_1",
+      "type": "timer_trigger",
+      "position": { "x": 100, "y": 100 },
+      "data": {
+        "interval": 300000,
+        "description": "Alle 5 Minuten"
+      }
+    },
+    {
+      "id": "workflow_status_1",
+      "type": "workflow_status",
+      "position": { "x": 100, "y": 200 },
+      "data": {
+        "scope": "current"
+      }
+    },
+    {
+      "id": "health_check_1",
+      "type": "health_check_json",
+      "position": { "x": 100, "y": 300 },
+      "data": {}
+    },
+    {
+      "id": "parse_json_1",
+      "type": "parse_json",
+      "position": { "x": 100, "y": 400 },
+      "data": {
+        "json": "{{health_check_1.output}}"
+      }
+    },
+    {
+      "id": "for_each_1",
+      "type": "for_each",
+      "position": { "x": 100, "y": 500 },
+      "data": {
+        "items": "{{parse_json_1.metrics}}",
+        "item_name": "metric"
+      }
+    },
+    {
+      "id": "eval_1",
+      "type": "evaluate_expression",
+      "position": { "x": 300, "y": 600 },
+      "data": {
+        "expression": "{{metric.value}} > {{metric.threshold}}"
+      }
+    },
+    {
+      "id": "if_alert_1",
+      "type": "if_condition",
+      "position": { "x": 300, "y": 700 },
+      "data": {
+        "condition": "{{eval_1.result}} == true"
+      }
+    },
+    {
+      "id": "rate_limit_2",
+      "type": "rate_limiter",
+      "position": { "x": 450, "y": 800 },
+      "data": {
+        "key": "alert_{{metric.name}}",
+        "limit": 1,
+        "window": 3600,
+        "description": "Max 1 Alert pro Stunde pro Metrik"
+      }
+    },
+    {
+      "id": "string_template_3",
+      "type": "string_template",
+      "position": { "x": 450, "y": 900 },
+      "data": {
+        "template": "⚠️ ALERT: {{metric.name}}\nWert: {{metric.value}}\nSchwellwert: {{metric.threshold}}\nStatus: {{metric.status}}\nZeit: {{workflow.timestamp}}"
+      }
+    },
+    {
+      "id": "http_request_2",
+      "type": "http_request",
+      "position": { "x": 450, "y": 1000 },
+      "data": {
+        "method": "POST",
+        "url": "{{env.SLACK_WEBHOOK_URL}}",
+        "body": {
+          "text": "{{string_template_3.output}}"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "id": "sentry_search_1",
+      "type": "sentry_search_issues",
+      "position": { "x": 450, "y": 1100 },
+      "data": {
+        "query": "{{metric.name}}",
+        "limit": 5
+      }
+    },
+    {
+      "id": "metrics_normal",
+      "type": "metrics_collector",
+      "position": { "x": 150, "y": 800 },
+      "data": {
+        "metric_name": "{{metric.name}}_normal",
+        "value": "{{metric.value}}"
+      }
+    },
+    {
+      "id": "continue_1",
+      "type": "continue",
+      "position": { "x": 300, "y": 1200 },
+      "data": {}
+    },
+    {
+      "id": "db_benchmark_1",
+      "type": "db_benchmark_inserts",
+      "position": { "x": 100, "y": 1400 },
+      "data": {
+        "rows": 1000,
+        "batch": 100
+      }
+    },
+    {
+      "id": "kb_stats_1",
+      "type": "kb_stats",
+      "position": { "x": 100, "y": 1500 },
+      "data": {}
+    },
+    {
+      "id": "if_degraded",
+      "type": "if_condition",
+      "position": { "x": 100, "y": 1600 },
+      "data": {
+        "condition": "{{db_benchmark_1.inserts_per_second}} < 5000 || {{parse_json_1.status}} != 'healthy'"
+      }
+    },
+    {
+      "id": "circuit_breaker_1",
+      "type": "circuit_breaker",
+      "position": { "x": 250, "y": 1700 },
+      "data": {
+        "threshold": 3,
+        "reset_timeout": 300000,
+        "description": "Stoppe weitere Checks bei wiederholten Problemen"
+      }
+    },
+    {
+      "id": "delegate_2",
+      "type": "delegate_task",
+      "position": { "x": 250, "y": 1800 },
+      "data": {
+        "target_agent": "gemini",
+        "task_description": "System zeigt Performance-Degradierung. Analysiere: DB Benchmark {{db_benchmark_1.inserts_per_second}} inserts/sec, Status: {{parse_json_1.status}}, Metriken: {{parse_json_1}}",
+        "context": {
+          "urgency": "high",
+          "type": "system_health"
+        }
+      }
+    },
+    {
+      "id": "add_fact_4",
+      "type": "add_fact",
+      "position": { "x": 100, "y": 1900 },
+      "data": {
+        "statement": "HealthCheck({{workflow.timestamp}}, {{parse_json_1.status}}, db_performance_{{db_benchmark_1.inserts_per_second}}).",
+        "auth_token": "{{env.WRITE_TOKEN}}"
+      }
+    }
+  ],
+  "edges": [
+    { "id": "e1", "source": "timer_1", "target": "workflow_status_1" },
+    { "id": "e2", "source": "workflow_status_1", "target": "health_check_1" },
+    { "id": "e3", "source": "health_check_1", "target": "parse_json_1" },
+    { "id": "e4", "source": "parse_json_1", "target": "for_each_1" },
+    { "id": "e5", "source": "for_each_1", "target": "eval_1" },
+    { "id": "e6", "source": "eval_1", "target": "if_alert_1" },
+    { "id": "e7", "source": "if_alert_1", "sourceHandle": "true", "target": "rate_limit_2" },
+    { "id": "e8", "source": "rate_limit_2", "target": "string_template_3" },
+    { "id": "e9", "source": "string_template_3", "target": "http_request_2" },
+    { "id": "e10", "source": "http_request_2", "target": "sentry_search_1" },
+    { "id": "e11", "source": "if_alert_1", "sourceHandle": "false", "target": "metrics_normal" },
+    { "id": "e12", "source": "sentry_search_1", "target": "continue_1" },
+    { "id": "e13", "source": "metrics_normal", "target": "continue_1" },
+    { "id": "e14", "source": "continue_1", "target": "for_each_1" },
+    { "id": "e15", "source": "for_each_1", "sourceHandle": "done", "target": "db_benchmark_1" },
+    { "id": "e16", "source": "db_benchmark_1", "target": "kb_stats_1" },
+    { "id": "e17", "source": "kb_stats_1", "target": "if_degraded" },
+    { "id": "e18", "source": "if_degraded", "sourceHandle": "true", "target": "circuit_breaker_1" },
+    { "id": "e19", "source": "circuit_breaker_1", "target": "delegate_2" },
+    { "id": "e20", "source": "if_degraded", "sourceHandle": "false", "target": "add_fact_4" },
+    { "id": "e21", "source": "delegate_2", "target": "add_fact_4" }
+  ],
+  "version": "1.0"
+}
