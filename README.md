@@ -7,7 +7,7 @@
 [![Tools](https://img.shields.io/badge/MCP%20Tools-67-orange.svg)](ultimate_mcp/)
 [![Facts](https://img.shields.io/badge/Knowledge%20Facts-6631-purple.svg)](hexagonal_kb.db)
 
-## 🎯 Overview
+## Overview
 
 HAK-GAL Hexagonal is a complete rewrite of the original HAK-GAL-Suite, now featuring:
 - **Hexagonal Architecture** (Ports & Adapters)
@@ -16,7 +16,7 @@ HAK-GAL Hexagonal is a complete rewrite of the original HAK-GAL-Suite, now featu
 - **Visual Workflow Editor** (122 node types)
 - **SQLite Knowledge Base** (6,631 facts)
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Python 3.11+
@@ -77,14 +77,14 @@ HAK-GAL Hexagonal/
 - **Claude Desktop Adapter**: MCP Protocol
 - **Cursor Adapter**: IDE integration
 
-## 📚 Knowledge Base
+## Knowledge Base
 
 - **Database**: SQLite with WAL mode
 - **Facts**: 6,631 (as of 2025-09-06)
 - **Format**: Prolog-style triples
 - **Example**: `ConsistsOf(HAK_GAL_System, Hexagonal_Architecture).`
 
-## 🔧 MCP Tools
+## MCP Tools
 
 67 tools across 7 categories:
 
@@ -98,7 +98,7 @@ HAK-GAL Hexagonal/
 | Meta Tools | 4 | consensus_evaluator, bias_detector |
 | Optional | 5+ | Sentry, Nischen tools |
 
-## 🎨 WorkflowPro
+## WorkflowPro
 
 Visual workflow editor featuring:
 - 122 node types
@@ -107,7 +107,7 @@ Visual workflow editor featuring:
 - Complex logic support (branches, loops, error handling)
 - Multi-agent orchestration
 
-## 📋 HAK/GAL Constitution
+## HAK/GAL Constitution
 
 The system follows 8 constitutional articles:
 1. **Complementary Intelligence**
@@ -119,25 +119,25 @@ The system follows 8 constitutional articles:
 7. **Conjugated States**
 8. **Principle Collision Protocol**
 
-## 🔐 Security
+## Security
 
 - API Key authentication
 - Write token protection  
 - Audit logging
 - Sandboxed code execution
 
-## 🤝 Contributing
+## Contributing
 
 See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for guidelines.
 
-## 📊 Performance
+## Performance
 
 - **API Response**: < 100ms (local)
 - **Knowledge Search**: < 30ms
 - **DB Inserts**: 10,000+/sec
 - **Code Execution**: Sandboxed with timeouts
 
-## 🗺️ Roadmap
+## Roadmap
 
 - [ ] External Integration Plugin System
 - [ ] Credential Vault Implementation
@@ -145,17 +145,17 @@ See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for guidelines.
 - [ ] Enhanced Data Mapping
 - [ ] GraphDB Migration
 
-## 📄 Documentation
+## Documentation
 
 - [System Architecture](docs/ARCHITECTURE.md)
 - [API Documentation](docs/API.md)
 - [Workflow Tutorial](PROJECT_HUB/WORKFLOW_TUTORIAL.md)
 - [MCP Tools Reference](docs/MCP_TOOLS_REFERENCE.md)
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 Built through collaboration between human and AI intelligence, following HAK-GAL principles.
 
 ---
 
-*Version 2.0 - Complete rewrite with hexagonal architecture and MCP protocol*
+*Version 2.0 - Complete rewrite with hexagonal architecture and MCP protocol* samui.science.lab 2025
