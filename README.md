@@ -161,6 +161,13 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 - **Code Execution**: Sandboxed with timeouts
 - **Native C++ modules**: For performance-critical operations
 
+## Roadmap
+
+- [ ] External Integration Plugin System
+- [ ] Credential Vault Implementation
+- [ ] n8n-style Node Library  
+- [ ] Enhanced Data Mapping
+- [ ] GraphDB Migration
 ## Documentation
 
 - [Database Setup](DATABASE_SETUP.md) - Knowledge Base installation
@@ -187,7 +194,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 ## License
 
 MIT License - see [LICENSE](LICENSE) file.
-
 ## Acknowledgments
 
 Built through collaboration between human and AI intelligence, following HAK-GAL principles.
