@@ -1,0 +1,225 @@
+{
+  "snapshot_id": "HAK-GAL-SNAPSHOT-20250821-231500",
+  "timestamp": "2025-08-21T23:15:00+07:00",
+  "title": "Temperature Optimization Experiment Results",
+  "description": "Documented 113% improvement in factual accuracy through temperature parameter optimization",
+  "version": "2.0.1",
+  
+  "system_configuration": {
+    "hardware": {
+      "gpu": "NVIDIA GeForce RTX 3080 Ti",
+      "vram_total": "16GB",
+      "vram_used": "7.5GB",
+      "vram_utilization": "47%"
+    },
+    "models": {
+      "active": "qwen2.5:7b",
+      "available": [
+        {"name": "phi3:mini", "size": "2.3GB", "parameters": "3.8B"},
+        {"name": "qwen2.5:7b", "size": "7.5GB", "parameters": "7B"},
+        {"name": "qwen2.5:32b-instruct-q3_K_M", "size": "14GB", "parameters": "32B"}
+      ]
+    },
+    "backend": {
+      "architecture": "Hexagonal v2.0",
+      "port": 5002,
+      "database": "hexagonal_kb.db",
+      "facts_count": 5911,
+      "repository": "SQLiteFactRepository"
+    }
+  },
+  
+  "experiment_results": {
+    "test_query": "IsA(Socrates, Philosopher).",
+    "configurations_tested": [
+      {
+        "name": "Default",
+        "temperature": 0.7,
+        "error_rate": "62.5%",
+        "hallucination_score": 8,
+        "critical_errors": 3,
+        "response_time": "8s"
+      },
+      {
+        "name": "Optimized",
+        "temperature": 0.1,
+        "error_rate": "20%",
+        "hallucination_score": 3,
+        "critical_errors": 0,
+        "response_time": "7s"
+      }
+    ],
+    "improvement_metrics": {
+      "factual_accuracy_increase": "113%",
+      "critical_errors_reduction": "100%",
+      "response_time_improvement": "12.5%",
+      "hallucination_reduction": "62.5%"
+    }
+  },
+  
+  "optimal_parameters": {
+    "temperature": 0.1,
+    "top_p": 0.9,
+    "top_k": 40,
+    "repeat_penalty": 1.1,
+    "seed": 42,
+    "num_predict": 1500,
+    "rationale": "Minimizes hallucinations while maintaining response quality"
+  },
+  
+  "identified_errors": {
+    "temperature_0.7": [
+      {
+        "fact": "TaughtBy(Socrates, Plato)",
+        "error": "Subject-object reversal",
+        "severity": "CRITICAL"
+      },
+      {
+        "fact": "ConductedDialoguesWithSocrates(Aristotle)",
+        "error": "Temporal impossibility - 15 year gap",
+        "severity": "CRITICAL"
+      },
+      {
+        "fact": "GraduatedFrom(Socrates, AcademyOfAthens)",
+        "error": "Anachronism - Academy founded after Socrates' death",
+        "severity": "CRITICAL"
+      }
+    ],
+    "temperature_0.1": [
+      {
+        "fact": "IsAuthorOf(Socrates, Apology)",
+        "error": "Socrates wrote nothing - Plato authored Apology",
+        "severity": "HIGH"
+      },
+      {
+        "fact": "IsStudentOf(Socrates, Meno)",
+        "error": "Subject-object inversion",
+        "severity": "MEDIUM"
+      }
+    ]
+  },
+  
+  "system_metrics": {
+    "trust_score": 64,
+    "neural_confidence": 100,
+    "factual_accuracy": 80,
+    "source_quality": 10,
+    "model_consensus": 50,
+    "ethical_alignment": 70,
+    "performance": {
+      "hrm_response": "<500ms",
+      "llm_response": "7-8s",
+      "websocket_latency": "<5ms",
+      "fact_extraction": "10 facts/query"
+    }
+  },
+  
+  "recommendations": {
+    "immediate": [
+      "Apply temperature fix (fix_temperature.py)",
+      "Implement fact validation layer",
+      "Monitor error rates for 24 hours"
+    ],
+    "short_term": [
+      "Test Qwen2.5:14B as middle ground option",
+      "Create domain-specific validation rules",
+      "Implement response caching"
+    ],
+    "long_term": [
+      "Fine-tune model on philosophy facts",
+      "Implement confidence scoring system",
+      "Upgrade to Qwen3 when available"
+    ]
+  },
+  
+  "validation_rules_proposed": {
+    "socrates": {
+      "cannot_be_author": true,
+      "died": "399 BCE",
+      "students": ["Plato", "Xenophon", "Antisthenes"],
+      "cannot_meet": ["Aristotle", "Alexander"],
+      "lived_in": ["Athens"],
+      "known_for": ["Socratic Method", "Virtue Ethics", "Know Thyself"]
+    }
+  },
+  
+  "files_created": [
+    "fix_temperature.py",
+    "temperature_profiles.py",
+    "gpu_monitor.py",
+    "CLEAR_VRAM.bat",
+    "GPU_Memory_Manager.ps1",
+    "fix_ollama_timeout.py",
+    "fix_frontend_timeout.py",
+    "SWITCH_TO_SMALLER_MODEL.bat"
+  ],
+  
+  "configuration_changes": {
+    "ollama_adapter.py": {
+      "before": {
+        "temperature": 0.7,
+        "timeout": 120
+      },
+      "after": {
+        "temperature": 0.1,
+        "top_p": 0.9,
+        "top_k": 40,
+        "timeout": 300,
+        "seed": 42
+      }
+    }
+  },
+  
+  "test_results_sample": {
+    "good_facts": [
+      "LivedIn(Socrates, Athens)",
+      "DiedIn(Socrates, Athens)",
+      "UsesMethod(Socrates, SocraticMethod)",
+      "IsFriendOf(Socrates, Crito)",
+      "BelievesIn(Socrates, VirtueEthics)",
+      "IsA(Socrates, AncientGreekPhilosopher)"
+    ],
+    "bad_facts": [
+      "IsAuthorOf(Socrates, Apology)",
+      "IsStudentOf(Socrates, Meno)"
+    ]
+  },
+  
+  "risk_assessment": {
+    "false_facts_in_kb": {
+      "probability": "MEDIUM",
+      "impact": "HIGH",
+      "mitigation": "Validation layer implementation"
+    },
+    "user_trust_loss": {
+      "probability": "LOW",
+      "impact": "HIGH",
+      "mitigation": "Display confidence scores"
+    },
+    "performance_degradation": {
+      "probability": "LOW",
+      "impact": "MEDIUM",
+      "mitigation": "Cache frequent queries"
+    }
+  },
+  
+  "conclusion": {
+    "success": true,
+    "key_achievement": "Reduced hallucination rate from 62.5% to 20% through parameter tuning alone",
+    "remaining_challenge": "20% error rate requires post-processing validation",
+    "overall_assessment": "Temperature optimization significantly improved system reliability without additional compute resources"
+  },
+  
+  "metadata": {
+    "report_author": "Claude AI Systems Analyst",
+    "report_type": "Technical Analysis",
+    "classification": "Internal Development",
+    "next_review": "2025-08-28",
+    "distribution": "PROJECT_HUB",
+    "related_reports": [
+      "TECHNICAL_REPORT_2025_08_21.md",
+      "snapshot_2025_08_21_critical_analysis.json",
+      "snapshot_20250820_1430.json"
+    ]
+  }
+}

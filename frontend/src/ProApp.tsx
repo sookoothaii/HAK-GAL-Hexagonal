@@ -1,137 +1,105 @@
-// V3 - Phase 2 State Architecture Unification
-// Using unified WebSocket manager with store bridge
-import React, { useState, useEffect } from 'react';
+// V3 - Fixed for existing pages with proper React imports
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from '@/components/theme-provider';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Toaster } from "sonner";
+import { useStoreBridge } from '@/core/bridge/StoreBridge';
+import { EnterpriseErrorBoundary as DashboardErrorBoundary } from '@/components/EnterpriseErrorBoundary';
+import { initializeDefaults } from '@/services/defaultsService';
 
-// Components
-import ProNavigation from '@/components/ProNavigation';
-import ProHeader from '@/components/ProHeader';
-import { EnterpriseErrorBoundary } from '@/components/EnterpriseErrorBoundary';
-import LoadingScreen from '@/components/LoadingScreen';
-
-// Phase 2: Unified WebSocket with Store Bridge
-// Replaces 3 separate WebSocket connections with 1 unified connection
-// Maintains backward compatibility with existing stores
-import useStoreBridge from '@/core/bridge/StoreBridge';
-
-// HRM Integration
-import HRMQueryInterface from '@/components/interaction/HRMQueryInterface';
-
-// Pages (Cleaned List)
-import ProDashboard from '@/pages/ProDashboard';
-import ProUnifiedQuery from '@/pages/ProUnifiedQuery';  // Primary Query Interface
-import ProSystemMonitoring from '@/pages/ProSystemMonitoring';
-import ProEngineControl from '@/pages/ProEngineControl';
-import ProGovernorControl from '@/pages/ProGovernorControl';  // Governor Control Page
-import ProSettingsEnhanced from '@/pages/ProSettingsEnhanced';
-import ProKnowledgeGraph from '@/components/interaction/ProKnowledgeGraph';
-import ProKnowledgeStats from '@/pages/ProKnowledgeStats';
+// Import ONLY pages that actually exist
+import ProDashboardEnhanced from '@/pages/ProDashboardEnhanced'; // ENHANCED NO-SCROLL VERSION
+import ProGovernorControl from '@/pages/ProGovernorControl';
 import ProKnowledgeList from '@/pages/ProKnowledgeList';
-import HRMDashboard from '@/pages/HRMDashboard';  // HRM Neural Reasoning Dashboard
+import ProSystemMonitoring from '@/pages/ProSystemMonitoring';
+import ProKnowledgeStats from '@/pages/ProKnowledgeStats';
+import ProLLMManagement from '@/pages/ProLLMManagement';
+import ProSettingsEnhanced from '@/pages/ProSettingsEnhanced';
+import ProUnifiedQuery from '@/pages/ProUnifiedQuery';
+import ProEngineControl from '@/pages/ProEngineControl';
+import WorkflowPage from '@/pages/WorkflowFixed';
+import WorkflowPro from '@/pages/WorkflowPro';
+import HRMDashboard from '@/pages/HRMDashboard';
+import ProNavigation from '@/components/ProNavigation';
+import KnowledgeGraphVisualization from '@/components/interaction/KnowledgeGraphVisualization';
 
-// Layout Component (Restored)
-const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  return (
-    <div className="h-screen w-screen bg-background text-foreground flex overflow-hidden">
-      <ProNavigation />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <ProHeader />
-        <main className="flex-1 overflow-hidden bg-gradient-to-br from-background via-background to-muted/5">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={window.location.pathname}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-              className="h-full"
-            >
-              {children}
-            </motion.div>
-          </AnimatePresence>
-        </main>
-      </div>
-    </div>
-  );
-};
-
-// App Content with Routes
 function AppContent() {
-  const [isLoading, setIsLoading] = useState(true);
-  
-  // Phase 2: Single WebSocket connection with store bridge
-  // This replaces:
-  // - useGovernorSocket()
-  // - useHRMSocket()
-  // - useIntelligenceSocket()
-  // Reduces WebSocket connections from 3 to 1 (66% reduction)
+  // Use existing store bridge - it handles WebSocket connection
   useStoreBridge();
   
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 1500);
+    // Load dynamic defaults from backend
+    initializeDefaults().catch(console.error);
+    
+    // Force correct status display - using real backend data
+    console.log('[Dashboard] Using real backend data via WebSocket');
+    
+    // Optional: Check if we're connected after a delay
+    const timer = setTimeout(() => {
+      console.log('[Dashboard] Dashboard ready');
+    }, 500);
+
     return () => clearTimeout(timer);
   }, []);
-  
-  if (isLoading) {
-    return <LoadingScreen />;
-  }
-  
-  return (
-    <AppLayout>
-      <Routes>
-        {/* Redirect root to the main professional dashboard */}
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        
-        {/* Main Dashboard Route */}
-        <Route path="/dashboard" element={<ProDashboard />} />
-        
-        {/* Unified Query Interface - Primary Query System */}
-        <Route path="/query" element={<ProUnifiedQuery />} />
-        <Route path="/governor" element={<ProGovernorControl />} />
-        <Route path="/knowledge" element={<Navigate to="/knowledge/list" replace />} />
-        <Route path="/knowledge/graph" element={<ProKnowledgeGraph />} />
-        <Route path="/knowledge/list" element={<ProKnowledgeList />} />
-        <Route path="/knowledge/stats" element={<ProKnowledgeStats />} />
-        <Route path="/monitoring" element={<ProSystemMonitoring />} />
-        <Route path="/settings" element={<ProSettingsEnhanced />} />
-        
-        {/* HRM Neural Reasoning Routes */}
-        <Route path="/hrm" element={<HRMDashboard />} />
-        <Route path="/hrm/query" element={<HRMQueryInterface />} />
-        
-        {/* Enterprise route redirects to monitoring */}
-        <Route path="/enterprise" element={<Navigate to="/monitoring" replace />} />
 
-        {/* 404 Page */}
-        <Route path="*" element={
-          <div className="h-full flex items-center justify-center">
-            <div className="text-center">
-              <h1 className="text-6xl font-bold text-primary mb-4">404</h1>
-              <p className="text-xl text-muted-foreground mb-8">Page not found</p>
-              <a href="/" className="text-primary hover:underline">Go back home</a>
-            </div>
-          </div>
-        } />
-      </Routes>
-    </AppLayout>
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.3 }}
+        className="h-screen bg-background flex flex-row overflow-hidden"
+      >
+        {/* Navigation LINKS als Sidebar */}
+        <ProNavigation />
+        {/* Main Content RECHTS */}
+        <main className="flex-1 overflow-hidden">
+          <Routes>
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard" element={
+              <DashboardErrorBoundary name="Dashboard">
+                <ProDashboardEnhanced />
+              </DashboardErrorBoundary>
+            } />
+            <Route path="/governor" element={<ProGovernorControl />} />
+            <Route path="/knowledge" element={<ProKnowledgeList />} />
+            <Route path="/knowledge/list" element={<ProKnowledgeList />} />
+            <Route path="/knowledge/stats" element={<ProKnowledgeStats />} />
+            <Route path="/knowledge/graph" element={<KnowledgeGraphVisualization />} />
+            <Route path="/graph" element={<KnowledgeGraphVisualization />} />
+            <Route path="/hrm" element={<HRMDashboard />} />
+            <Route path="/system" element={<ProSystemMonitoring />} />
+            <Route path="/monitoring" element={<ProSystemMonitoring />} />
+            <Route path="/stats" element={<ProKnowledgeStats />} />
+            <Route path="/llm" element={<ProLLMManagement />} />
+            <Route path="/settings" element={<ProSettingsEnhanced />} />
+            {/* Legacy workflow - hidden but still accessible via direct URL */}
+            <Route path="/workflow-legacy" element={<WorkflowPage />} />
+            {/* Main workflow - the professional version */}
+            <Route path="/workflow" element={<WorkflowPro />} />
+            <Route path="/workflow-pro" element={<WorkflowPro />} />  {/* Redirect for compatibility */}
+            <Route path="/query" element={<ProUnifiedQuery />} />
+            <Route path="/engines" element={<ProEngineControl />} />
+            {/* Redirect all unknown routes to dashboard */}
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
+        </main>
+      </motion.div>
+    </AnimatePresence>
   );
 }
 
-// Main App Component
-function App() {
+export default function App() {
   return (
-    <EnterpriseErrorBoundary name="App">
-      <ThemeProvider defaultTheme="dark" storageKey="hak-gal-theme">
+    <DashboardErrorBoundary name="Application">
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <Router>
           <AppContent />
+          <Toaster />
         </Router>
-        <Toaster position="bottom-right" richColors />
       </ThemeProvider>
-    </EnterpriseErrorBoundary>
+    </DashboardErrorBoundary>
   );
 }
-
-export default App;

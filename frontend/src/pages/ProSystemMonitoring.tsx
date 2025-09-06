@@ -1,10 +1,10 @@
 import React from 'react';
-import MonitoringPanel from '@/components/system-core/MonitoringPanel';
+import MonitoringPanelModern from '@/components/system-core/MonitoringPanelModern';
 
 const ProSystemMonitoring: React.FC = () => {
   return (
     <div className="h-full">
-      <MonitoringPanel />
+      <MonitoringPanelModern />
     </div>
   );
 };

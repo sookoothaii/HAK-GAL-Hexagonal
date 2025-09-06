@@ -88,11 +88,8 @@ class AethelredEngine(BaseHexagonalEngine):
     def __init__(self, port: int = None):
         super().__init__(name="Aethelred", port=port)
         self.topics = ALL_TOPICS.copy()
-        # Scale up aggressively for high-end hardware; overridable via ENV
-        try:
-            self.parallel_workers = int(os.environ.get('AETHELRED_PARALLEL', '8'))
-        except Exception:
-            self.parallel_workers = 8
+        # DEAKTIVIERT: Keine parallele Verarbeitung mehr
+        # self.parallel_workers = int(os.environ.get('AETHELRED_PARALLEL', '3'))
         try:
             self.facts_per_topic_limit = int(os.environ.get('AETHELRED_FACTS_PER_TOPIC', '50'))
         except Exception:
@@ -202,7 +199,7 @@ class AethelredEngine(BaseHexagonalEngine):
         self.logger.info(f"Processing topic: {topic}")
         
         # Get LLM explanation
-        llm_response = self.get_llm_explanation(topic, timeout=70)
+        llm_response = self.get_llm_explanation(topic, timeout=30)  # Kürzeres Timeout
         
         all_facts = []
         
@@ -230,7 +227,7 @@ class AethelredEngine(BaseHexagonalEngine):
     
     def generate_facts(self) -> List[str]:
         """
-        Generate new facts through parallel topic processing
+        Generate new facts through SEQUENTIAL topic processing (für langsame API)
         
         Returns:
             List of new fact statements
@@ -238,42 +235,24 @@ class AethelredEngine(BaseHexagonalEngine):
         # Get existing facts
         existing = self.get_existing_facts()
         
-        # Select random topics
-        selected_topics = random.sample(self.topics, min(self.parallel_workers, len(self.topics)))
+        # Select only 1-2 topics per round für bessere Performance
+        num_topics = min(2, len(self.topics))
+        selected_topics = random.sample(self.topics, num_topics)
         
         all_new_facts = []
         
-        # Process topics in parallel
-        with ThreadPoolExecutor(max_workers=self.parallel_workers) as executor:
-            futures = []
-            for topic in selected_topics:
-                future = executor.submit(self.process_topic, topic)
-                futures.append((topic, future))
-            
-            # Collect results
-            for topic, future in futures:
-                try:
-                    facts = future.result(timeout=80)
-                    # Filter out existing facts
-            new_facts = [f for f in facts if f not in existing]
-
-            # Optional confidence gate (strict mode): keep only high-confidence facts
-            strict_val = os.environ.get('AETHELRED_STRICT_CONFIDENCE', '')
-            if strict_val:
-                try:
-                    threshold = float(strict_val)
-                    gated = []
-                    for st in new_facts:
-                        c = self.get_confidence(st, timeout=8)
-                        if c >= threshold:
-                            gated.append(st)
-                    new_facts = gated
-                    self.logger.info(f"Confidence gate {threshold}: {len(new_facts)} passed")
-                except Exception as e:
-                    self.logger.warning(f"Strict confidence parse/apply error: {e}")
-                    all_new_facts.extend(new_facts)
-                except Exception as e:
-                    self.logger.error(f"Error processing {topic}: {e}")
+        # Process topics SEQUENTIALLY - keine parallelen Requests!
+        for topic in selected_topics:
+            self.logger.info(f"Processing topic: {topic}")
+            try:
+                facts = self.process_topic(topic)
+                # Filter out existing facts
+                new_facts = [f for f in facts if f not in existing]
+                all_new_facts.extend(new_facts)
+                self.logger.info(f"Generated {len(new_facts)} new facts for {topic}")
+                
+            except Exception as e:
+                self.logger.error(f"Error processing {topic}: {e}")
         
         # Remove duplicates
         return list(set(all_new_facts))
@@ -286,8 +265,8 @@ class AethelredEngine(BaseHexagonalEngine):
             duration_minutes: How long to run
         """
         self.logger.info(f"Starting Aethelred Engine for {duration_minutes} minutes")
-        self.logger.info(f"Using HEXAGONAL API on port {self.port}")
-        self.logger.info(f"Parallel workers: {self.parallel_workers}")
+        self.logger.info(f"Using HEXAGONAL API on port {self.api_port}")
+        self.logger.info(f"Mode: Sequential processing (no parallel workers)")
         
         start_time = time.time()
         end_time = start_time + (duration_minutes * 60)
@@ -344,9 +323,9 @@ def main():
     
     # Create and run engine
     engine = AethelredEngine(port=args.port)
-    # If CLI parallel supplied, override ENV
-    if args.parallel:
-        engine.parallel_workers = args.parallel
+    # DEAKTIVIERT: Keine parallele Verarbeitung
+    # if args.parallel:
+    #     engine.parallel_workers = args.parallel
     engine.run(duration_minutes=args.duration * 60)
 
 

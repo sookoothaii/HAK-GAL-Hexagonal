@@ -28,7 +28,7 @@ export const ScalableKnowledgeBase: React.FC = () => {
   // Load facts with pagination
   const loadFacts = useCallback(async (page: number, query?: string) => {
     try {
-      const response = await fetch(`/api/knowledge-base/page?page=${page}&limit=${ITEMS_PER_PAGE}${query ? `&query=${query}` : ''}`);
+      const response = await fetch(`/api/facts?page=${page}&per_page=${ITEMS_PER_PAGE}${query ? `&query=${query}` : ''}`);
       const data = await response.json();
       
       setDisplayedFacts(data.facts);
@@ -38,7 +38,7 @@ export const ScalableKnowledgeBase: React.FC = () => {
     } catch (error) {
       console.error('Error loading facts:', error);
       // Fallback to full load if pagination not available
-      const response = await fetch('/api/knowledge-base/raw');
+      const response = await fetch('/api/facts?limit=1000');
       const data = await response.json();
       
       let facts = data.facts || [];

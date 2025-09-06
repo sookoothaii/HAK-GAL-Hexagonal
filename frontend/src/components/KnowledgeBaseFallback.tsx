@@ -31,8 +31,8 @@ export const KnowledgeBaseFallback: React.FC = () => {
     try {
       // Try paginated endpoint first
       const url = searchQuery 
-        ? `/api/knowledge-base/page?page=${currentPage}&limit=${ITEMS_PER_PAGE}&query=${encodeURIComponent(searchQuery)}`
-        : `/api/knowledge-base/page?page=${currentPage}&limit=${ITEMS_PER_PAGE}`;
+        ? `/api/facts?page=${currentPage}&per_page=${ITEMS_PER_PAGE}&query=${encodeURIComponent(searchQuery)}`
+        : `/api/facts?page=${currentPage}&per_page=${ITEMS_PER_PAGE}`;
         
       const response = await fetch(url);
       
@@ -43,7 +43,7 @@ export const KnowledgeBaseFallback: React.FC = () => {
       } else {
         // Fallback to raw endpoint
         console.log('Pagination not available, using raw endpoint');
-        const rawResponse = await fetch('/api/knowledge-base/raw');
+        const rawResponse = await fetch('/api/facts?limit=1000');
         const rawData = await rawResponse.json();
         
         let allFacts = rawData.facts || [];

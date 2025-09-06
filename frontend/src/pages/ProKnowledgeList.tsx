@@ -87,6 +87,7 @@ const ProKnowledgeList: React.FC = () => {
 	const [bulkText, setBulkText] = useState<string>('');
 	const [bulkBusy, setBulkBusy] = useState<boolean>(false);
 	const [bulkErrors, setBulkErrors] = useState<string | null>(null);
+	const [bulkProgress, setBulkProgress] = useState<string | null>(null);
 	const doBulkImport = async () => {
 		const statements = bulkText
 			.split(/\r?\n/)
@@ -95,16 +96,20 @@ const ProKnowledgeList: React.FC = () => {
 		if (statements.length === 0) return;
 		setBulkBusy(true);
 		setBulkErrors(null);
+		setBulkProgress(`Importing ${statements.length} facts...`);
 		try {
 			const res = await api.bulkInsert(statements);
 			if (res?.errors && res.errors.length > 0) {
-				setBulkErrors(`${res.errors.length} Fehler beim Import.`);
+				setBulkErrors(`${res.errors.length} Fehler beim Import. ${res.inserted} von ${res.statements} erfolgreich.`);
+			} else {
+				setBulkProgress(`✅ ${res.inserted} Facts erfolgreich importiert!`);
 			}
 			setBulkText('');
 			await loadPage(page, perPage);
 			await refreshStats();
 		} finally {
 			setBulkBusy(false);
+			setTimeout(() => setBulkProgress(null), 3000);
 		}
 	};
 
@@ -113,6 +118,7 @@ const ProKnowledgeList: React.FC = () => {
 		if (!file) return;
 		setBulkBusy(true);
 		setBulkErrors(null);
+		setBulkProgress(`Processing file: ${file.name}...`);
 		try {
 			const text = await file.text();
 			let statements: string[] = [];
@@ -131,17 +137,22 @@ const ProKnowledgeList: React.FC = () => {
 			statements = statements.filter(s => s.length > 0);
 			if (statements.length === 0) {
 				setBulkErrors('Keine importierbaren Statements gefunden.');
+				setBulkProgress(null);
 				return;
 			}
+			setBulkProgress(`Importing ${statements.length} facts from file...`);
 			const res = await api.bulkInsert(statements);
 			if (res?.errors && res.errors.length > 0) {
-				setBulkErrors(`${res.errors.length} Fehler beim Import (Datei).`);
+				setBulkErrors(`${res.errors.length} Fehler beim Import (Datei). ${res.inserted} von ${res.statements} erfolgreich.`);
+			} else {
+				setBulkProgress(`✅ ${res.inserted} Facts aus Datei importiert!`);
 			}
 			await loadPage(1, perPage);
 			setPage(1);
 			await refreshStats();
 		} finally {
 			setBulkBusy(false);
+			setTimeout(() => setBulkProgress(null), 3000);
 		}
 	};
 
@@ -227,7 +238,7 @@ const ProKnowledgeList: React.FC = () => {
 							itemCount={facts.filter(f => !search || f.statement.toLowerCase().includes(search.toLowerCase())).length}
 							itemSize={ROW_HEIGHT}
 							width="100%"
-							overScanCount={5 as any}
+							overscanCount={5 as any}
 						>
 							{({ index, style }) => {
 								const data = facts.filter(f => !search || f.statement.toLowerCase().includes(search.toLowerCase()));
@@ -253,7 +264,7 @@ const ProKnowledgeList: React.FC = () => {
 									</div>
 								);
 							}}
-						/>
+						</FixedSizeList>
 					</ScrollArea>
 				</Card>
 			</div>
@@ -344,7 +355,13 @@ const ProKnowledgeList: React.FC = () => {
 							<input type="file" accept=".jsonl,.json,.txt" className="hidden" onChange={(e) => { const f = (e.target as HTMLInputElement).files?.[0]; if (f) handleFileImport(f); }} />
 						</label>
 					</div>
+					{!bulkBusy && (
+						<div className="text-xs text-amber-600 mt-2">
+							⚠️ Hinweis: Bulk Import läuft im Kompatibilitätsmodus (einzelne Requests)
+						</div>
+					)}
 					{bulkBusy && <div className="text-xs text-muted-foreground mt-2">Import läuft...</div>}
+					{bulkProgress && <div className="text-xs text-primary mt-2">{bulkProgress}</div>}
 					{bulkErrors && <div className="text-xs text-red-500 mt-2">{bulkErrors}</div>}
 				</Card>
 			</div>

@@ -25,11 +25,12 @@ class BaseHexagonalEngine(ABC):
         
         Args:
             name: Engine name for logging
-            port: API port (defaults to HEXAGONAL_PORT from env or 5001)
+            port: API port (IGNORED - always uses 5002 where API runs)
         """
         self.name = name
-        self.port = port or int(os.environ.get('HEXAGONAL_PORT', 5001))
-        self.base_url = f"http://localhost:{self.port}"
+        # CRITICAL FIX: Always use 5002 for API, ignore port parameter
+        self.api_port = 5002  # Where the API actually runs
+        self.base_url = f"http://localhost:{self.api_port}"
         
         # Configure logging
         logging.basicConfig(
@@ -37,6 +38,12 @@ class BaseHexagonalEngine(ABC):
             format=f'%(asctime)s - [{self.name.upper()}] - %(levelname)s - %(message)s'
         )
         self.logger = logging.getLogger(self.name)
+        
+        # Log what we're doing
+        if port and port != self.api_port:
+            self.logger.warning(f"Port {port} passed but using API port {self.api_port}")
+        
+        self.logger.info(f"Initialized {self.name} for HEXAGONAL on port {self.api_port}")
         
         # API Endpoints
         self.COMMAND_URL = f"{self.base_url}/api/command"
@@ -52,16 +59,16 @@ class BaseHexagonalEngine(ABC):
 
         # Throughput tuning (env-controlled)
         try:
-            add_delay_ms = float(os.environ.get('AETHELRED_ADD_DELAY_MS', '20'))
+            add_delay_ms = float(os.environ.get('AETHELRED_ADD_DELAY_MS', '100'))
         except Exception:
             add_delay_ms = 20.0
         self.add_delay_seconds = max(0.0, add_delay_ms / 1000.0)
         try:
-            self.add_workers = int(os.environ.get('AETHELRED_ADD_WORKERS', '8'))
+            self.add_workers = int(os.environ.get('AETHELRED_ADD_WORKERS', '2'))
         except Exception:
             self.add_workers = 8
         
-        self.logger.info(f"Initialized {self.name} for HEXAGONAL on port {self.port}")
+        self.logger.info(f"Initialized {self.name} for HEXAGONAL on port {self.api_port}")
     
     def get_existing_facts(self, force_refresh: bool = False) -> Set[str]:
         """
@@ -81,7 +88,8 @@ class BaseHexagonalEngine(ABC):
         
         try:
             # Try HEXAGONAL endpoint first
-            response = requests.get(f"{self.base_url}/api/facts", params={'limit': 10000}, timeout=30)
+            # Kleinere Limit und längeres Timeout für langsame API
+            response = requests.get(f"{self.base_url}/api/facts", params={'limit': 1000}, timeout=60)
             
             if response.status_code == 200:
                 data = response.json()
@@ -121,7 +129,7 @@ class BaseHexagonalEngine(ABC):
             response = requests.post(
                 self.FACTS_URL,
                 json={'statement': fact, 'context': {'source': self.name}},
-                timeout=10
+                timeout=30
             )
             
             if response.status_code in [200, 201]:
@@ -136,7 +144,7 @@ class BaseHexagonalEngine(ABC):
                 response = requests.post(
                     self.COMMAND_URL,
                     json={'command': 'add_fact', 'query': fact},
-                    timeout=10
+                    timeout=30
                 )
                 
                 if response.status_code == 200:
@@ -199,33 +207,40 @@ class BaseHexagonalEngine(ABC):
             self.logger.debug(f"Confidence error: {e}")
         return 0.0
     
-    def get_llm_explanation(self, topic: str, timeout: int = 60) -> Dict[str, Any]:
+    def get_llm_explanation(self, topic: str, timeout: int = 30) -> Dict[str, Any]:
         """
-        Get LLM explanation for a topic
+        Get LLM explanation for a topic with retry logic
         
         Args:
             topic: Topic to explain
-            timeout: Request timeout in seconds
+            timeout: Request timeout in seconds (reduziert auf 30s)
             
         Returns:
             Dictionary with explanation and suggested facts
         """
-        try:
-            response = requests.post(
-                self.LLM_URL,
-                json={'topic': topic},
-                timeout=timeout
-            )
-            
-            if response.status_code == 200:
-                return response.json()
-            else:
-                self.logger.warning(f"LLM request failed with status {response.status_code}")
+        max_retries = 2
+        
+        for attempt in range(max_retries):
+            try:
+                response = requests.post(
+                    self.LLM_URL,
+                    json={'topic': topic},
+                    timeout=timeout
+                )
                 
-        except requests.exceptions.Timeout:
-            self.logger.warning(f"LLM request timed out after {timeout}s")
-        except requests.exceptions.RequestException as e:
-            self.logger.error(f"LLM request error: {e}")
+                if response.status_code == 200:
+                    return response.json()
+                else:
+                    self.logger.warning(f"LLM request failed with status {response.status_code}")
+                    
+            except requests.exceptions.Timeout:
+                self.logger.warning(f"LLM request timeout (attempt {attempt+1}/{max_retries})")
+                if attempt < max_retries - 1:
+                    time.sleep(2)  # Kurze Pause vor Retry
+                    continue
+            except requests.exceptions.RequestException as e:
+                self.logger.error(f"LLM request error: {e}")
+                break
         
         return {'explanation': '', 'suggested_facts': []}
     
@@ -244,7 +259,7 @@ class BaseHexagonalEngine(ABC):
             response = requests.post(
                 self.SEARCH_URL,
                 json={'query': query, 'limit': limit},
-                timeout=10
+                timeout=30
             )
             
             if response.status_code == 200:

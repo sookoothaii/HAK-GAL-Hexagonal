@@ -1,0 +1,7 @@
+﻿# AUTO HOURLY STATUS (20250815_0003)
+
+- 5001 Snapshot: PROJECT_HUB/SNAPSHOT_5001_20250815_0003.md
+- 5002 Snapshot: PROJECT_HUB/SNAPSHOT_5002_20250815_0003.md
+- Golden 5002: PROJECT_HUB/REPORT_MOJO_GOLDEN_5002_20250815_0003.md
+
+Diese Artefakte sind read-only erzeugt; keine Schreibpfade berÃ¼hrt.

@@ -1,0 +1,64 @@
+import os
+import sys
+from pathlib import Path
+
+
+def main() -> None:
+    root = Path(__file__).resolve().parents[1]
+
+    # Ensure UTF-8 streams (avoid cp1252 issues on Windows consoles)
+    os.environ.setdefault('PYTHONIOENCODING', 'utf-8')
+    os.environ.setdefault('PYTHONUTF8', '1')
+    try:
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')  # type: ignore[attr-defined]
+        sys.stderr.reconfigure(encoding='utf-8', errors='replace')  # type: ignore[attr-defined]
+    except Exception:
+        pass
+
+    # Add mojo native module and src to path
+    mojo_pyd_dir = root / 'native' / 'mojo_kernels' / 'build' / 'Release'
+    if mojo_pyd_dir.exists():
+        sys.path.insert(0, str(mojo_pyd_dir))
+    sys.path.insert(0, str(root / 'src_hexagonal'))
+
+    # Default Mojo flags if not already set by caller
+    os.environ.setdefault('MOJO_ENABLED', 'true')
+    os.environ.setdefault('MOJO_VALIDATE_ENABLED', 'true')
+    os.environ.setdefault('MOJO_DUPES_ENABLED', 'true')
+
+    # Database configuration - respect environment overrides
+    if 'HAKGAL_SQLITE_DB_PATH' not in os.environ:
+        # Only set read-only if not explicitly configured
+        if os.environ.get('HAKGAL_SQLITE_READONLY', 'true').lower() == 'true':
+            os.environ['HAKGAL_SQLITE_DB_PATH'] = 'file:D:/MCP Mods/HAK_GAL_HEXAGONAL/k_assistant.db?mode=ro&cache=shared'
+        else:
+            # Write mode
+            os.environ['HAKGAL_SQLITE_DB_PATH'] = 'D:/MCP Mods/HAK_GAL_HEXAGONAL/k_assistant.db'
+    
+    # Log database mode
+    is_readonly = os.environ.get('HAKGAL_SQLITE_READONLY', 'true').lower() == 'true'
+    print(f"Database mode: {'READ-ONLY' if is_readonly else 'WRITE ENABLED'}")
+    print(f"Database path: {os.environ.get('HAKGAL_SQLITE_DB_PATH')}")
+
+    # Port
+    port_str = os.environ.get('HAKGAL_PORT', '5002')
+    try:
+        port = int(port_str)
+    except Exception:
+        port = 5002
+    
+    # Ensure HAKGAL_PORT is set for Governor
+    os.environ['HAKGAL_PORT'] = str(port)
+
+    # Run app
+    print(f"Starting backend on port {port} with {'READ-ONLY' if is_readonly else 'WRITE'} database")
+    import hexagonal_api_enhanced as m  # noqa: WPS433
+
+    api = m.create_app(use_legacy=False, enable_all=True)
+    api.run(host='127.0.0.1', port=port, debug=False)
+
+
+if __name__ == '__main__':
+    main()
+
+

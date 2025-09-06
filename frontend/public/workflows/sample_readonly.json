@@ -1,0 +1,18 @@
+{
+  "version": "0.1",
+  "nodes": [
+    { "id": "n1", "type": "tool", "name": "get_system_status" },
+    { "id": "n2", "type": "tool", "name": "health_check_json" },
+    { "id": "n3", "type": "tool", "name": "niche_list" }
+  ],
+  "edges": [
+    { "id": "e1", "source": "n1", "target": "n2" },
+    { "id": "e2", "source": "n2", "target": "n3" }
+  ],
+  "retries": 0,
+  "onError": "stop"
+}
+
+
+
+

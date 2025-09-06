@@ -150,7 +150,7 @@ class KnowledgeBaseRepository:
     
     def search_facts(self, query: str, limit: int = 100) -> List[Dict[str, Any]]:
         """
-        Search facts by pattern
+        Search facts by pattern, normalized for case and spaces.
         
         Args:
             query: Search query
@@ -163,14 +163,17 @@ class KnowledgeBaseRepository:
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
         
-        # Simple pattern matching (can be enhanced with FTS)
+        # Normalize query: lowercase and remove spaces
+        normalized_query = f"%{query.lower().replace(' ', '')}%"
+        
+        # Enhanced query using LOWER() and REPLACE() for case- and space-insensitive search
         cursor.execute("""
             SELECT id, statement, confidence, source, context, created_at
             FROM facts
-            WHERE statement LIKE ?
+            WHERE REPLACE(LOWER(statement), ' ', '') LIKE ?
             ORDER BY confidence DESC
             LIMIT ?
-        """, (f"%{query}%", limit))
+        """, (normalized_query, limit))
         
         facts = []
         for row in cursor.fetchall():

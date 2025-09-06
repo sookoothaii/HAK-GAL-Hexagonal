@@ -1,0 +1,144 @@
+openapi: 3.0.3
+info:
+  title: HAK-GAL Hexagonal API (Enhanced)
+  version: "2025-08-14"
+  description: |
+    Enhanced API für Faktenverwaltung und Statistiken. Port 5001, pure Hexagonal.
+servers:
+  - url: http://127.0.0.1:5001
+paths:
+  /api/facts:
+    post:
+      summary: Add fact (SQLite)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                statement:
+                  type: string
+                  example: "HasPart(ImmanuelKant,ThingInItself)."
+                context:
+                  type: object
+                  additionalProperties: true
+              required: [statement]
+      responses:
+        "201":
+          description: Created
+        "200":
+          description: OK (idempotent)
+        "409":
+          description: Conflict (duplicate)
+  /api/facts/delete:
+    post:
+      summary: Delete fact by exact statement
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                statement:
+                  type: string
+                  example: "HasPart(ImmanuelKant,ThingInItself)."
+              required: [statement]
+      responses:
+        "200":
+          description: OK
+  /api/facts/update:
+    put:
+      summary: Update fact (replace exact statement)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                old_statement:
+                  type: string
+                new_statement:
+                  type: string
+              required: [old_statement, new_statement]
+      responses:
+        "200":
+          description: OK
+  /api/facts/paginated:
+    get:
+      summary: List facts (server-side pagination)
+      parameters:
+        - in: query
+          name: page
+          schema: { type: integer, minimum: 1, default: 1 }
+        - in: query
+          name: per_page
+          schema: { type: integer, minimum: 1, maximum: 500, default: 50 }
+        - in: query
+          name: q
+          schema: { type: string, description: Optionaler Suchterm }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        statement: { type: string }
+                        context: { type: object, additionalProperties: true }
+                  page: { type: integer }
+                  per_page: { type: integer }
+                  total: { type: integer }
+  /api/facts/stats:
+    get:
+      summary: Knowledge base statistics
+      responses:
+        "200":
+          description: OK
+  /api/facts/export:
+    get:
+      summary: Export facts (json or jsonl)
+      parameters:
+        - in: query
+          name: format
+          schema: { type: string, enum: [json, jsonl], default: json }
+        - in: query
+          name: limit
+          schema: { type: integer, minimum: 1, description: Optional, Anzahl Datensätze }
+      responses:
+        "200":
+          description: OK
+  /api/facts/bulk:
+    post:
+      summary: Bulk insert facts
+      description: |
+        Erwartet eine Liste von Statements oder Objekten mit `statement` und optional `context`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                statements:
+                  type: array
+                  items:
+                    oneOf:
+                      - type: string
+                      - type: object
+                        properties:
+                          statement: { type: string }
+                          context: { type: object, additionalProperties: true }
+      responses:
+        "200": { description: OK }
+components:
+  schemas: {}
+

@@ -117,6 +117,18 @@ const ProNavigation: React.FC = () => {
         }
       ]
     },
+    // {
+    //   path: '/workflow',
+    //   label: 'Workflow (MVP)',
+    //   icon: <Network className="w-4 h-4" />,
+    //   description: 'Visual MCP orchestration'
+    // },
+    {
+      path: '/workflow-pro',
+      label: 'Workflow',  // Renamed to just "Workflow"
+      icon: <Network className="w-4 h-4" />,
+      description: 'Professional workflow editor'
+    },
     {
       path: '/governor',
       label: 'Strategic Governor',
@@ -349,103 +361,46 @@ const ProNavigation: React.FC = () => {
         
         {/* Footer */}
         <div className="p-3 border-t border-border">
-          {/* Backend Switcher */}
-          {!isCollapsed && (
-            <div className="mb-3 p-2 bg-muted/50 rounded-md">
-              <div className="flex items-center justify-between text-xs mb-2">
-                <span className="text-muted-foreground">Backend</span>
-                <Badge variant="outline" className="text-xs">
-                  {CURRENT_BACKEND.port}
-                </Badge>
-              </div>
-              <div className="space-y-2">
-                <span className="text-xs font-medium">
-                  {CURRENT_BACKEND.type === 'original' ? 'Production' : 'Development'}
-                </span>
-                {/* Backend Switch Button */}
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        const newBackend = CURRENT_BACKEND.type === 'original' ? 'hexagonal' : 'original';
-                        console.log(`Switching backend from ${CURRENT_BACKEND.type} to ${newBackend}`);
-                        setActiveBackend(newBackend);
-                      }}
-                      className="w-full text-xs h-7"
-                    >
-                      <Database className="w-3 h-3 mr-1" />
-                      Switch to {CURRENT_BACKEND.type === 'original' ? 'Hexagonal (5001)' : 'Original (5000)'}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent side="top" className="max-w-xs">
-                    <div className="space-y-1">
-                      <p className="font-semibold">
-                        {CURRENT_BACKEND.type === 'original' ? 'Switch to Hexagonal Backend' : 'Switch to Original Backend'}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {CURRENT_BACKEND.type === 'original' 
-                          ? 'Hexagonal (Port 5001): Clean architecture with emergency tools'
-                          : 'Original (Port 5000): Production-ready with full features'}
-                      </p>
-                      <div className="pt-1 border-t">
-                        <p className="text-xs font-medium">Current Features:</p>
-                        <div className="grid grid-cols-2 gap-1 mt-1">
-                          {CURRENT_BACKEND.features.hrm && <span className="text-xs text-green-500">✓ HRM</span>}
-                          {CURRENT_BACKEND.features.autoLearning && <span className="text-xs text-green-500">✓ Auto-Learning</span>}
-                          {CURRENT_BACKEND.features.emergencyTools && <span className="text-xs text-green-500">✓ Emergency Tools</span>}
-                          {!CURRENT_BACKEND.features.hrm && <span className="text-xs text-yellow-500">⚠ HRM Limited</span>}
-                          {!CURRENT_BACKEND.features.autoLearning && <span className="text-xs text-yellow-500">⚠ No Auto-Learning</span>}
-                        </div>
-                      </div>
-                    </div>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-            </div>
-          )}
-          
-          {/* Performance Metrics */}
-          {!isCollapsed && (
-            <div className="mb-3 space-y-2">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-muted-foreground">Facts</span>
-                <span className="font-medium">{(kbMetrics?.factCount || 0).toLocaleString()}</span>
-              </div>
-              <Progress value={Math.min((kbMetrics?.factCount || 0) / 10, 100)} className="h-1" />
-              
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-muted-foreground">Learning</span>
-                <span className="font-medium">{kbMetrics?.growthRate?.toFixed(1) || '0.0'}/min</span>
-              </div>
-              <Progress value={Math.min((kbMetrics?.growthRate || 0) * 10, 100)} className="h-1" />
-            </div>
-          )}
-          
-          {/* Collapse Toggle */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            className={cn(
-              "w-full",
-              isCollapsed && "p-2"
-            )}
-          >
-            {isCollapsed ? (
-              <ChevronRight className="w-4 h-4" />
-            ) : (
-              <>
-                <ChevronLeft className="w-4 h-4 mr-2" />
-                Collapse
-              </>
-            )}
-          </Button>
-        </div>
-      </motion.nav>
-    </TooltipProvider>
-  );
-};
+           {/* Performance Metrics */}
+           {!isCollapsed && (
+             <div className="mb-3 space-y-2">
+               <div className="flex items-center justify-between text-xs">
+                 <span className="text-muted-foreground">Facts</span>
+                 <span className="font-medium">{(kbMetrics?.factCount || 0).toLocaleString()}</span>
+               </div>
+               <Progress value={Math.min((kbMetrics?.factCount || 0) / 10, 100)} className="h-1" />
+               
+               <div className="flex items-center justify-between text-xs">
+                 <span className="text-muted-foreground">Learning</span>
+                 <span className="font-medium">{kbMetrics?.growthRate?.toFixed(1) || '0.0'}/min</span>
+               </div>
+               <Progress value={Math.min((kbMetrics?.growthRate || 0) * 10, 100)} className="h-1" />
+             </div>
+           )}
+           
+           {/* Collapse Toggle */}
+           <Button
+             variant="ghost"
+             size="sm"
+             onClick={() => setIsCollapsed(!isCollapsed)}
+             className={cn(
+               "w-full",
+               isCollapsed && "p-2"
+             )}
+           >
+             {isCollapsed ? (
+               <ChevronRight className="w-4 h-4" />
+             ) : (
+               <>
+                 <ChevronLeft className="w-4 h-4 mr-2" />
+                 Collapse
+               </>
+             )}
+           </Button>
+         </div>
+       </motion.nav>
+     </TooltipProvider>
+   );
+ };
 
-export default ProNavigation;
+ export default ProNavigation;

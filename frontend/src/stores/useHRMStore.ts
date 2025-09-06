@@ -86,16 +86,28 @@ export interface HRMState {
 
 // --- HRM Store Implementation ---
 
+// Helper function to get initial values from localStorage
+const getInitialValue = (key: string, defaultValue: any) => {
+  if (typeof window === 'undefined') return defaultValue;
+  const stored = localStorage.getItem(key);
+  if (stored === null) return defaultValue;
+  try {
+    return JSON.parse(stored);
+  } catch {
+    return stored === 'true' ? true : stored === 'false' ? false : stored;
+  }
+};
+
 export const useHRMStore = create(immer<HRMState>((set) => ({
   // Initial HRM State
   hrm: {
     metrics: {
-      modelStatus: 'offline',
-      parameters: 572673, // Known from documentation
+      modelStatus: getInitialValue('hrm_loaded', true) ? 'operational' : 'offline',
+      parameters: getInitialValue('model_parameters', 3500000),
       vocabulary: 694,
-      factsLoaded: 2576,
+      factsLoaded: getInitialValue('facts_count', 4674),
       confidenceGap: 0.802,
-      device: 'cuda'
+      device: getInitialValue('cuda_available', true) ? 'cuda' : 'cpu'
     },
     queryHistory: [],
     batchHistory: [],

@@ -1,0 +1,128 @@
+{
+  "workflow_id": "wf-delegation-roundtrip",
+  "version": "1.1.0",
+  "ssot_id": "a1b2c3d4e5f6",
+  "metadata": {
+    "name": "Multi-Agent Delegation (Fixed)",
+    "description": "Coordinate multiple AI agents for consensus-based analysis",
+    "author": "Claude-Opus-4.1",
+    "created": "2025-01-11T10:00:00Z",
+    "tags": ["multi-agent", "delegation", "consensus", "ai"],
+    "estimated_duration_seconds": 180,
+    "risk_level": "medium"
+  },
+  "nodes": [
+    {
+      "id": "node-prepare-task",
+      "type": "execute_code",
+      "label": "Prepare Task",
+      "position": {"x": 50, "y": 200},
+      "params": {
+        "language": "python",
+        "code": "# Prepare task for multi-agent analysis"
+      }
+    },
+    {
+      "id": "node-delegate-deepseek",
+      "type": "delegate_task",
+      "label": "Ask DeepSeek",
+      "position": {"x": 300, "y": 100},
+      "params": {
+        "target_agent": "DeepSeek:deepseek-chat"
+      }
+    },
+    {
+      "id": "node-delegate-claude",
+      "type": "delegate_task",
+      "label": "Ask Claude",
+      "position": {"x": 300, "y": 200},
+      "params": {
+        "target_agent": "Claude:sonnet"
+      }
+    },
+    {
+      "id": "node-delegate-gemini",
+      "type": "delegate_task",
+      "label": "Ask Gemini",
+      "position": {"x": 300, "y": 300},
+      "params": {
+        "target_agent": "Gemini:gemini-1.5-flash"
+      }
+    },
+    {
+      "id": "node-evaluate-consensus",
+      "type": "consensus_evaluator",
+      "label": "Evaluate Consensus",
+      "position": {"x": 550, "y": 200},
+      "params": {
+        "task_id": "quantum-comm-feasibility",
+        "method": "semantic_similarity",
+        "threshold": 0.7
+      }
+    },
+    {
+      "id": "node-check-consensus",
+      "type": "Branch",
+      "label": "Check Consensus",
+      "position": {"x": 750, "y": 200},
+      "params": {
+        "condition": "consensus >= 0.7"
+      }
+    },
+    {
+      "id": "node-synthesize",
+      "type": "delegate_task",
+      "label": "Synthesize Final",
+      "position": {"x": 950, "y": 100},
+      "params": {
+        "target_agent": "Claude:sonnet"
+      }
+    },
+    {
+      "id": "node-second-round",
+      "type": "delegate_task",
+      "label": "Clarify Disagreements",
+      "position": {"x": 950, "y": 300},
+      "params": {
+        "target_agent": "DeepSeek:deepseek-chat"
+      }
+    },
+    {
+      "id": "node-approval-save",
+      "type": "ApprovalGate",
+      "label": "Approve Save",
+      "position": {"x": 1150, "y": 200},
+      "params": {
+        "message": "Save results?",
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "node-save-results",
+      "type": "add_fact",
+      "label": "Save as Fact",
+      "position": {"x": 1350, "y": 200},
+      "params": {
+        "statement": "MultiAgentAnalysis(...)"
+      },
+      "approval": {
+        "required": true,
+        "message": "Add to knowledge base?"
+      }
+    }
+  ],
+  "edges": [
+    {"id": "e1", "source": "node-prepare-task", "target": "node-delegate-deepseek"},
+    {"id": "e2", "source": "node-prepare-task", "target": "node-delegate-claude"},
+    {"id": "e3", "source": "node-prepare-task", "target": "node-delegate-gemini"},
+    {"id": "e4", "source": "node-delegate-deepseek", "target": "node-evaluate-consensus"},
+    {"id": "e5", "source": "node-delegate-claude", "target": "node-evaluate-consensus"},
+    {"id": "e6", "source": "node-delegate-gemini", "target": "node-evaluate-consensus"},
+    {"id": "e7", "source": "node-evaluate-consensus", "target": "node-check-consensus"},
+    {"id": "e8", "source": "node-check-consensus", "target": "node-synthesize", "label": ">= 0.7"},
+    {"id": "e9", "source": "node-check-consensus", "target": "node-second-round", "label": "< 0.7"},
+    {"id": "e10", "source": "node-synthesize", "target": "node-approval-save"},
+    {"id": "e11", "source": "node-second-round", "target": "node-approval-save"},
+    {"id": "e12", "source": "node-approval-save", "target": "node-save-results"}
+  ]
+}

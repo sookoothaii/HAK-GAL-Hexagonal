@@ -289,15 +289,11 @@ export const useIntelligenceStore = create(immer<IntelligenceState>((set, get) =
   searchKnowledge: async (query) => {
     // API call to search knowledge base
     try {
-      const { API_BASE_URL } = await import('@/config/backends');
-      const response = await fetch(`${API_BASE_URL}/api/command`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ command: 'ask', query })
-      });
+      const { httpClient } = await import('@/services/api');
+      const response = await httpClient.post(`/api/command`, { command: 'ask', query });
       
-      if (response.ok) {
-        const data = await response.json();
+      if (response.status === 200) {
+        const data = response.data;
         const facts = data.chatResponse?.relevant_facts || [];
         
         set((state) => {
@@ -386,16 +382,10 @@ export const useIntelligenceStore = create(immer<IntelligenceState>((set, get) =
     
     try {
       // 1. HRM Neural Reasoning
-      const { API_BASE_URL } = await import('@/config/backends');
-      const hrmResponse = await fetch(`${API_BASE_URL}/api/hrm/reason`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query })
-      });
-      
-      if (hrmResponse.ok) {
-        const hrmData = await hrmResponse.json();
-        get().processHRMResponse(query, hrmData);
+      const { httpClient } = await import('@/services/api');
+      const hrmResponse = await httpClient.post(`/api/hrm/reason`, { query });
+      if (hrmResponse.status === 200) {
+        get().processHRMResponse(query, hrmResponse.data);
       }
       
       // 2. Knowledge Search

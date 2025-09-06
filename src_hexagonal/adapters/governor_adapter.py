@@ -30,6 +30,9 @@ class GovernorAdapter:
     def __init__(self):
         self.initialized = False
         self.decisions_history = []
+        # Get current port from environment or default
+        self.port = int(os.environ.get('HAKGAL_PORT', '5001'))
+        logger.info(f"Governor using port: {self.port}")
         self.current_state = {
             'running': False,
             'mode': 'hexagonal',
@@ -41,13 +44,15 @@ class GovernorAdapter:
                     'enabled': True,
                     'process': None,
                     'last_start': None,
-                    'runs': 0
+                    'runs': 0,
+                    'pid': None
                 },
                 'thesis': {
                     'enabled': True,
                     'process': None,
                     'last_start': None,
-                    'runs': 0
+                    'runs': 0,
+                    'pid': None
                 }
             }
         }
@@ -55,8 +60,8 @@ class GovernorAdapter:
         # Engine paths in HEXAGONAL system
         self.hex_root = Path(__file__).parent.parent.parent
         self.engine_paths = {
-            'aethelred': self.hex_root / 'src_hexagonal' / 'infrastructure' / 'engines' / 'aethelred_engine.py',
-            'thesis': self.hex_root / 'src_hexagonal' / 'infrastructure' / 'engines' / 'thesis_engine.py'
+            'aethelred': self.hex_root / 'src_hexagonal' / 'infrastructure' / 'engines' / 'aethelred_fast.py',
+            'thesis': self.hex_root / 'src_hexagonal' / 'infrastructure' / 'engines' / 'thesis_fast.py'
         }
         
         # Verify engine files exist
@@ -74,6 +79,10 @@ class GovernorAdapter:
         logger.info("✅ HEXAGONAL Governor initialized with integrated engines")
     
     def start_engine(self, engine_name: str, duration_minutes: float = 5) -> bool:
+        print("\n" + "🚀"*40)
+        print(f"START_ENGINE CALLED: {engine_name}")
+        print(f"Duration: {duration_minutes} minutes")
+        print("🚀"*40)
         """
         Start a specific engine as subprocess
         
@@ -101,28 +110,49 @@ class GovernorAdapter:
             return False
         
         try:
+            # NEUE LOGIK: Output direkt in eine Log-Datei umleiten
+            log_dir = self.hex_root / 'logs' / 'engine_logs'
+            log_dir.mkdir(parents=True, exist_ok=True)
+            timestamp = time.strftime("%Y%m%d_%H%M%S")
+            log_file_path = log_dir / f"{engine_name}_{timestamp}.log"
+            
+            logger.info(f"Redirecting {engine_name} output to {log_file_path}")
+            
+            # Öffne die Log-Datei zum Schreiben
+            log_file_handle = open(log_file_path, 'w', encoding='utf-8')
+
             # Start engine subprocess
             cmd = [
                 sys.executable,  # Python executable
                 str(engine_path),
                 '-d', str(duration_minutes / 60),  # Convert to hours
-                '-p', '5001'  # HEXAGONAL port
+                '-p', str(self.port)  # Use current backend port
             ]
             
-            logger.info(f"Starting {engine_name} engine for {duration_minutes} minutes")
+            logger.info(f"Starting {engine_name} engine for {duration_minutes} minutes on port {self.port}")
             logger.info(f"Command: {' '.join(cmd)}")
+            
+            print(f"\n🔥 EXECUTING COMMAND:")
+            print(f"  {' '.join(cmd)}")
+            print(f"  CWD: {Path.cwd()}")
+            print(f"  Engine script exists: {engine_path.exists()}")
+            print(f"  Python: {sys.executable}")
             
             process = subprocess.Popen(
                 cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True
+                stdout=log_file_handle, # Leite stdout in die Datei um
+                stderr=log_file_handle, # Leite stderr in dieselbe Datei um
+                text=False # text=True ist nicht kompatibel mit file handle redirection
             )
+            
+            # Der read_output Thread wird nicht mehr benötigt
             
             # Update state
             engine_info['process'] = process
+            engine_info['pid'] = process.pid
             engine_info['last_start'] = time.time()
             engine_info['runs'] += 1
+            engine_info['log_file'] = str(log_file_path) # Speichere den Log-Pfad
             
             logger.info(f"✅ {engine_name} engine started (PID: {process.pid})")
             return True
@@ -156,6 +186,7 @@ class GovernorAdapter:
                 logger.warning(f"Had to force kill {engine_name} engine")
             
             engine_info['process'] = None
+            engine_info['pid'] = None
             return True
         
         return False
@@ -167,8 +198,14 @@ class GovernorAdapter:
         logger.info("Governor loop started")
         
         while not self.stop_event.is_set():
+            print(f"\n{'='*60}")
+            print(f"GOVERNOR LOOP ITERATION")
+            print(f"{'='*60}")
+            
             # Make strategic decision
+            print("🎯 Making strategic decision...")
             decision = self._make_decision()
+            print(f"Decision: {decision}")
             
             if decision['action'] == 'start_engine':
                 engine = decision['engine']
@@ -292,6 +329,7 @@ class GovernorAdapter:
                         pass
                     
                     info['process'] = None
+                    info['pid'] = None
                     
                     # Update Thompson sampling based on exit code
                     if poll == 0:
@@ -300,17 +338,35 @@ class GovernorAdapter:
                         self.current_state['beta'] += 0.1  # Failure
     
     def get_status(self) -> Dict[str, Any]:
-        """Get current Governor status"""
-        status = self.current_state.copy()
+        """Get current Governor status - JSON serializable"""
+        # Manually build status dict without process objects
+        status = {
+            'running': self.current_state['running'],
+            'mode': self.current_state['mode'],
+            'alpha': self.current_state['alpha'],
+            'beta': self.current_state['beta'],
+            'decisions_made': self.current_state['decisions_made'],
+            'engines': {}
+        }
         
-        # Add engine running status
-        for name, info in status['engines'].items():
-            info['running'] = (
-                info['process'] is not None and 
-                info['process'].poll() is None
-            )
-            if info['running'] and info['last_start']:
-                info['runtime'] = time.time() - info['last_start']
+        # Build engine status without process objects
+        for name, info in self.current_state['engines'].items():
+            engine_status = {
+                'enabled': info['enabled'],
+                'last_start': info['last_start'],
+                'runs': info['runs'],
+                'pid': info['pid'],
+                'running': False,
+                'runtime': None
+            }
+            
+            # Check if engine is running
+            if info['process'] and info['process'].poll() is None:
+                engine_status['running'] = True
+                if info['last_start']:
+                    engine_status['runtime'] = time.time() - info['last_start']
+            
+            status['engines'][name] = engine_status
         
         # Add metrics
         status['success_rate'] = (
@@ -321,6 +377,32 @@ class GovernorAdapter:
         status['decisions_count'] = len(self.decisions_history)
         
         return status
+    
+    def get_metrics(self) -> Dict[str, Any]:
+        """Get Governor metrics"""
+        metrics = {
+            'alpha': self.current_state['alpha'],
+            'beta': self.current_state['beta'],
+            'success_rate': self.current_state['alpha'] / (
+                self.current_state['alpha'] + self.current_state['beta']
+            ),
+            'decisions_made': self.current_state['decisions_made'],
+            'total_runs': {
+                'aethelred': self.current_state['engines']['aethelred']['runs'],
+                'thesis': self.current_state['engines']['thesis']['runs']
+            }
+        }
+        
+        # Add recent decisions
+        if self.decisions_history:
+            metrics['recent_decisions'] = self.decisions_history[-5:]  # Last 5 decisions
+            metrics['last_decision'] = self.decisions_history[-1]
+        
+        return metrics
+    
+    def get_next_decision(self) -> Dict[str, Any]:
+        """Get next strategic decision"""
+        return self._make_decision()
     
     def start(self) -> bool:
         """Start the Governor"""

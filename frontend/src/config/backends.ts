@@ -1,7 +1,8 @@
 /**
- * Enhanced Backend Configuration for SQLite-based System
- * Updated for SQLite as primary data source
+ * Backend Configuration - Centralized via app.config.ts
  */
+
+import { appConfig } from '@/config/app.config';
 
 export interface BackendConfig {
   name: string;
@@ -9,7 +10,7 @@ export interface BackendConfig {
   wsUrl: string;
   port: number;
   type: 'hexagonal';
-  dataSource: 'sqlite' | 'jsonl';
+  dataSource: 'sqlite';
   features: {
     websocket: boolean;
     governor: boolean;
@@ -21,68 +22,77 @@ export interface BackendConfig {
     emergencyTools: boolean;
     sentryMonitoring: boolean;
     cudaAcceleration: boolean;
+    mojo: boolean;
+    write: boolean; // Indicates write capability
   };
   stats: {
-    facts: number | 'dynamic';  // Dynamic means fetched from API
+    facts: number | 'dynamic';
     responseTime: string;
     architecture: string;
     database: string;
   };
 }
 
-// Backend Configuration (Hexagonal with SQLite)
-export const BACKENDS: Record<string, BackendConfig> = {
-  hexagonal: {
-    name: 'HAK-GAL Hexagonal (SQLite Mode)',
-    apiUrl: 'http://localhost:5001',
-    wsUrl: 'http://localhost:5001',
-    port: 5001,
-    type: 'hexagonal',
-    dataSource: 'sqlite',
-    features: {
-      websocket: true,
-      governor: true,
-      autoLearning: true,
-      neuralReasoning: true,
-      hrm: false,  // Uses legacy bridge
-      llmIntegration: true,
-      graphGeneration: true,
-      emergencyTools: true,
-      sentryMonitoring: true,
-      cudaAcceleration: true
-    },
-    stats: {
-      facts: 'dynamic',  // Will be fetched from /api/facts/count
-      responseTime: '<20ms',
-      architecture: 'Clean Hexagonal (Ports & Adapters)',
-      database: 'SQLite (k_assistant.db)'
-    }
+// Single Backend Configuration - Using centralized config
+export const BACKEND: BackendConfig = {
+  name: 'HAK-GAL Hexagonal (Write Mode)',
+  apiUrl: '', // Using proxy
+  wsUrl: appConfig.WS_PATH,
+  port: appConfig.PORTS.BACKEND,
+  type: 'hexagonal',
+  dataSource: 'sqlite',
+  features: {
+    websocket: true,
+    governor: true,
+    autoLearning: true,
+    neuralReasoning: true,
+    hrm: true,
+    llmIntegration: true,
+    graphGeneration: true,
+    emergencyTools: true,
+    sentryMonitoring: true,
+    cudaAcceleration: true,
+    mojo: true,
+    write: true
+  },
+  stats: {
+    facts: 'dynamic', // Fetched from /api/facts/count
+    responseTime: '<10ms',
+    architecture: 'Hexagonal Clean Architecture',
+    database: 'SQLite (hexagonal_kb.db)'
   }
 };
 
-// Active backend (fixed to hexagonal)
-export const getActiveBackend = (): BackendConfig => BACKENDS.hexagonal;
+// Legacy exports for backward compatibility (all point to same backend now)
+export const BACKENDS = { 
+  hexagonal: BACKEND,
+  primary: BACKEND 
+};
 
-// No-op (single backend)
-export const setActiveBackend = (): void => {};
+// Simplified getters (no switching needed)
+export const getActiveBackend = (): BackendConfig => BACKEND;
+export const setActiveBackend = (key: string): void => {
+  // No-op: Backend switching is disabled
+  console.debug('Backend switching disabled - using 5002 (WRITE) only');
+};
 
 // Check if feature is available
 export const hasFeature = (feature: keyof BackendConfig['features']): boolean => {
-  return getActiveBackend().features[feature] || false;
+  return BACKEND.features[feature] || false;
 };
 
 // Export current backend for backward compatibility
-export const CURRENT_BACKEND = getActiveBackend();
-export const API_BASE_URL = CURRENT_BACKEND.apiUrl;
-export const WS_URL = CURRENT_BACKEND.wsUrl;
-export const BACKEND_NAME = CURRENT_BACKEND.name;
-export const BACKEND_TYPE = CURRENT_BACKEND.type;
-export const DATA_SOURCE = CURRENT_BACKEND.dataSource;
+export const CURRENT_BACKEND = BACKEND;
+export const API_BASE_URL = ''; // Using proxy
+export const WS_URL = '/socket.io';
+export const BACKEND_NAME = BACKEND.name;
+export const BACKEND_TYPE = BACKEND.type;
+export const DATA_SOURCE = BACKEND.dataSource;
 
 // Helper to fetch dynamic facts count
 export const fetchFactsCount = async (): Promise<number> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/facts/count`);
+    const response = await fetch('/api/facts/count');
     if (response.ok) {
       const data = await response.json();
       return data.count || 0;
@@ -92,3 +102,7 @@ export const fetchFactsCount = async (): Promise<number> => {
   }
   return 0;
 };
+
+// Admin fallback path (5001) - not exposed to UI
+// Only used internally when primary endpoints fail
+export const ADMIN_API_PATH = '/api-admin';

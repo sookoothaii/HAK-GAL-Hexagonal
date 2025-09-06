@@ -1,0 +1,26 @@
+{
+  "timestamp": "2025-08-19T18:34:56.014304",
+  "checks": {
+    "database": {
+      "file": "hexagonal_kb.db",
+      "facts": 5159,
+      "status": "✅ KORREKT"
+    },
+    "backend": {
+      "port": 5002,
+      "status": "✅ ONLINE",
+      "write_mode": true
+    },
+    "frontend": {
+      "port": 5173,
+      "status": "✅ ONLINE"
+    },
+    "proxy": {
+      "port": 8088,
+      "status": "✅ ONLINE"
+    }
+  },
+  "metrics": {},
+  "issues": [],
+  "overall": "✅ SYSTEM VOLLSTÄNDIG OPERATIONAL"
+}

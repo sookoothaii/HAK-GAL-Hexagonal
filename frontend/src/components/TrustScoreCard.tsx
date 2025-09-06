@@ -1,36 +1,45 @@
-// TrustScoreCard.tsx - Kritische Komponente für Vertrauenswürdigkeit
-// Nach HAK/GAL Artikel 3 (Externe Verifikation) & Artikel 6 (Empirische Validierung)
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
-import { 
-  Shield, Brain, Database, Users, CheckCircle, 
-  AlertTriangle, Info, ExternalLink, Zap
+import {
+  Shield, Brain, Database, Users, CheckCircle,
+  AlertTriangle, Info, ExternalLink, Zap, Loader2
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
+// --- Data Structures ---
+interface SubMetric {
+  label: string;
+  value: string; // Can be 'N/A' or a percentage string like '90.0%'
+  description: string;
+}
+
+interface TrustData {
+  trust_score: {
+    value: number;
+    label: string;
+  };
+  sub_metrics: SubMetric[];
+}
+
+// --- Component Props ---
 export interface TrustComponents {
-  neuralConfidence: number;      // HRM confidence (0-1)
-  factualAccuracy: number;        // Fabulometer score (0-1)
-  sourceQuality: number;          // KB citation quality (0-1)
-  consensus: number;              // LLM agreement (0-1)
-  humanVerified: boolean;         // Manual verification
-  ethicalAlignment: number;       // Philosophical Intelligence (0-1)
+  neuralConfidence: number;
+  factualAccuracy: number;
+  sourceQuality: number;
+  consensus: number;
+  humanVerified: boolean;
+  ethicalAlignment: number;
 }
 
 export interface TrustScoreProps {
   query: string;
   response: string;
-  components: TrustComponents;
-  sources?: Array<{
-    fact: string;
-    confidence: number;
-    id: string;
-  }>;
+  // The 'components' prop is optional - if provided, skip API call
+  components?: TrustComponents;
   onVerify?: () => void;
   className?: string;
 }
@@ -39,85 +48,173 @@ const TrustScoreCard: React.FC<TrustScoreProps> = ({
   query,
   response,
   components,
-  sources = [],
   onVerify,
   className
 }) => {
-  // Calculate overall trust score (weighted average)
-  const calculateOverallTrust = () => {
-    const weights = {
-      neuralConfidence: 0.25,
-      factualAccuracy: 0.25,
-      sourceQuality: 0.20,
-      consensus: 0.20,
-      ethicalAlignment: 0.10
-    };
-    
-    let score = 
-      components.neuralConfidence * weights.neuralConfidence +
-      components.factualAccuracy * weights.factualAccuracy +
-      components.sourceQuality * weights.sourceQuality +
-      components.consensus * weights.consensus +
-      components.ethicalAlignment * weights.ethicalAlignment;
-    
-    // Boost for human verification
-    if (components.humanVerified) {
-      score = Math.min(1, score * 1.1);
+  // --- State Management for Fetched Data ---
+  const [trustData, setTrustData] = useState<TrustData | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // --- Data Fetching with useEffect ---
+  useEffect(() => {
+    // 🔧 FIX: If components are provided as props, use them directly
+    if (components) {
+      const trustData: TrustData = {
+        trust_score: {
+          value: calculateOverallTrust(components),
+          label: 'Overall Trust Score'
+        },
+        sub_metrics: [
+          {
+            label: 'Factual Accuracy',
+            value: `${(components.factualAccuracy * 100).toFixed(1)}%`,
+            description: 'Based on facts found in knowledge base'
+          },
+          {
+            label: 'Source Quality',
+            value: `${(components.sourceQuality * 100).toFixed(1)}%`,
+            description: 'Quality of sources used'
+          },
+          {
+            label: 'Model Consensus',
+            value: `${(components.consensus * 100).toFixed(1)}%`,
+            description: 'Model confidence in response'
+          },
+          {
+            label: 'Ethical Alignment',
+            value: `${(components.ethicalAlignment * 100).toFixed(1)}%`,
+            description: 'Alignment with ethical guidelines'
+          },
+          {
+            label: 'Neural Confidence',
+            value: `${(components.neuralConfidence * 100).toFixed(1)}%`,
+            description: 'HRM neural reasoning confidence'
+          }
+        ]
+      };
+      setTrustData(trustData);
+      setIsLoading(false);
+      return;
     }
     
-    return score;
+    // Otherwise fetch from backend (fallback)
+    if (!query) {
+      setTrustData(null);
+      return;
+    }
+
+    const fetchTrustMetrics = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        // Fetch data from the new backend endpoint
+        const response = await fetch(`http://127.0.0.1:5002/api/metrics/trust?query=${encodeURIComponent(query)}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data: TrustData = await response.json();
+        setTrustData(data);
+      } catch (e) {
+        console.error("Failed to fetch trust metrics:", e);
+        setError("Could not load trust metrics.");
+        setTrustData(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchTrustMetrics();
+  }, [query, components]); // Re-run when query or components change
+  
+  // Helper function to calculate overall trust
+  const calculateOverallTrust = (comp: TrustComponents): number => {
+    // If humanVerified, return 100% - absolute trust
+    if (comp.humanVerified) {
+      return 100;
+    }
+    
+    // Otherwise calculate normally
+    const baseScore = (
+      (comp.factualAccuracy || 0) * 0.3 +
+      (comp.sourceQuality || 0) * 0.2 +
+      (comp.consensus || 0) * 0.3 +
+      (comp.ethicalAlignment || 0) * 0.2
+    ) * 100;
+    
+    return baseScore;
   };
-  
-  const overallTrust = calculateOverallTrust();
-  
-  // Determine trust level and styling
+
+  // --- Helper Functions ---
   const getTrustLevel = (score: number) => {
-    if (score >= 0.8) return { label: 'HIGH', color: 'text-green-500', bg: 'bg-green-500/10' };
-    if (score >= 0.6) return { label: 'MEDIUM', color: 'text-yellow-500', bg: 'bg-yellow-500/10' };
-    if (score >= 0.4) return { label: 'LOW', color: 'text-orange-500', bg: 'bg-orange-500/10' };
+    if (score >= 80) return { label: 'HIGH', color: 'text-green-500', bg: 'bg-green-500/10' };
+    if (score >= 60) return { label: 'MEDIUM', color: 'text-yellow-500', bg: 'bg-yellow-500/10' };
+    if (score >= 40) return { label: 'LOW', color: 'text-orange-500', bg: 'bg-orange-500/10' };
     return { label: 'VERY LOW', color: 'text-red-500', bg: 'bg-red-500/10' };
   };
-  
-  const trustLevel = getTrustLevel(overallTrust);
-  
-  // Component metric display
-  const MetricRow = ({ 
-    icon: Icon, 
-    label, 
-    value, 
-    max = 1,
-    showBar = true,
-    verified = false 
-  }: any) => {
-    const percentage = (value / max) * 100;
-    const color = value >= 0.7 ? 'text-green-500' : value >= 0.4 ? 'text-yellow-500' : 'text-red-500';
-    
+
+  // --- Sub-Components ---
+  const MetricRow = ({ icon: Icon, label, valueString }: { icon: React.ElementType, label: string, valueString: string }) => {
+    const isNA = valueString === 'N/A';
+    const percentage = isNA ? 0 : parseFloat(valueString.replace('%', ''));
+    const color = percentage >= 70 ? 'text-green-500' : percentage >= 40 ? 'text-yellow-500' : 'text-red-500';
+
     return (
       <div className="flex items-center justify-between py-2">
         <div className="flex items-center gap-2 flex-1">
-          <Icon className={cn("w-4 h-4", color)} />
+          <Icon className={cn("w-4 h-4", isNA ? 'text-muted-foreground' : color)} />
           <span className="text-sm font-medium">{label}</span>
-          {verified && <CheckCircle className="w-3 h-3 text-green-500" />}
         </div>
         <div className="flex items-center gap-3 flex-1">
-          {showBar && (
-            <Progress value={percentage} className="flex-1 h-2" />
-          )}
-          <span className={cn("text-sm font-mono min-w-[3rem] text-right", color)}>
-            {(value * 100).toFixed(0)}%
+          {!isNA && <Progress value={percentage} className="flex-1 h-2" />}
+          <span className={cn("text-sm font-mono min-w-[4rem] text-right", isNA ? 'text-muted-foreground' : color)}>
+            {valueString}
           </span>
         </div>
       </div>
     );
   };
-  
+
+  // --- Render Logic ---
+  if (isLoading) {
+    return (
+      <Card className={cn("flex items-center justify-center p-10", className)}>
+        <div className="text-center text-muted-foreground">
+          <Loader2 className="w-8 h-8 mx-auto animate-spin mb-2" />
+          <p>Analyzing Trust...</p>
+        </div>
+      </Card>
+    );
+  }
+
+  if (error || !trustData) {
+    return (
+      <Card className={cn("flex items-center justify-center p-10", className)}>
+        <div className="text-center text-red-500">
+          <AlertTriangle className="w-8 h-8 mx-auto mb-2" />
+          <p>{error || "Could not retrieve Trust Analysis."}</p>
+        </div>
+      </Card>
+    );
+  }
+
+  const { trust_score, sub_metrics } = trustData;
+  const trustLevel = getTrustLevel(trust_score.value);
+      const isVerified = components?.humanVerified || false;
+  const iconMap = { // Map labels to icons
+    "Factual Accuracy": Database,
+    "Neural Confidence": Brain,
+    "Source Quality": ExternalLink,
+    "Model Consensus": Users,
+    "Ethical Alignment": Zap
+  };
+
   return (
     <Card className={cn("relative overflow-hidden", className)}>
-      {/* Animated trust level indicator */}
       <motion.div
         className={cn("absolute top-0 left-0 right-0 h-1", trustLevel.bg)}
         initial={{ scaleX: 0 }}
-        animate={{ scaleX: overallTrust }}
+        animate={{ scaleX: trust_score.value / 100 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
       />
       
@@ -129,13 +226,13 @@ const TrustScoreCard: React.FC<TrustScoreProps> = ({
           </CardTitle>
           <div className="flex items-center gap-2">
             <Badge 
-              variant={overallTrust >= 0.7 ? "default" : "secondary"}
+              variant={trust_score.value >= 70 ? "default" : "secondary"}
               className={cn("font-mono", trustLevel.bg, trustLevel.color)}
             >
-              {(overallTrust * 100).toFixed(0)}% {trustLevel.label}
+              {trust_score.value.toFixed(0)}% {trustLevel.label}
             </Badge>
-            {components.humanVerified && (
-              <Badge variant="outline" className="text-green-500 border-green-500">
+            {isVerified && (
+              <Badge variant="outline" className="text-xs bg-green-500/10 text-green-500 border-green-500/20">
                 <CheckCircle className="w-3 h-3 mr-1" />
                 Verified
               </Badge>
@@ -145,69 +242,23 @@ const TrustScoreCard: React.FC<TrustScoreProps> = ({
       </CardHeader>
       
       <CardContent className="space-y-4">
-        {/* Query & Response Preview */}
         <div className="p-3 bg-muted/50 rounded-lg space-y-2">
           <div className="text-xs text-muted-foreground">Query</div>
           <div className="text-sm font-medium">{query}</div>
-          <div className="text-xs text-muted-foreground mt-2">Response</div>
-          <div className="text-sm line-clamp-2">{response}</div>
         </div>
         
-        {/* Trust Components Breakdown */}
         <div className="space-y-1">
-          <MetricRow
-            icon={Brain}
-            label="Neural Confidence"
-            value={components.neuralConfidence}
-            verified={components.neuralConfidence > 0.85}
-          />
-          <MetricRow
-            icon={Database}
-            label="Factual Accuracy"
-            value={components.factualAccuracy}
-          />
-          <MetricRow
-            icon={ExternalLink}
-            label="Source Quality"
-            value={components.sourceQuality}
-          />
-          <MetricRow
-            icon={Users}
-            label="Model Consensus"
-            value={components.consensus}
-          />
-          <MetricRow
-            icon={Zap}
-            label="Ethical Alignment"
-            value={components.ethicalAlignment}
-          />
+          {sub_metrics.map(metric => (
+            <MetricRow
+              key={metric.label}
+              icon={iconMap[metric.label] || Shield}
+              label={metric.label}
+              valueString={metric.value}
+            />
+          ))}
         </div>
         
-        {/* Source Citations */}
-        {sources.length > 0 && (
-          <div className="pt-3 border-t">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium">Sources ({sources.length})</span>
-              <Button variant="ghost" size="sm" className="h-6 text-xs">
-                View All
-                <ExternalLink className="w-3 h-3 ml-1" />
-              </Button>
-            </div>
-            <div className="space-y-1">
-              {sources.slice(0, 3).map((source, idx) => (
-                <div key={idx} className="flex items-center justify-between text-xs">
-                  <code className="font-mono truncate flex-1">{source.fact}</code>
-                  <Badge variant="outline" className="ml-2 text-xs">
-                    {(source.confidence * 100).toFixed(0)}%
-                  </Badge>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-        
-        {/* Warning for low trust */}
-        {overallTrust < 0.5 && (
+        {trust_score.value < 50 && (
           <div className="flex items-start gap-2 p-3 bg-orange-500/10 rounded-lg">
             <AlertTriangle className="w-4 h-4 text-orange-500 mt-0.5" />
             <div className="flex-1">
@@ -219,21 +270,29 @@ const TrustScoreCard: React.FC<TrustScoreProps> = ({
           </div>
         )}
         
-        {/* Human Verification */}
-        {!components.humanVerified && onVerify && (
+        {onVerify && !isVerified && (
           <div className="flex items-center justify-between pt-3 border-t">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Info className="w-4 h-4" />
               <span>Help improve accuracy</span>
             </div>
-            <Button
-              variant="default"
-              size="sm"
-              onClick={onVerify}
-            >
+            <Button variant="default" size="sm" onClick={onVerify}>
               <CheckCircle className="w-3 h-3 mr-1" />
               Verify Response
             </Button>
+          </div>
+        )}
+        
+        {onVerify && isVerified && (
+          <div className="flex items-center justify-between pt-3 border-t">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <CheckCircle className="w-4 h-4 text-green-500" />
+              <span className="text-green-600">Response verified and locked</span>
+            </div>
+            <Badge variant="outline" className="text-xs bg-green-500/10 text-green-500 border-green-500/20">
+              <CheckCircle className="w-3 h-3 mr-1" />
+              Already Verified
+            </Badge>
           </div>
         )}
       </CardContent>
@@ -243,50 +302,8 @@ const TrustScoreCard: React.FC<TrustScoreProps> = ({
 
 export default TrustScoreCard;
 
-// Companion component for inline trust indicators
-export const TrustBadge: React.FC<{ score: number; compact?: boolean }> = ({ 
-  score, 
-  compact = false 
-}) => {
-  const level = score >= 0.8 ? 'high' : score >= 0.6 ? 'medium' : score >= 0.4 ? 'low' : 'very-low';
-  const colors = {
-    'high': 'bg-green-500/10 text-green-500 border-green-500/20',
-    'medium': 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20',
-    'low': 'bg-orange-500/10 text-orange-500 border-orange-500/20',
-    'very-low': 'bg-red-500/10 text-red-500 border-red-500/20'
-  };
-  
-  if (compact) {
-    return (
-      <div className={cn(
-        "inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium border",
-        colors[level]
-      )}>
-        <Shield className="w-3 h-3" />
-        {(score * 100).toFixed(0)}%
-      </div>
-    );
-  }
-  
-  return (
-    <Badge variant="outline" className={cn("gap-1", colors[level])}>
-      <Shield className="w-3 h-3" />
-      Trust: {(score * 100).toFixed(0)}%
-    </Badge>
-  );
-};
+// Export types for use in other components
+export type { TrustScoreProps, TrustComponents };
 
-// Radar chart for trust visualization (requires recharts)
-export const TrustRadar: React.FC<{ components: TrustComponents }> = ({ components }) => {
-  // Implementation would use recharts RadarChart
-  // Placeholder for now
-  return (
-    <div className="flex items-center justify-center h-48 text-muted-foreground">
-      <div className="text-center">
-        <Shield className="w-8 h-8 mx-auto mb-2" />
-        <div className="text-sm">Trust Radar Visualization</div>
-        <div className="text-xs">Requires recharts integration</div>
-      </div>
-    </div>
-  );
-};
+// Export TrustBadge placeholder
+export const TrustBadge = Badge;

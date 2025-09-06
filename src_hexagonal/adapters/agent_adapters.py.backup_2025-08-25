@@ -1,0 +1,4 @@
+# Backup created on 2025-08-25
+# This is a marker file to indicate the original was backed up
+# Original file: agent_adapters.py
+# Reason: Fixing CursorAdapter timeout issue during Void Communication Test

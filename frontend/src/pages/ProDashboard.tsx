@@ -5,46 +5,85 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Brain, Cpu, Database, Network, Zap, Activity, GitBranch, Sparkles } from 'lucide-react';
-import { CURRENT_BACKEND, hasFeature } from '@/config/backends';
-import apiService from '@/services/apiService';
+import { CURRENT_BACKEND, hasFeature, API_BASE_URL } from '@/config/backends';
+import { safeApiCall } from '@/utils/api-helpers';
+import { httpClient } from '@/services/api';
 
 const ProDashboard: React.FC = () => {
   const store = useGovernorStore();
   const [hrmStatus, setHrmStatus] = React.useState<any>(null);
+  const [systemHealth, setSystemHealth] = React.useState<any>(null);
   
   React.useEffect(() => {
-    // Check HRM status if available
+    // Check HRM status with robust error handling
     if (hasFeature('hrm') || hasFeature('neuralReasoning')) {
-      apiService.reason("test").then(data => {
-        setHrmStatus({ operational: true, confidence: data.confidence || 0 });
-      }).catch(() => {
-        setHrmStatus({ operational: false });
+      safeApiCall(
+        async () => {
+          const response = await httpClient.post('/api/reason', { query: 'test' });
+          return response.data;
+        },
+        { silent: true }
+      ).then(data => {
+        if (data) {
+          setHrmStatus({ operational: true, confidence: data.confidence || 0 });
+        } else {
+          setHrmStatus({ operational: false, message: 'HRM endpoint not available' });
+        }
       });
     }
+    
+    // Get system health with fallback
+    safeApiCall(
+      async () => {
+        const response = await httpClient.get('/health');
+        return response.data;
+      },
+      { silent: true }
+    ).then(data => {
+      if (data) {
+        setSystemHealth(data);
+      }
+    });
   }, []);
   
   const neuralMetrics = {
-    model: 'SimplifiedHRM (GRU)',
-    parameters: '572,673',
-    vocabulary: '694 terms',
-    device: store.gpuInfo?.name || 'CPU',
-    inference: '<10ms'
+    model: hrmStatus?.operational ? 'SimplifiedHRM (GRU)' : 'Not Available',
+    parameters: hrmStatus?.operational ? '572,673' : 'n/a',
+    vocabulary: hrmStatus?.operational ? '694 terms' : 'n/a',
+    device: store.gpuInfo?.name || systemHealth?.gpu?.name || 'CPU',
+    inference: hrmStatus?.operational ? '<10ms' : 'n/a'
   };
   
   const symbolicMetrics = {
     facts: store.kb.metrics.factCount || 0,
-    predicates: 74,
+    predicates: store.kb.metrics.uniquePredicates || 74,
     rules: 15,
     provers: 4,
-    coverage: Math.round((store.kb.metrics.factCount / 1000) * 100)
+    coverage: store.kb.metrics.factCount > 0 
+      ? Math.round((store.kb.metrics.factCount / 10000) * 100) 
+      : 0
   };
   
   const learningMetrics = {
-    governorMode: store.governor.status,
+    governorMode: store.governor.status || 'Unknown',
     learningRate: store.kb.metrics.growthRate || 0,
-    decisions: store.governor.decisions.length,
-    running: store.governor.running
+    decisions: store.governor.decisions.length || 0,
+    running: store.governor.running || false
   };
+  
+  // Helper component for safe data display
+  const MetricRow = ({ label, value, badge = false }: { label: string; value: any; badge?: boolean }) => (
+    <div className="flex justify-between items-center">
+      <span className="text-sm text-muted-foreground">{label}</span>
+      {badge ? (
+        <Badge variant="outline" className="font-mono">
+          {value ?? 'n/a'}
+        </Badge>
+      ) : (
+        <span className="font-mono text-sm">{value ?? 'n/a'}</span>
+      )}
+    </div>
+  );
   
   return (
     <div className="h-full overflow-auto p-6">
@@ -54,7 +93,9 @@ const ProDashboard: React.FC = () => {
           HAK-GAL Neurosymbolic Intelligence Suite
         </h1>
         <p className="text-muted-foreground mt-2">
-          Backend: {CURRENT_BACKEND.name} ({CURRENT_BACKEND.port}) | Architecture: {CURRENT_BACKEND.stats.architecture}
+          Backend: {CURRENT_BACKEND.name} ({CURRENT_BACKEND.port}) | 
+          Architecture: {systemHealth?.architecture || CURRENT_BACKEND.stats.architecture} | 
+          Status: {systemHealth?.status || 'Unknown'}
         </p>
       </div>
       
@@ -67,17 +108,13 @@ const ProDashboard: React.FC = () => {
               <Brain className="h-5 w-5 text-blue-500" />
               Neural Components
             </CardTitle>
-            <CardDescription>HRM Neural Reasoning System</CardDescription>
+            <CardDescription>
+              {hrmStatus?.operational ? 'HRM Neural Reasoning System' : 'Neural system unavailable'}
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Model</span>
-              <Badge variant="outline">{neuralMetrics.model}</Badge>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Parameters</span>
-              <span className="font-mono text-sm">{neuralMetrics.parameters}</span>
-            </div>
+            <MetricRow label="Model" value={neuralMetrics.model} badge />
+            <MetricRow label="Parameters" value={neuralMetrics.parameters} />
             <div className="flex justify-between items-center">
               <span className="text-sm text-muted-foreground">Device</span>
               <Badge variant={neuralMetrics.device.includes('NVIDIA') ? 'default' : 'secondary'}>
@@ -86,8 +123,13 @@ const ProDashboard: React.FC = () => {
             </div>
             <div className="flex justify-between items-center">
               <span className="text-sm text-muted-foreground">Inference</span>
-              <span className="text-green-500 font-mono text-sm">{neuralMetrics.inference}</span>
+              <span className={`font-mono text-sm ${hrmStatus?.operational ? 'text-green-500' : 'text-muted-foreground'}`}>
+                {neuralMetrics.inference}
+              </span>
             </div>
+            {hrmStatus?.message && (
+              <p className="text-xs text-muted-foreground italic">{hrmStatus.message}</p>
+            )}
           </CardContent>
         </Card>
         
@@ -107,17 +149,11 @@ const ProDashboard: React.FC = () => {
                 {symbolicMetrics.facts.toLocaleString()}
               </Badge>
             </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Predicates</span>
-              <span className="font-mono text-sm">{symbolicMetrics.predicates}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Provers</span>
-              <span className="font-mono text-sm">{symbolicMetrics.provers}</span>
-            </div>
+            <MetricRow label="Predicates" value={symbolicMetrics.predicates} />
+            <MetricRow label="Provers" value={symbolicMetrics.provers} />
             <div className="space-y-1">
               <div className="flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">Coverage</span>
+                <span className="text-sm text-muted-foreground">KB Coverage</span>
                 <span className="text-sm">{symbolicMetrics.coverage}%</span>
               </div>
               <Progress value={symbolicMetrics.coverage} className="h-2" />
@@ -141,20 +177,14 @@ const ProDashboard: React.FC = () => {
                 {learningMetrics.running ? 'Active' : 'Paused'}
               </Badge>
             </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Mode</span>
-              <Badge variant="outline">{learningMetrics.governorMode}</Badge>
-            </div>
+            <MetricRow label="Mode" value={learningMetrics.governorMode} badge />
             <div className="flex justify-between items-center">
               <span className="text-sm text-muted-foreground">Learning Rate</span>
               <span className="font-mono text-sm">
                 {learningMetrics.learningRate.toFixed(2)} facts/min
               </span>
             </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Decisions</span>
-              <span className="font-mono text-sm">{learningMetrics.decisions}</span>
-            </div>
+            <MetricRow label="Decisions" value={learningMetrics.decisions} />
           </CardContent>
         </Card>
       </div>
@@ -195,7 +225,7 @@ const ProDashboard: React.FC = () => {
                 <span className="text-sm">Architecture</span>
               </div>
               <Badge variant="outline">
-                {CURRENT_BACKEND.type === 'original' ? 'Monolithic' : 'Hexagonal'}
+                {systemHealth?.architecture || 'Hexagonal'}
               </Badge>
             </div>
             
@@ -204,7 +234,9 @@ const ProDashboard: React.FC = () => {
                 <Zap className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm">Response</span>
               </div>
-              <Badge variant="outline">{CURRENT_BACKEND.stats.responseTime}</Badge>
+              <Badge variant="outline">
+                {CURRENT_BACKEND.stats.responseTime}
+              </Badge>
             </div>
           </div>
           
@@ -223,6 +255,39 @@ const ProDashboard: React.FC = () => {
               ))}
             </div>
           </div>
+          
+          {/* Health Information */}
+          {systemHealth && (
+            <div className="mt-6 pt-6 border-t">
+              <h4 className="text-sm font-medium mb-3">Backend Health</h4>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                <div>
+                  <span className="text-muted-foreground">Port:</span>
+                  <div className="font-mono">{systemHealth.port || 'n/a'}</div>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Repository:</span>
+                  <div className="font-mono text-xs">{systemHealth.repository || 'n/a'}</div>
+                </div>
+                {systemHealth.mojo && (
+                  <div>
+                    <span className="text-muted-foreground">Mojo:</span>
+                    <div className="font-mono">
+                      {systemHealth.mojo.available ? 'Available' : 'Disabled'}
+                    </div>
+                  </div>
+                )}
+                {systemHealth.read_only !== undefined && (
+                  <div>
+                    <span className="text-muted-foreground">Mode:</span>
+                    <div className="font-mono">
+                      {systemHealth.read_only ? 'Read-Only' : 'Read-Write'}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

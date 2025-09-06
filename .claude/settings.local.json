@@ -1,11 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python:*)",
-      "Bash(curl:*)",
-      "Bash(set PYTHONIOENCODING=utf-8)",
-      "Bash(dir:*)"
+      "Bash(python:*)"
     ],
-    "deny": []
+    "deny": [],
+    "ask": []
   }
 }

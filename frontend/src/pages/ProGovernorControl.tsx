@@ -8,9 +8,10 @@ import { Slider } from '@/components/ui/slider';
 import { useGovernorStore } from '@/stores/useGovernorStore';
 import { Brain, Cpu, Zap, Play, Pause, BarChart3, Activity, Settings, Sparkles } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import apiService from '@/services/apiService';
 import wsService from '@/services/websocket';
 import { toast } from 'sonner';
+import { safeApiCall } from '@/utils/api-helpers';
+import { httpClient } from '@/services/api';
 
 const ProGovernorControl: React.FC = () => {
   const store = useGovernorStore();
@@ -29,25 +30,45 @@ const ProGovernorControl: React.FC = () => {
   
   const handleToggleGovernor = async () => {
     setIsStarting(true);
+    
     try {
-      if (governorRunning) {
-        // Stop governor
-        const response = await apiService.stopGovernor();
-        if (response.success) {
-          toast.success('Governor stopped');
-          wsService.emit('governor_control', { action: 'stop' });
+      const endpoint = governorRunning ? '/api/governor/stop' : '/api/governor/start';
+      
+      // Try API call with robust error handling
+      const response = await safeApiCall(
+        async () => {
+          const res = await httpClient.post(endpoint);
+          return res.data;
+        },
+        { 
+          silent: false,
+          onError: (error) => {
+            // If API fails, try WebSocket as fallback
+            console.debug('API call failed, trying WebSocket fallback');
+          }
         }
+      );
+      
+      if (response && response.success) {
+        toast.success(governorRunning ? 'Governor stopped' : 'Governor started');
+        // Also emit WebSocket event for real-time update
+        wsService.emit('governor_control', { 
+          action: governorRunning ? 'stop' : 'start' 
+        });
       } else {
-        // Start governor
-        const response = await apiService.startGovernor();
-        if (response.success) {
-          toast.success('Governor started');
-          wsService.emit('governor_control', { action: 'start' });
-        }
+        // Fallback: Try WebSocket-only control
+        wsService.emit('governor_control', { 
+          action: governorRunning ? 'stop' : 'start' 
+        });
+        toast.info(governorRunning ? 'Stop command sent' : 'Start command sent');
       }
     } catch (error) {
       console.error('Error controlling governor:', error);
-      toast.error('Failed to control governor');
+      // Last resort: Try WebSocket
+      wsService.emit('governor_control', { 
+        action: governorRunning ? 'stop' : 'start' 
+      });
+      toast.warning('Command sent via WebSocket fallback');
     } finally {
       setIsStarting(false);
     }
@@ -61,18 +82,63 @@ const ProGovernorControl: React.FC = () => {
         bootstrapThreshold: bootstrapThreshold
       };
       
+      // Try API endpoint first
+      const response = await safeApiCall(
+        async () => {
+          const res = await httpClient.post('/api/governor/config', config);
+          return res.data;
+        },
+        { silent: true }
+      );
+      
+      // Always emit WebSocket event for real-time sync
       wsService.emit('update_auto_learning_config', config);
-      toast.success('Configuration updated');
+      
+      if (response && response.success) {
+        toast.success('Configuration updated');
+      } else {
+        toast.info('Configuration sent');
+      }
     } catch (error) {
       console.error('Error updating config:', error);
-      toast.error('Failed to update configuration');
+      toast.warning('Using WebSocket for configuration update');
+      // Fallback to WebSocket only
+      wsService.emit('update_auto_learning_config', {
+        enabled: autoMode,
+        loopIntervalSeconds: loopInterval,
+        bootstrapThreshold: bootstrapThreshold
+      });
     }
   };
   
-  // Calculate average reward
-  const avgReward = rewardHistory.length > 0
-    ? (rewardHistory.reduce((sum, r) => sum + r.value, 0) / rewardHistory.length).toFixed(3)
-    : '0.000';
+  // Calculate average reward safely
+  const avgReward = React.useMemo(() => {
+    if (!rewardHistory || rewardHistory.length === 0) return '0.000';
+    
+    const validRewards = rewardHistory.filter(r => 
+      typeof r === 'number' || (r && typeof r.value === 'number')
+    );
+    
+    if (validRewards.length === 0) return '0.000';
+    
+    const sum = validRewards.reduce((acc, r) => {
+      const value = typeof r === 'number' ? r : r.value;
+      return acc + (value || 0);
+    }, 0);
+    
+    return (sum / validRewards.length).toFixed(3);
+  }, [rewardHistory]);
+  
+  // Helper component for safe metric display
+  const MetricDisplay = ({ icon: Icon, label, value, color = 'text-muted-foreground' }: any) => (
+    <div className="space-y-1">
+      <Label className="text-xs text-muted-foreground">{label}</Label>
+      <div className="flex items-center gap-2">
+        <Icon className={`w-4 h-4 ${color}`} />
+        <span className="text-sm font-medium">{value ?? 'n/a'}</span>
+      </div>
+    </div>
+  );
   
   return (
     <div className="h-full overflow-auto p-6">
@@ -105,41 +171,33 @@ const ProGovernorControl: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <div className="space-y-1">
-              <Label className="text-xs text-muted-foreground">Status</Label>
-              <div className="flex items-center gap-2">
-                {governorRunning ? (
-                  <Activity className="w-4 h-4 text-green-500 animate-pulse" />
-                ) : (
-                  <Activity className="w-4 h-4 text-muted-foreground" />
-                )}
-                <span className="text-sm font-medium">{governorStatus}</span>
-              </div>
-            </div>
+            <MetricDisplay
+              icon={Activity}
+              label="Status"
+              value={governorStatus}
+              color={governorRunning ? 'text-green-500 animate-pulse' : 'text-muted-foreground'}
+            />
             
-            <div className="space-y-1">
-              <Label className="text-xs text-muted-foreground">Learning Rate</Label>
-              <div className="flex items-center gap-2">
-                <Zap className="w-4 h-4 text-yellow-500" />
-                <span className="text-sm font-medium">{learningRate.toFixed(1)} facts/min</span>
-              </div>
-            </div>
+            <MetricDisplay
+              icon={Zap}
+              label="Learning Rate"
+              value={`${learningRate.toFixed(1)} facts/min`}
+              color="text-yellow-500"
+            />
             
-            <div className="space-y-1">
-              <Label className="text-xs text-muted-foreground">Total Facts</Label>
-              <div className="flex items-center gap-2">
-                <Brain className="w-4 h-4 text-blue-500" />
-                <span className="text-sm font-medium">{factCount.toLocaleString()}</span>
-              </div>
-            </div>
+            <MetricDisplay
+              icon={Brain}
+              label="Total Facts"
+              value={factCount.toLocaleString()}
+              color="text-blue-500"
+            />
             
-            <div className="space-y-1">
-              <Label className="text-xs text-muted-foreground">Avg Reward</Label>
-              <div className="flex items-center gap-2">
-                <BarChart3 className="w-4 h-4 text-purple-500" />
-                <span className="text-sm font-medium">{avgReward}</span>
-              </div>
-            </div>
+            <MetricDisplay
+              icon={BarChart3}
+              label="Avg Reward"
+              value={avgReward}
+              color="text-purple-500"
+            />
           </div>
           
           <Button
@@ -240,7 +298,7 @@ const ProGovernorControl: React.FC = () => {
       </Card>
       
       {/* Recent Decisions */}
-      {decisions.length > 0 && (
+      {decisions && decisions.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -256,11 +314,17 @@ const ProGovernorControl: React.FC = () => {
               {decisions.slice(0, 5).map((decision, idx) => (
                 <div key={idx} className="flex items-center justify-between p-2 bg-muted/50 rounded">
                   <div className="flex items-center gap-2">
-                    <Badge variant="outline">{decision.type}</Badge>
-                    <span className="text-sm">{decision.action}</span>
+                    <Badge variant="outline">
+                      {decision.type || decision.action || 'Decision'}
+                    </Badge>
+                    <span className="text-sm">
+                      {decision.description || decision.action || 'Action taken'}
+                    </span>
                   </div>
                   <span className="text-xs text-muted-foreground">
-                    {new Date(decision.timestamp).toLocaleTimeString()}
+                    {decision.timestamp ? 
+                      new Date(decision.timestamp).toLocaleTimeString() : 
+                      'Recent'}
                   </span>
                 </div>
               ))}

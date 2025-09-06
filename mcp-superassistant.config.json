@@ -2,10 +2,10 @@
   "mcpServers": {
     "hak-gal": {
       "type": "stdio",
-      "command": ".\\.venv_hexa\\Scripts\\python.exe",
+      "command": ".venv\\Scripts\\python.exe",
       "args": [
         "-u",
-        "D:\\MCP Mods\\HAK_GAL_HEXAGONAL\\hak_gal_mcp_fixed.py"
+        "D:\\MCP Mods\\HAK_GAL_HEXAGONAL\\ultimate_mcp\\hakgal_mcp_ultimate.py"
       ],
       "env": {
         "PYTHONIOENCODING": "utf-8",

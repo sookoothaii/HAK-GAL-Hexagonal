@@ -1,0 +1,271 @@
+{
+  "workflow_id": "wf-delegation-roundtrip",
+  "version": "1.0.0",
+  "ssot_id": "a1b2c3d4e5f6",
+  "metadata": {
+    "name": "Multi-Agent Delegation Roundtrip",
+    "description": "Coordinate multiple AI agents for consensus-based analysis",
+    "author": "Claude-Opus-4.1",
+    "created": "2025-01-11T10:00:00Z",
+    "tags": ["multi-agent", "delegation", "consensus", "ai"],
+    "estimated_duration_seconds": 180,
+    "risk_level": "medium"
+  },
+  "nodes": [
+    {
+      "id": "node-prepare-task",
+      "type": "execute_code",
+      "label": "Prepare Task",
+      "position": {"x": 100, "y": 300},
+      "params": {
+        "language": "python",
+        "code": "# Prepare task for multi-agent analysis\ntask = {\n    'description': 'Analyze the feasibility of quantum entanglement for secure communication',\n    'constraints': ['No supercolliders', 'Budget under $100K', 'Timeline 6 months'],\n    'output_format': 'structured assessment with pros/cons'\n}\nimport json\nprint(json.dumps(task))",
+        "timeout": 5
+      }
+    },
+    {
+      "id": "node-delegate-deepseek",
+      "type": "delegate_task",
+      "label": "Ask DeepSeek",
+      "position": {"x": 400, "y": 200},
+      "params": {
+        "target_agent": "DeepSeek:deepseek-chat",
+        "task_description": "{{node-prepare-task.output.description}}",
+        "context": {
+          "constraints": "{{node-prepare-task.output.constraints}}",
+          "format": "{{node-prepare-task.output.output_format}}"
+        },
+        "timeout": 90
+      },
+      "retries": {
+        "max_attempts": 2,
+        "backoff_factor": 2
+      }
+    },
+    {
+      "id": "node-delegate-claude",
+      "type": "delegate_task",
+      "label": "Ask Claude",
+      "position": {"x": 400, "y": 300},
+      "params": {
+        "target_agent": "Claude:sonnet",
+        "task_description": "{{node-prepare-task.output.description}}",
+        "context": {
+          "constraints": "{{node-prepare-task.output.constraints}}",
+          "format": "{{node-prepare-task.output.output_format}}"
+        },
+        "timeout": 90
+      },
+      "retries": {
+        "max_attempts": 2,
+        "backoff_factor": 2
+      }
+    },
+    {
+      "id": "node-delegate-gemini",
+      "type": "delegate_task",
+      "label": "Ask Gemini",
+      "position": {"x": 400, "y": 400},
+      "params": {
+        "target_agent": "Gemini:gemini-1.5-flash",
+        "task_description": "{{node-prepare-task.output.description}}",
+        "context": {
+          "constraints": "{{node-prepare-task.output.constraints}}",
+          "format": "{{node-prepare-task.output.output_format}}"
+        },
+        "timeout": 90
+      },
+      "retries": {
+        "max_attempts": 2,
+        "backoff_factor": 2
+      }
+    },
+    {
+      "id": "node-wait-all",
+      "type": "Parallel",
+      "label": "Wait for All",
+      "position": {"x": 600, "y": 300},
+      "params": {
+        "node_ids": ["node-delegate-deepseek", "node-delegate-claude", "node-delegate-gemini"],
+        "wait_all": true
+      }
+    },
+    {
+      "id": "node-evaluate-consensus",
+      "type": "consensus_evaluator",
+      "label": "Evaluate Consensus",
+      "position": {"x": 800, "y": 300},
+      "params": {
+        "task_id": "quantum-comm-feasibility",
+        "outputs": [
+          {
+            "tool_name": "DeepSeek",
+            "content": "{{node-delegate-deepseek.output}}",
+            "model": "deepseek-chat"
+          },
+          {
+            "tool_name": "Claude",
+            "content": "{{node-delegate-deepseek.output}}",
+            "model": "sonnet"
+          },
+          {
+            "tool_name": "Gemini",
+            "content": "{{node-delegate-deepini.output}}",
+            "model": "gemini-1.5-flash"
+          }
+        ],
+        "method": "semantic_similarity",
+        "threshold": 0.7
+      }
+    },
+    {
+      "id": "node-check-consensus",
+      "type": "Branch",
+      "label": "Check Consensus",
+      "position": {"x": 1000, "y": 300},
+      "params": {
+        "condition": "node-evaluate-consensus.output.consensus_score >= 0.7",
+        "true_path": "node-synthesize",
+        "false_path": "node-second-round"
+      }
+    },
+    {
+      "id": "node-synthesize",
+      "type": "delegate_task",
+      "label": "Synthesize Final",
+      "position": {"x": 1200, "y": 200},
+      "params": {
+        "target_agent": "Claude:sonnet",
+        "task_description": "Synthesize the following three assessments into a final recommendation",
+        "context": {
+          "deepseek_view": "{{node-delegate-deepseek.output}}",
+          "claude_view": "{{node-delegate-claude.output}}",
+          "gemini_view": "{{node-delegate-gemini.output}}",
+          "consensus_score": "{{node-evaluate-consensus.output.consensus_score}}"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "node-second-round",
+      "type": "delegate_task",
+      "label": "Clarify Disagreements",
+      "position": {"x": 1200, "y": 400},
+      "params": {
+        "target_agent": "DeepSeek:deepseek-chat",
+        "task_description": "The agents disagreed. Key differences: {{node-evaluate-consensus.output.differences}}. Please provide a tie-breaking analysis.",
+        "context": {
+          "original_responses": "{{node-evaluate-consensus.output}}",
+          "focus_areas": "{{node-evaluate-consensus.output.disagreement_points}}"
+        },
+        "timeout": 90
+      }
+    },
+    {
+      "id": "node-logger-success",
+      "type": "Logger",
+      "label": "Log Success",
+      "position": {"x": 1400, "y": 200},
+      "params": {
+        "level": "info",
+        "message": "Consensus achieved: {{node-evaluate-consensus.output.consensus_score}}"
+      }
+    },
+    {
+      "id": "node-logger-retry",
+      "type": "Logger",
+      "label": "Log Retry",
+      "position": {"x": 1400, "y": 400},
+      "params": {
+        "level": "warn",
+        "message": "Low consensus, second round initiated"
+      }
+    },
+    {
+      "id": "node-approval-save",
+      "type": "ApprovalGate",
+      "label": "Approve Save",
+      "position": {"x": 1600, "y": 300},
+      "params": {
+        "message": "Save multi-agent analysis results?",
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "node-save-results",
+      "type": "add_fact",
+      "label": "Save as Fact",
+      "position": {"x": 1800, "y": 300},
+      "params": {
+        "statement": "MultiAgentAnalysis(quantum_communication, consensus_{{node-evaluate-consensus.output.consensus_score}}, timestamp_{{timestamp}}).",
+        "source": "workflow_delegation_roundtrip"
+      },
+      "approval": {
+        "required": true,
+        "message": "Add consensus result to knowledge base?"
+      }
+    }
+  ],
+  "edges": [
+    {"id": "e1", "source": "node-prepare-task", "target": "node-wait-all"},
+    {"id": "e2", "source": "node-wait-all", "target": "node-delegate-deepseek"},
+    {"id": "e3", "source": "node-wait-all", "target": "node-delegate-claude"},
+    {"id": "e4", "source": "node-wait-all", "target": "node-delegate-gemini"},
+    {"id": "e5", "source": "node-delegate-deepseek", "target": "node-evaluate-consensus"},
+    {"id": "e6", "source": "node-delegate-claude", "target": "node-evaluate-consensus"},
+    {"id": "e7", "source": "node-delegate-gemini", "target": "node-evaluate-consensus"},
+    {"id": "e8", "source": "node-evaluate-consensus", "target": "node-check-consensus"},
+    {"id": "e9", "source": "node-check-consensus", "target": "node-synthesize", "condition": "consensus >= 0.7"},
+    {"id": "e10", "source": "node-check-consensus", "target": "node-second-round", "condition": "consensus < 0.7"},
+    {"id": "e11", "source": "node-synthesize", "target": "node-logger-success"},
+    {"id": "e12", "source": "node-second-round", "target": "node-logger-retry"},
+    {"id": "e13", "source": "node-logger-success", "target": "node-approval-save"},
+    {"id": "e14", "source": "node-logger-retry", "target": "node-approval-save"},
+    {"id": "e15", "source": "node-approval-save", "target": "node-save-results", "type": "success"}
+  ],
+  "variables": {
+    "timestamp": "{{Date.now()}}",
+    "consensus_threshold": 0.7,
+    "max_rounds": 2
+  },
+  "params": {
+    "task_topic": {
+      "type": "string",
+      "required": false,
+      "default": "quantum communication",
+      "description": "Topic for multi-agent analysis"
+    },
+    "budget_constraint": {
+      "type": "number",
+      "required": false,
+      "default": 100000,
+      "description": "Maximum budget in USD"
+    }
+  },
+  "execution": {
+    "mode": "dag",
+    "max_parallel": 3,
+    "global_timeout": 600,
+    "dry_run": true,
+    "checkpoint_after": ["node-evaluate-consensus", "node-approval-save"]
+  },
+  "approvals": {
+    "default_policy": "deny_writes",
+    "write_nodes_require_approval": true,
+    "delegation_nodes_require_approval": false,
+    "auto_approve_dry_run": true
+  },
+  "outputs": {
+    "success": {
+      "consensus_score": "{{node-evaluate-consensus.output.consensus_score}}",
+      "final_synthesis": "{{node-synthesize.output || node-second-round.output}}",
+      "agents_consulted": ["DeepSeek", "Claude", "Gemini"],
+      "fact_added": "{{node-save-results.output}}"
+    },
+    "error": {
+      "failed_node": "{{error.node_id}}",
+      "error_message": "{{error.message}}",
+      "partial_results": "{{partial_outputs}}"
+    }
+  }
+}

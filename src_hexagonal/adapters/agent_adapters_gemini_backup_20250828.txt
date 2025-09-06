@@ -1,0 +1,21 @@
+"""
+Backup of original GeminiAdapter configuration
+Created: 2025-08-28
+Original model: gemini-1.5-flash
+
+This backup was created before updating to:
+- Primary: gemini-2.5-pro
+- Fallback: gemini-2.5-flash
+
+To restore original configuration:
+Replace lines 644-654 in agent_adapters.py with:
+
+class GeminiAdapter(BaseAgentAdapter):
+    \"\"\"Echte Google Gemini AI Integration\"\"\"
+    
+    def __init__(self):
+        super().__init__()
+        self.api_key = os.environ.get('GOOGLE_API_KEY')
+        self.base_url = "https://generativelanguage.googleapis.com/v1beta/models"
+        self.model = "gemini-1.5-flash"
+"""

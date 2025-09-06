@@ -1,0 +1,337 @@
+{
+  "consensus": {
+    "task_id": "test_001",
+    "timestamp": "2025-09-03T14:52:38.713689",
+    "consensus_score": 0.686,
+    "consensus_result": "Die wichtigsten Tools sind: 1) Batch File Operations für Bulk-Verarbeitung, 2) Monitoring Dashboard für Überwachung, 3) Data Converter für Formatkonvertierung",
+    "synthesis": "Konsens über 3 Outputs: Hauptthemen: batch, monitoring, dashboard, sind:, operations. Divergenzen bei: DeepSeek:chat, Claude:haiku, Gemini:2.0-flash.",
+    "divergences": [
+      {
+        "tool": "DeepSeek:chat",
+        "unique_focus": [
+          "formatkonvertierung",
+          "wichtigsten",
+          "überwachung,",
+          "converter",
+          "bulk-verarbeitung,"
+        ],
+        "type": "content_divergence"
+      },
+      {
+        "tool": "Claude:haiku",
+        "unique_focus": [
+          "effiziente",
+          "sollte",
+          "scheduler",
+          "priorität",
+          "dateiverarbeitung,"
+        ],
+        "type": "content_divergence"
+      },
+      {
+        "tool": "Gemini:2.0-flash",
+        "unique_focus": [
+          "änderungsverfolgung",
+          "version",
+          "operations,",
+          "control",
+          "essentiell"
+        ],
+        "type": "content_divergence"
+      }
+    ],
+    "ranking": [
+      {
+        "tool_name": "DeepSeek:chat",
+        "model": "deepseek-chat",
+        "alignment_score": 1.0
+      },
+      {
+        "tool_name": "Gemini:2.0-flash",
+        "model": "gemini-2.0-flash",
+        "alignment_score": 0.609
+      },
+      {
+        "tool_name": "Claude:haiku",
+        "model": "claude-3-haiku",
+        "alignment_score": 0.472
+      }
+    ],
+    "method": "semantic_similarity",
+    "threshold": 0.7,
+    "confidence": "MEDIUM"
+  },
+  "reliability": {
+    "tool_name": "DeepSeek:chat",
+    "n_runs": 5,
+    "consistency_score": 0.715,
+    "fleiss_kappa": 0.6,
+    "avg_execution_time": NaN,
+    "stability": "MODERATE",
+    "errors": 0,
+    "timestamp": "2025-09-03T14:52:38.723572"
+  },
+  "bias": {
+    "biases": [
+      {
+        "tool_name": "SecurityExpert",
+        "theme_bias": {
+          "score": 0.1605195569149095,
+          "dominant_themes": [
+            "security",
+            "critical",
+            "aspect."
+          ]
+        },
+        "length_bias": {
+          "score": 0.0814018896724371,
+          "pattern": "too_uniform",
+          "avg_length": 72.0
+        },
+        "sentiment_bias": {
+          "score": 1.0,
+          "tendency": "negative_bias",
+          "positivity_ratio": 0.0
+        },
+        "overall_bias_score": 0.41397381552911555
+      },
+      {
+        "tool_name": "EfficiencyExpert",
+        "theme_bias": {
+          "score": 0.03889906708429569,
+          "dominant_themes": [
+            "operations",
+            "efficiency",
+            "resources"
+          ]
+        },
+        "length_bias": {
+          "score": 0.05852383261700792,
+          "pattern": "too_uniform",
+          "avg_length": 54.0
+        },
+        "sentiment_bias": {
+          "score": 1.0,
+          "tendency": "positive_bias",
+          "positivity_ratio": 1.0
+        },
+        "overall_bias_score": 0.36580763323376786
+      },
+      {
+        "tool_name": "BalancedExpert",
+        "theme_bias": {
+          "score": 0.04451797685523751,
+          "dominant_themes": [
+            "security",
+            "monitoring",
+            "operations,"
+          ]
+        },
+        "length_bias": {
+          "score": 0.053348689354220075,
+          "pattern": "too_uniform",
+          "avg_length": 63.0
+        },
+        "sentiment_bias": {
+          "score": 0.0,
+          "tendency": "neutral"
+        },
+        "overall_bias_score": 0.03262222206981919
+      }
+    ],
+    "outliers": [],
+    "mean_bias": 0.271,
+    "recommendation": "Alle Tools zeigen ausgewogenes Verhalten."
+  },
+  "delegation": {
+    "task_hash": "99ac4ac7",
+    "recommended_tools": [
+      {
+        "tool": "DeepSeek:chat",
+        "score": 1.0,
+        "confidence": "LOW"
+      },
+      {
+        "tool": "Gemini:2.0-flash",
+        "score": 1.0,
+        "confidence": "LOW"
+      },
+      {
+        "tool": "Claude:haiku",
+        "score": 0.5,
+        "confidence": "LOW"
+      }
+    ],
+    "strategy": "Parallel delegation to: DeepSeek:chat, Gemini:2.0-flash, Claude:haiku with consensus evaluation",
+    "task_features": {
+      "length": 73,
+      "complexity": 1.2,
+      "has_data": true,
+      "has_analysis": false,
+      "has_security": false,
+      "has_code": false,
+      "keywords": [
+        "analyze",
+        "quality",
+        "issues",
+        "suggest",
+        "improvements"
+      ]
+    },
+    "fallback_tool": "Claude:opus"
+  },
+  "integration": {
+    "delegation": {
+      "task_hash": "3fcc04ee",
+      "recommended_tools": [
+        {
+          "tool": "DeepSeek:chat",
+          "score": 1.0,
+          "confidence": "LOW"
+        },
+        {
+          "tool": "Gemini:2.0-flash",
+          "score": 1.0,
+          "confidence": "LOW"
+        },
+        {
+          "tool": "Claude:haiku",
+          "score": 0.5,
+          "confidence": "LOW"
+        }
+      ],
+      "strategy": "Parallel delegation to: DeepSeek:chat, Gemini:2.0-flash, Claude:haiku with consensus evaluation",
+      "task_features": {
+        "length": 50,
+        "complexity": 0.8,
+        "has_data": false,
+        "has_analysis": false,
+        "has_security": false,
+        "has_code": false,
+        "keywords": [
+          "inconsistencies",
+          "knowledge"
+        ]
+      },
+      "fallback_tool": null
+    },
+    "consensus": {
+      "task_id": "integration_test",
+      "timestamp": "2025-09-03T14:52:38.725758",
+      "consensus_score": 0.924,
+      "consensus_result": "Mock response from Claude:haiku: Found 15 inconsistencies, primarily in date formats",
+      "synthesis": "Konsens über 3 Outputs: Hauptthemen: response, found, inconsistencies,, primarily, formats. Divergenzen bei: DeepSeek:chat, Gemini:2.0-flash, Claude:haiku.",
+      "divergences": [
+        {
+          "tool": "DeepSeek:chat",
+          "unique_focus": [
+            "deepseek:chat:"
+          ],
+          "type": "content_divergence"
+        },
+        {
+          "tool": "Gemini:2.0-flash",
+          "unique_focus": [
+            "gemini:2.0-flash:"
+          ],
+          "type": "content_divergence"
+        },
+        {
+          "tool": "Claude:haiku",
+          "unique_focus": [
+            "claude:haiku:"
+          ],
+          "type": "content_divergence"
+        }
+      ],
+      "ranking": [
+        {
+          "tool_name": "Claude:haiku",
+          "model": "haiku",
+          "alignment_score": 1.0
+        },
+        {
+          "tool_name": "DeepSeek:chat",
+          "model": "chat",
+          "alignment_score": 0.899
+        },
+        {
+          "tool_name": "Gemini:2.0-flash",
+          "model": "2.0-flash",
+          "alignment_score": 0.872
+        }
+      ],
+      "method": "semantic_similarity",
+      "threshold": 0.7,
+      "confidence": "HIGH"
+    },
+    "reliability": {
+      "tool_name": "DeepSeek:chat",
+      "n_runs": 3,
+      "consistency_score": 1.0,
+      "fleiss_kappa": 0.667,
+      "avg_execution_time": NaN,
+      "stability": "STABLE",
+      "errors": 0,
+      "timestamp": "2025-09-03T14:52:38.728672"
+    },
+    "biases": {
+      "biases": [
+        {
+          "tool_name": "DeepSeek:chat",
+          "theme_bias": {
+            "score": 0.0,
+            "dominant_themes": []
+          },
+          "length_bias": {
+            "score": 0.0,
+            "pattern": "too_uniform",
+            "avg_length": 120.0
+          },
+          "sentiment_bias": {
+            "score": 0.0,
+            "tendency": "neutral"
+          },
+          "overall_bias_score": 0.0
+        },
+        {
+          "tool_name": "Gemini:2.0-flash",
+          "theme_bias": {
+            "score": 0.0,
+            "dominant_themes": []
+          },
+          "length_bias": {
+            "score": 0.0,
+            "pattern": "too_uniform",
+            "avg_length": 120.0
+          },
+          "sentiment_bias": {
+            "score": 0.0,
+            "tendency": "neutral"
+          },
+          "overall_bias_score": 0.0
+        },
+        {
+          "tool_name": "Claude:haiku",
+          "theme_bias": {
+            "score": 0.0,
+            "dominant_themes": []
+          },
+          "length_bias": {
+            "score": 0.0,
+            "pattern": "too_uniform",
+            "avg_length": 120.0
+          },
+          "sentiment_bias": {
+            "score": 0.0,
+            "tendency": "neutral"
+          },
+          "overall_bias_score": 0.0
+        }
+      ],
+      "outliers": [],
+      "mean_bias": 0.0,
+      "recommendation": "Alle Tools zeigen ausgewogenes Verhalten."
+    }
+  }
+}

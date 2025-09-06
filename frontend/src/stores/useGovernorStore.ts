@@ -1,6 +1,8 @@
 // V4 - Cleaned, consistent, and fully synchronized with the backend data structures.
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
+import { appConfig } from '@/config/app.config';
+import { defaultsService } from '@/services/defaultsService';
 
 // --- Data Structures (Single Source of Truth) ---
 
@@ -173,6 +175,18 @@ interface GovernorState {
 
 // --- Store Implementation ---
 
+// Helper function to get initial values from localStorage
+const getInitialValue = (key: string, defaultValue: any) => {
+  if (typeof window === 'undefined') return defaultValue;
+  const stored = localStorage.getItem(key);
+  if (stored === null) return defaultValue;
+  try {
+    return JSON.parse(stored);
+  } catch {
+    return stored === 'true' ? true : stored === 'false' ? false : stored;
+  }
+};
+
 export const useGovernorStore = create(immer<GovernorState>((set) => ({
   // Initial State
   isConnected: false,
@@ -182,14 +196,21 @@ export const useGovernorStore = create(immer<GovernorState>((set) => ({
   gpuInfo: null,
 
   governor: {
-    status: "INITIALIZING",
-    running: false,
+    status: getInitialValue('governor_active', false) ? "ACTIVE" : "INITIALIZING",
+    running: getInitialValue('governor_active', false),
     decisions: [],
     rewardHistory: [],
   },
 
   kb: {
-    metrics: { factCount: 0, growthRate: 0, connectivity: 0, entropy: 0, nodeCount: 0, edgeCount: 0 }, // Initial value 0, will be updated from backend
+    metrics: { 
+      factCount: defaultsService.getDefaults().factCount,
+      growthRate: defaultsService.getDefaults().growthRate,
+      connectivity: 0, 
+      entropy: 0, 
+      nodeCount: defaultsService.getDefaults().nodeCount,
+      edgeCount: defaultsService.getDefaults().edgeCount
+    },
     categories: [],
   },
 
@@ -228,18 +249,31 @@ export const useGovernorStore = create(immer<GovernorState>((set) => ({
   handleSystemLoadUpdate: (payload) => set((state) => {
     state.systemLoad = payload;
     state.systemLoadHistory.push({ time: new Date().toLocaleTimeString(), ...payload });
-    if (state.systemLoadHistory.length > 50) state.systemLoadHistory.shift();
+    if (state.systemLoadHistory.length > appConfig.PERFORMANCE.SYSTEM_LOAD_HISTORY_LIMIT) state.systemLoadHistory.shift();
   }),
 
   handleGovernorUpdate: (payload) => set((state) => {
+    // Fix: Check multiple possible locations for running state
     if (payload.governorStatus) state.governor.status = payload.governorStatus;
-    if (payload.status) {
+    
+    // FIXED: Check for running state in multiple places
+    if (payload.running !== undefined) {
+      state.governor.running = payload.running;
+    } else if (payload.status && payload.status.running !== undefined) {
       state.governor.running = payload.status.running;
-      if (payload.status.recentDecisions) state.governor.decisions = payload.status.recentDecisions;
     }
+    
+    // Handle decisions
+    if (payload.status && payload.status.recentDecisions) {
+      state.governor.decisions = payload.status.recentDecisions;
+    } else if (payload.decisions) {
+      state.governor.decisions = payload.decisions;
+    }
+    
+    // Handle rewards
     if (payload.reward !== null && payload.reward !== undefined) {
       state.governor.rewardHistory.push(payload.reward);
-      if (state.governor.rewardHistory.length > 100) state.governor.rewardHistory.shift();
+      if (state.governor.rewardHistory.length > appConfig.PERFORMANCE.REWARD_HISTORY_LIMIT) state.governor.rewardHistory.shift();
     }
   }),
 
@@ -304,7 +338,7 @@ export const useGovernorStore = create(immer<GovernorState>((set) => ({
   }),
 
   addQueryResponse: (response) => set((state) => {
-    state.queryHistory = [response, ...state.queryHistory].slice(0, 100);
+    state.queryHistory = [response, ...state.queryHistory].slice(0, appConfig.PERFORMANCE.QUERY_HISTORY_LIMIT);
   }),
 
   updateQueryResponse: (id, updates) => set((state) => {

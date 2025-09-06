@@ -10,8 +10,6 @@ const KnowledgeGraphVisualization = () => {
   const [graphUrl, setGraphUrl] = useState('/knowledge_graph.html');
   const [graphData, setGraphData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
   const [autoUpdateEnabled, setAutoUpdateEnabled] = useState(true);
   const [updateInterval, setUpdateInterval] = useState(30); // seconds
   const [emergencyGeneratorStatus, setEmergencyGeneratorStatus] = useState<string>('unknown');
@@ -55,9 +53,10 @@ const KnowledgeGraphVisualization = () => {
   // Enhanced: Check emergency generator status
   const checkEmergencyGeneratorStatus = async () => {
     try {
-      const response = await fetch('/api/graph/emergency-status');
-      if (response.ok) {
-        const status = await response.json();
+      const { httpClient } = await import('@/services/api');
+      const response = await httpClient.get('/api/graph/emergency-status');
+      if (response.status === 200) {
+        const status = response.data;
         setEmergencyGeneratorStatus(status.status || 'unknown');
       }
     } catch (error) {
@@ -69,12 +68,11 @@ const KnowledgeGraphVisualization = () => {
   const triggerEmergencyGeneration = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/graph/emergency-generate', {
-        method: 'POST'
-      });
+      const { httpClient } = await import('@/services/api');
+      const response = await httpClient.post('/api/graph/emergency-generate');
       
-      if (response.ok) {
-        const result = await response.json();
+      if (response.status === 200) {
+        const result = response.data;
         if (result.success) {
           await fetchGraphData();
           setEmergencyGeneratorStatus('completed');
@@ -93,15 +91,10 @@ const KnowledgeGraphVisualization = () => {
   // Enhanced: Update graph configuration
   const updateGraphConfig = async (config: any) => {
     try {
-      const response = await fetch('/api/graph/config', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(config)
-      });
+      const { httpClient } = await import('@/services/api');
+      const response = await httpClient.post('/api/graph/config', config);
       
-      if (response.ok) {
+      if (response.status === 200) {
         await fetchGraphData();
       }
     } catch (error) {
@@ -115,15 +108,8 @@ const KnowledgeGraphVisualization = () => {
       setError(null);
       
       // Call API to generate new graph
-      const { API_BASE_URL } = await import('@/config/backends');
-      const response = await fetch(`${API_BASE_URL}/api/graph/generate`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      
-      const result = await response.json();
+      const { httpClient } = await import('@/services/api');
+      const { data: result } = await httpClient.post(`/api/graph/generate`);
       
       if (result.success) {
         // Graph generated successfully, now reload the iframe

@@ -1,0 +1,171 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+AETHELRED ENGINE - OPTIMIZED VERSION
+Lädt Facts nur einmal, nutzt direkte DB-Zugriffe
+"""
+
+import sys
+import os
+import sqlite3
+import time
+import random
+import argparse
+import requests
+from typing import List, Set, Dict, Any
+
+# Add parent directory to path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
+# Topics für Wissensgenerierung
+TOPICS = [
+    "quantum computing", "artificial intelligence", "biotechnology",
+    "renewable energy", "space exploration", "nanotechnology",
+    "blockchain", "virtual reality", "gene therapy", "robotics"
+]
+
+class AethelredEngineFast:
+    def __init__(self):
+        self.db_path = r"D:\MCP Mods\HAK_GAL_HEXAGONAL\hexagonal_kb.db"
+        self.api_base = "http://localhost:5002"
+        self.existing_facts = set()
+        self.facts_loaded = False
+        
+    def load_facts_from_db(self):
+        """Lade Fakten DIREKT aus der Datenbank (schnell!)"""
+        if self.facts_loaded:
+            return  # Nur einmal laden!
+            
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            cursor.execute("SELECT statement FROM facts")
+            self.existing_facts = {row[0] for row in cursor.fetchall()}
+            conn.close()
+            self.facts_loaded = True
+            print(f"[FAST] Loaded {len(self.existing_facts)} facts from DB")
+        except Exception as e:
+            print(f"[ERROR] DB load failed: {e}")
+            self.existing_facts = set()
+    
+    def get_llm_response(self, topic):
+        """Hole LLM Response mit kurzen Timeouts"""
+        try:
+            response = requests.post(
+                f"{self.api_base}/api/llm/get-explanation",
+                json={'topic': topic},
+                timeout=15  # Nur 15 Sekunden!
+            )
+            if response.status_code == 200:
+                return response.json()
+        except Exception as e:
+            print(f"[WARN] LLM timeout for {topic}: {e}")
+        return None
+    
+    def extract_facts(self, llm_response, topic):
+        """Extrahiere Fakten aus LLM Response"""
+        facts = []
+        
+        # Nutze suggested_facts falls vorhanden
+        if llm_response and 'suggested_facts' in llm_response:
+            for fact in llm_response['suggested_facts'][:5]:
+                if isinstance(fact, dict) and 'fact' in fact:
+                    fact_str = fact['fact']
+                elif isinstance(fact, str):
+                    fact_str = fact
+                else:
+                    continue
+                    
+                if not fact_str.endswith('.'):
+                    fact_str += '.'
+                facts.append(fact_str)
+        
+        # Fallback: Generiere simple Fakten
+        if not facts:
+            topic_clean = topic.replace(" ", "").title()
+            facts = [
+                f"IsA({topic_clean}, Topic).",
+                f"StudiedBy({topic_clean}, Researchers).",
+                f"HasProperty({topic_clean}, Importance)."
+            ]
+        
+        return facts
+    
+    def add_fact_to_db(self, fact):
+        """Füge Fakt DIREKT zur DB hinzu (schnell!)"""
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            cursor.execute(
+                "INSERT INTO facts (statement) VALUES (?)",
+                (fact,)
+            )
+            conn.commit()
+            conn.close()
+            return True
+        except sqlite3.IntegrityError:
+            # Duplikat
+            return False
+        except Exception as e:
+            print(f"[ERROR] DB insert failed: {e}")
+            return False
+    
+    def run(self, duration_minutes=5):
+        """Hauptschleife"""
+        print(f"[START] Aethelred Engine FAST - {duration_minutes} minutes")
+        print("[INFO] Using direct DB access (no API delays)")
+        
+        # Lade Facts einmal
+        self.load_facts_from_db()
+        
+        start_time = time.time()
+        end_time = start_time + (duration_minutes * 60)
+        facts_added = 0
+        round_num = 0
+        
+        while time.time() < end_time:
+            round_num += 1
+            print(f"\n=== Round {round_num} ===")
+            
+            # Wähle EINEN Topic
+            topic = random.choice(TOPICS)
+            print(f"[TOPIC] {topic}")
+            
+            # Hole LLM Response
+            llm_response = self.get_llm_response(topic)
+            
+            if llm_response:
+                # Extrahiere Fakten
+                new_facts = self.extract_facts(llm_response, topic)
+                
+                # Füge neue Fakten hinzu
+                for fact in new_facts:
+                    if fact not in self.existing_facts:
+                        if self.add_fact_to_db(fact):
+                            facts_added += 1
+                            self.existing_facts.add(fact)
+                            print(f"[+] {fact}")
+                
+                print(f"[STATS] Added {len(new_facts)} facts, Total: {facts_added}")
+            else:
+                print(f"[SKIP] No LLM response for {topic}")
+            
+            # Pause zwischen Runden
+            if time.time() < end_time:
+                time.sleep(5)
+        
+        print(f"\n[DONE] Added {facts_added} facts in {round_num} rounds")
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-d", "--duration", type=float, default=0.1,
+                       help="Duration in hours")
+    parser.add_argument("-p", "--port", type=int, default=5002,
+                       help="Port (ignored)")
+    args = parser.parse_args()
+    
+    engine = AethelredEngineFast()
+    engine.run(duration_minutes=args.duration * 60)
+
+if __name__ == "__main__":
+    main()

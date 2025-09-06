@@ -20,7 +20,8 @@ import {
   RefreshCw,
   Globe,
   Shield,
-  Activity
+  Activity,
+  Server
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -65,7 +66,7 @@ const ProHeader: React.FC<ProHeaderProps> = ({ onNavToggle }) => {
     { id: 3, title: 'Governor Alert', message: 'Strategy optimization complete', time: '2h ago', unread: false },
   ]);
   
-  const wsService = useGovernorSocket(); // <-- ADD THIS LINE
+  const wsService = useGovernorSocket();
   
   // Store data
   const isConnected = useGovernorStore(state => state.isConnected);
@@ -83,7 +84,7 @@ const ProHeader: React.FC<ProHeaderProps> = ({ onNavToggle }) => {
   // Command palette items
   const commandItems = [
     { group: 'Navigation', items: [
-      { label: 'Dashboard', icon: <Activity className="w-4 h-4" />, shortcut: 'D', action: () => navigate('/dashboard/pro') },
+      { label: 'Dashboard', icon: <Activity className="w-4 h-4" />, shortcut: 'D', action: () => navigate('/dashboard') },
       { label: 'Knowledge Base', icon: <Globe className="w-4 h-4" />, shortcut: 'K', action: () => navigate('/knowledge') },
       { label: 'Governor Control', icon: <Shield className="w-4 h-4" />, shortcut: 'G', action: () => navigate('/governor') },
     ]},
@@ -105,7 +106,7 @@ const ProHeader: React.FC<ProHeaderProps> = ({ onNavToggle }) => {
             break;
           case 'd':
             e.preventDefault();
-            navigate('/dashboard/pro');
+            navigate('/dashboard');
             break;
           case 'g':
             e.preventDefault();
@@ -178,6 +179,12 @@ const ProHeader: React.FC<ProHeaderProps> = ({ onNavToggle }) => {
         
         {/* Right Section */}
         <div className="flex items-center gap-3">
+          {/* Backend Status Badge - No switching, just display */}
+          <Badge variant="outline" className="hidden lg:flex items-center gap-1 text-xs">
+            <Server className="w-3 h-3" />
+            Port 5002 (WRITE)
+          </Badge>
+
           {/* Governor Control Button */}
           <Button
             onClick={() => wsService.toggleGovernor(!governorRunning)}

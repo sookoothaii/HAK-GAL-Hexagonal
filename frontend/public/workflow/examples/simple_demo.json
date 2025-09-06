@@ -1,0 +1,61 @@
+{
+  "workflow_id": "wf-simple-demo",
+  "version": "1.0.0",
+  "ssot_id": "demo123456",
+  "metadata": {
+    "name": "Simple Demo Workflow",
+    "description": "Clean and simple workflow for testing",
+    "author": "HAK-GAL",
+    "created": "2025-09-04T23:00:00Z",
+    "tags": ["demo", "simple", "clean"],
+    "risk_level": "low"
+  },
+  "nodes": [
+    {
+      "id": "node-start",
+      "type": "tool",
+      "label": "System Status",
+      "name": "get_system_status",
+      "position": {"x": 100, "y": 200},
+      "params": {}
+    },
+    {
+      "id": "node-search",
+      "type": "tool",
+      "label": "Search Knowledge",
+      "name": "search_knowledge",
+      "position": {"x": 400, "y": 200},
+      "params": {
+        "query": "HAK-GAL",
+        "limit": 5
+      }
+    },
+    {
+      "id": "node-analyze",
+      "type": "delegate_task",
+      "label": "AI Analysis",
+      "name": "delegate_task",
+      "position": {"x": 700, "y": 200},
+      "params": {
+        "target_agent": "Gemini:gemini-1.5-flash",
+        "task_description": "Analyze the search results"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-1",
+      "source": "node-start",
+      "target": "node-search"
+    },
+    {
+      "id": "edge-2",
+      "source": "node-search",
+      "target": "node-analyze"
+    }
+  ],
+  "approvals": {
+    "default_policy": "allow_all",
+    "write_nodes_require_approval": true
+  }
+}

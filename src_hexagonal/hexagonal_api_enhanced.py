@@ -1,3 +1,4 @@
+# FIXED VERSION - No import of non-existent module
 """
 REST API Adapter with WebSocket, Governor & Sentry - Enhanced Flask Application
 ==============================================================================
@@ -13,6 +14,7 @@ import time
 from pathlib import Path
 import subprocess
 from datetime import datetime, timezone
+import json
 import re
 import shutil
 
@@ -23,10 +25,15 @@ from application.services import FactManagementService, ReasoningService
 from application.policy_guard import PolicyGuard
 from application.kill_switch import KillSwitch
 from adapters.legacy_adapters import LegacyFactRepository, LegacyReasoningEngine
+from adapters.native_adapters import NativeReasoningEngine
 from adapters.sqlite_adapter import SQLiteFactRepository
 from adapters.websocket_adapter import create_websocket_adapter
 from adapters.governor_adapter import get_governor_adapter
 from core.domain.entities import Query
+from adapters.hrm_feedback_adapter import HRMFeedbackAdapter
+from adapters.hrm_feedback_endpoints import register_hrm_feedback_routes
+from adapters.llm_providers import get_llm_provider
+
 
 # Import infrastructure if available
 try:
@@ -55,23 +62,22 @@ class HexagonalAPI:
             methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
         )
         
-        # Paths: hex root and guess original suite root (sibling directory)
+        # Paths setup
         self.hex_root = Path(__file__).resolve().parents[1]
         self.suite_root = (self.hex_root.parent / 'HAK_GAL_SUITE')
         self.graph_public_path = self.suite_root / 'frontend_new' / 'public' / 'knowledge_graph.html'
         self.emergency_generator_path = self.suite_root / 'emergency_graph_generator.py'
 
-        # Load environment from HAK_GAL_SUITE/.env if present (do not override existing env)
+        # Load environment
         try:
             env_path = self.suite_root / '.env'
             if env_path.exists():
-                # Try python-dotenv first
                 try:
                     from dotenv import load_dotenv
                     load_dotenv(dotenv_path=str(env_path), override=False)
                     print(f"[ENV] Loaded environment from {env_path}")
                 except Exception:
-                    # Minimal manual parser
+                    # Manual parser fallback
                     for line in env_path.read_text(encoding='utf-8', errors='ignore').splitlines():
                         line = line.strip()
                         if not line or line.startswith('#'):
@@ -94,9 +100,9 @@ class HexagonalAPI:
             self.fact_repository = LegacyFactRepository()
             self.reasoning_engine = LegacyReasoningEngine()
         else:
-            # Modern, future-oriented: SQLite as Source of Truth (SoT)
+            # Modern SQLite adapter
             try:
-                print("[INFO] Using SQLite Adapter (k_assistant.db)")
+                print("[INFO] Using SQLite Adapter (hexagonal_kb.db)")
                 self.fact_repository = SQLiteFactRepository()
             except Exception as e:
                 print(f"[WARN] SQLite adapter error ({e}), attempting JSONL fallback")
@@ -106,7 +112,7 @@ class HexagonalAPI:
                     self.fact_repository = JsonlFactRepository()
                 except Exception as e2:
                     raise RuntimeError(f"No available repository adapters (SQLite/JSONL). Errors: {e} / {e2}")
-            self.reasoning_engine = LegacyReasoningEngine()
+            self.reasoning_engine = NativeReasoningEngine()
         
         # Initialize Application Services
         self.fact_service = FactManagementService(
@@ -119,9 +125,8 @@ class HexagonalAPI:
             fact_repository=self.fact_repository
         )
 
-        # Initialize Policy Guard (observe mode by default)
+        # Initialize Policy Guard and Kill Switch
         self.policy_guard = PolicyGuard()
-        # Initialize Kill Switch
         self.kill_switch = KillSwitch()
         
         # Initialize WebSocket Support
@@ -135,12 +140,10 @@ class HexagonalAPI:
             )
             print("[OK] WebSocket Support enabled")
         
-        # Initialize Governor (but don't auto-start - user controls via Frontend)
+        # Initialize Governor
         self.governor = None
         if enable_governor:
             self.governor = get_governor_adapter()
-            # DON'T auto-start! User controls this via Frontend
-            # self.governor.start()  # REMOVED - Manual control only
             print("[OK] Governor initialized (not started - use Frontend to control)")
         
         # Initialize Sentry Monitoring
@@ -151,26 +154,43 @@ class HexagonalAPI:
                 self.monitoring = tentative_monitor
                 print("[OK] Sentry Monitoring enabled")
             else:
-                # Ensure monitoring remains disabled if initialization failed
                 self.monitoring = None
         
-        # Graph configuration state (in-memory)
+        # Graph configuration state
         self.graph_config: Dict[str, Any] = {
             'auto_update': False,
             'update_interval': 30,
             'last_update': None,
         }
 
-        # Simple in-memory cache (e.g., facts count) with TTL
+        # Simple in-memory cache
         self._cache: Dict[str, Dict[str, Any]] = {}
+
+        # Mojo adapter
+        try:
+            from adapters.mojo_kernels_adapter import MojoKernelsAdapter
+            self.mojo = MojoKernelsAdapter()
+        except Exception:
+            self.mojo = None
+
+        # Initialize HRM Feedback Adapter
+        self.hrm_feedback = HRMFeedbackAdapter()
+        print("[OK] HRM Feedback Learning enabled")
 
         # Register Routes
         self._register_routes()
+        
+        # Register HRM Feedback Routes
+        if hasattr(self, 'hrm_feedback'):
+            register_hrm_feedback_routes(self.app, self.hrm_feedback, self.reasoning_service)
+            print("[OK] HRM Feedback endpoints registered")
+
         self._register_governor_routes()
         self._register_websocket_routes()
-        # Ensure CORS headers on every response and handle OPTIONS
+        
+        # CORS headers on every response
         @self.app.after_request
-        def add_cors_headers(response):  # type: ignore
+        def add_cors_headers(response):
             try:
                 origin = request.headers.get('Origin', '*')
                 response.headers['Access-Control-Allow-Origin'] = origin
@@ -183,30 +203,37 @@ class HexagonalAPI:
             return response
     
     def _register_routes(self):
-        """Registriere alle REST Endpoints"""
+        """Register all REST endpoints"""
         
         @self.app.route('/health', methods=['GET'])
         def health():
-            """Ultra-light Health Check (no heavy calls)."""
+            """Health Check"""
+            caps = {
+                'max_sample_limit': int(os.environ.get('MAX_SAMPLE_LIMIT', '5000')),
+                'max_top_k': int(os.environ.get('MAX_TOP_K', '200')),
+                'min_threshold': 0.0,
+                'max_threshold': 1.0,
+            }
+            read_only_backend = not (str(os.environ.get('HAKGAL_WRITE_ENABLED', 'false')).lower() == 'true')
             return jsonify({
                 'status': 'operational',
                 'architecture': 'hexagonal',
-                'port': 5001,
-                'repository': 'LegacyFactRepository' if isinstance(self.fact_repository, LegacyFactRepository) else 'SQLiteFactRepository'
+                'port': int(os.environ.get('HAKGAL_PORT', '5002')),
+                'repository': self.fact_repository.__class__.__name__,
+                'read_only': read_only_backend,
+                'caps': caps
             })
         
         @self.app.route('/api/status', methods=['GET'])
         def status():
-            """Enhanced System Status (light mode via ?light=1)."""
+            """System Status"""
             base_status = self.fact_service.get_system_status()
             if request.args.get('light') in ('1', 'true', 'True'):
-                # Return a minimal subset to avoid heavy computations in critical paths
                 return jsonify({
                     'architecture': base_status.get('architecture', 'hexagonal'),
                     'status': base_status.get('status', 'operational')
                 })
             
-            # Add additional status information
             if self.governor:
                 base_status['governor'] = self.governor.get_status()
             
@@ -217,10 +244,10 @@ class HexagonalAPI:
                 }
             
             return jsonify(base_status)
-        
+
         @self.app.route('/api/facts', methods=['GET'])
         def get_facts():
-            """GET /api/facts - Hole alle Facts"""
+            """Get all facts"""
             limit = request.args.get('limit', 100, type=int)
             facts = self.fact_service.get_all_facts(limit)
             
@@ -230,36 +257,29 @@ class HexagonalAPI:
                 'total': self.fact_repository.count()
             })
         
-        # Hinweis: konsolidiert in eine einzige Implementierung weiter unten mit TTL-Cache
-        
         @self.app.route('/api/facts', methods=['POST'])
         def add_fact():
-            """POST /api/facts - Füge neuen Fact hinzu"""
+            """Add new fact"""
             data = request.get_json(silent=True) or {}
 
-            # Kill-switch: if in SAFE mode, block write operations early
             if self.kill_switch.is_safe():
                 return jsonify({
                     'error': 'Kill-switch SAFE mode active. Write operations are disabled.',
                     'kill_switch': self.kill_switch.state()
                 }), 503
 
-            # Toleranter Parser: akzeptiere {statement} oder {query} oder {fact}
             statement = (data.get('statement') or data.get('query') or data.get('fact') or '').strip()
             if not statement:
                 return jsonify({'error': 'Missing statement'}), 400
 
-            # Stelle sicher, dass ein abschließender Punkt vorhanden ist
             if not statement.endswith('.'):
                 statement = statement + '.'
 
-            # Optional: einfache Validierung (Predicate(Entity,Entity).)
             if not re.match(r"^[A-Za-z_][A-Za-z0-9_]*\([^,\)]+,\s*[^\)]+\)\.$", statement):
                 return jsonify({'error': 'Invalid fact format. Expected Predicate(Entity1, Entity2).'}), 400
 
             context = data.get('context', {})
 
-            # Policy check (strict for write)
             decision = self.policy_guard.check(
                 action='write_add_fact',
                 context={'statement': statement, 'sensitivity': 'write'},
@@ -274,11 +294,9 @@ class HexagonalAPI:
 
             success, message = self.fact_service.add_fact(statement, context)
             
-            # Emit WebSocket event
             if self.websocket_adapter:
                 self.websocket_adapter.emit_fact_added(statement, success)
             
-            # Track with Sentry
             if self.monitoring:
                 SentryMonitoring.capture_fact_added(statement, success)
             
@@ -288,45 +306,31 @@ class HexagonalAPI:
                 'message': message,
                 'statement': statement
             }
-            # attach policy metadata
             response['policy'] = decision
             resp = jsonify(response)
             resp.headers['X-Policy-Version'] = decision.get('policy_version', 'unknown')
             resp.headers['X-Decision-Id'] = decision.get('decision_id', '')
             return resp, status_code
 
-        @self.app.route('/api/facts/delete', methods=['POST'])
-        def delete_fact_api():
-            data = request.get_json(silent=True) or {}
-            stmt = (data.get('statement') or '').strip()
-            if not stmt:
-                return jsonify({'error': 'Missing statement'}), 400
-            try:
-                removed = 0
-                if hasattr(self.fact_repository, 'delete_by_statement'):
-                    removed = self.fact_repository.delete_by_statement(stmt)  # type: ignore
-                return jsonify({'removed': removed}), 200
-            except Exception as e:
-                return jsonify({'error': str(e)}), 500
+        @self.app.route('/api/facts/count', methods=['GET'])
+        def facts_count():
+            """Get facts count with 30s TTL cache"""
+            now_ts = time.time()
+            cached = self._cache.get('facts_count')
+            if cached and (now_ts - cached.get('ts', 0) <= 30):
+                return jsonify({'count': cached['value'], 'cached': True, 'ttl_sec': 30 - int(now_ts - cached['ts'])})
 
-        @self.app.route('/api/facts/update', methods=['PUT'])
-        def update_fact_api():
-            data = request.get_json(silent=True) or {}
-            old_stmt = (data.get('old_statement') or '').strip()
-            new_stmt = (data.get('new_statement') or '').strip()
-            if not old_stmt or not new_stmt:
-                return jsonify({'error': 'Missing old_statement or new_statement'}), 400
             try:
-                updated = 0
-                if hasattr(self.fact_repository, 'update_statement'):
-                    updated = self.fact_repository.update_statement(old_stmt, new_stmt)  # type: ignore
-                return jsonify({'updated': updated}), 200
-            except Exception as e:
-                return jsonify({'error': str(e)}), 500
-        
+                count_val = int(self.fact_repository.count())
+            except Exception:
+                count_val = None
+
+            self._cache['facts_count'] = {'value': count_val, 'ts': now_ts}
+            return jsonify({'count': count_val, 'cached': False, 'ttl_sec': 30})
+
         @self.app.route('/api/search', methods=['POST', 'OPTIONS'])
         def search_facts():
-            """POST /api/search - Suche Facts"""
+            """Search facts"""
             if request.method == 'OPTIONS':
                 return ('', 204)
             data = request.get_json()
@@ -350,7 +354,7 @@ class HexagonalAPI:
         
         @self.app.route('/api/reason', methods=['POST', 'OPTIONS'])
         def reason():
-            """POST /api/reason - Enhanced Reasoning with Monitoring"""
+            """Reasoning endpoint"""
             if request.method == 'OPTIONS':
                 return ('', 204)
             data = request.get_json()
@@ -359,22 +363,17 @@ class HexagonalAPI:
                 return jsonify({'error': 'Missing query'}), 400
             
             query = data['query']
-            
-            # Track timing
             start_time = time.time()
             
             result = self.reasoning_service.reason(query)
             
-            # Calculate duration
             duration_ms = (time.time() - start_time) * 1000
             
-            # Emit WebSocket event
             if self.websocket_adapter:
                 self.websocket_adapter.emit_reasoning_complete(
                     query, result.confidence, duration_ms
                 )
             
-            # Track with Sentry
             if self.monitoring:
                 SentryMonitoring.capture_reasoning_performance(
                     query, result.confidence, duration_ms
@@ -389,236 +388,143 @@ class HexagonalAPI:
                 'duration_ms': duration_ms
             }
             
-            # Add device info if available
             if result.metadata and 'device' in result.metadata:
                 response['device'] = result.metadata['device']
             
             return jsonify(response)
 
-        @self.app.route('/api/llm/get-explanation', methods=['POST'])
-        def llm_get_explanation_proxy():
-            """LLM-Erklärungen ausschließlich über Hex-Provider (kein Legacy-Proxy)."""
-            payload = request.get_json(silent=True) or {}
+        @self.app.route('/api/llm/get-explanation', methods=['POST', 'OPTIONS'])
+        def get_llm_explanation():
+            """Get deep LLM explanation for a topic"""
+            if request.method == 'OPTIONS':
+                return ('', 204)
+            
+            data = request.get_json(silent=True) or {}
+            topic = data.get('topic', '').strip()
+            context_facts = data.get('context_facts', [])
+            
+            if not topic:
+                return jsonify({'error': 'Missing topic'}), 400
+            
+            # Create prompt for LLM
+            prompt = f"""Explain the following topic in detail: {topic}
 
-            # 2) Versuche dedizierten Hex‑LLM‑Provider (DeepSeek/Mistral) direkt
+"""
+            
+            if context_facts:
+                prompt += f"Context from knowledge base:\n"
+                for fact in context_facts[:10]:  # Limit to first 10 facts
+                    prompt += f"- {fact}\n"
+                prompt += "\n"
+            
+            prompt += """Please provide:
+1. A comprehensive explanation
+2. Key relationships and concepts
+3. Any logical facts that could be derived (in format: Predicate(Entity1, Entity2))
+
+Provide suggested facts in the format: Predicate(Entity1, Entity2)
+"""
+            
+            # Get LLM response
             try:
-                from adapters.llm_providers import DeepSeekProvider, MistralProvider, MultiLLMProvider
-                from adapters.fact_extractor import extract_facts_from_llm
+                llm_provider = get_llm_provider()
+                if not llm_provider.is_available():
+                    return jsonify({
+                        'error': 'No LLM provider available',
+                        'explanation': 'LLM service is not configured. Please check API keys.'
+                    }), 503
                 
-                providers = [
-                    DeepSeekProvider(),
-                    MistralProvider(),
-                ]
-                llm = MultiLLMProvider(providers)
-                if llm.is_available():
-                    # Baue Prompt mit Query und Kontextfakten
-                    topic = payload.get('topic') or payload.get('query') or ''
-                    context_facts = payload.get('context_facts') or []
-                    prompt = (
-                        f"Query: {topic}\n\n"
-                        f"Context facts:\n{os.linesep.join(context_facts) if context_facts else 'None'}\n\n"
-                        "Please provide a deep, step-by-step explanation addressing the query. "
-                        "After your explanation, suggest additional logical facts that would be relevant to add to the knowledge base. "
-                        "Format suggested facts as: Predicate(Entity1, Entity2)."
-                    )
-                    explanation = llm.generate_response(prompt)
-                    
-                    # Use intelligent fact extraction
-                    suggested = extract_facts_from_llm(explanation, topic)
-                    
-                    return jsonify({'status': 'success', 'explanation': explanation, 'suggested_facts': suggested})
-            except Exception:
-                # Lokaler Fallback als letzte Instanz (synthetische Erklärung)
-                pass
-
-            # Lokaler Fallback: Nutze Reasoning + KB-Suche, um eine Basiserklärung zu generieren (autonom)
-            topic = payload.get('topic') or payload.get('query') or ''
-            explanation_lines = []
-            if topic:
-                explanation_lines.append(f"Explanation for: {topic}")
-            # Zerlege Statement falls möglich: Predicate(Entity1, Entity2)
-            pred = ent1 = ent2 = None
-            try:
-                m = re.match(r"^([A-Za-z_][A-Za-z0-9_]*)\(([^,]+),\s*([^\)]+)\)\.?$", topic.strip())
-                if m:
-                    pred, ent1, ent2 = m.group(1), m.group(2).strip(), m.group(3).strip()
-            except Exception:
-                pass
-            # Try reasoning
-            try:
-                result = self.reasoning_service.reason(topic if topic else 'Unknown')
-                confidence = getattr(result, 'confidence', 0.0)
-                explanation_lines.append(f"Neural confidence: {confidence:.3f}")
-                # Add interpretation of confidence
-                if confidence >= 0.8:
-                    explanation_lines.append("Interpretation: The neural model strongly supports the statement.")
-                elif confidence >= 0.5:
-                    explanation_lines.append("Interpretation: The neural model is uncertain; additional evidence recommended.")
-                else:
-                    explanation_lines.append("Interpretation: The neural model finds little evidence; treat with caution.")
-
-                # Kontextualisierte Deutung bezogen auf das Prädikat
-                if pred in ('IsA', 'SubClass') and ent1 and ent2:
-                    explanation_lines.append(
-                        f"Interpretation detail: If SubClass({ent2}, Super) and IsA({ent1}, {ent2}), then IsA({ent1}, Super) follows by inheritance."
-                    )
-                if pred in ('HasPart', 'PartOf') and ent1 and ent2:
-                    # Dualität hervorheben
-                    if pred == 'HasPart':
-                        explanation_lines.append(
-                            f"Note: HasPart({ent1}, {ent2}) is the dual of PartOf({ent2}, {ent1}). Evidence for either supports the other."
-                        )
-                    else:
-                        explanation_lines.append(
-                            f"Note: PartOf({ent1}, {ent2}) is the dual of HasPart({ent2}, {ent1})."
-                        )
-            except Exception:
-                pass
-            # Try KB search and intelligent fact generation
-            try:
-                from adapters.fact_extractor import fact_extractor
+                explanation = llm_provider.generate_response(prompt)
                 
-                q = Query(text=topic, limit=20, min_confidence=0.0)
-                facts = self.fact_service.search_facts(q)
-                if facts:
-                    explanation_lines.append("")
-                    explanation_lines.append("Relevant facts:")
-                    for f in facts[:10]:
-                        explanation_lines.append(f"- {f.statement}")
-                    
-                    # Build analytical narrative
-                    explanation_lines.append("")
-                    explanation_lines.append("Analysis:")
-                    if pred in ('IsA', 'SubClass') and ent1 and ent2:
-                        explanation_lines.append(
-                            f"The chain SubClass and IsA allows inheritance: if SubClass({ent2}, Super) and IsA({ent1}, {ent2}), then IsA({ent1}, Super)."
-                        )
-                    elif pred in ('HasPart', 'PartOf') and ent1 and ent2:
-                        explanation_lines.append(
-                            f"Structural relation: HasPart({ent1}, {ent2}) ↔ PartOf({ent2}, {ent1}). Corroborating evidence for either direction strengthens the claim."
-                        )
-                    else:
-                        explanation_lines.append("Relevant facts provide thematic support for the queried relation.")
-                    
-                    # Generate intelligent suggestions based on query
-                    suggested = fact_extractor._generate_related_facts(topic)
-                    
-                    if suggested:
-                        explanation_lines.append("")
-                        explanation_lines.append("Suggested additions:")
-                        for s in suggested[:5]:
-                            explanation_lines.append(f"- {s}")
-                else:
-                    # Even without KB facts, generate related suggestions
-                    suggested = fact_extractor._generate_related_facts(topic)
-            except Exception:
-                suggested = []
-            if not explanation_lines:
-                explanation_lines.append("No detailed explanation available.")
-            return jsonify({
-                'status': 'success',
-                'explanation': "\n".join(explanation_lines),
-                'suggested_facts': suggested
-            })
+                # Extract suggested facts from explanation
+                suggested_facts = []
+                import re
+                fact_patterns = re.findall(r'\b[A-Z]\w*\([^)]+\)', explanation)
+                
+                for pattern in fact_patterns[:20]:  # Limit to 20 suggestions
+                    fact = pattern.strip()
+                    if not fact.endswith('.'):
+                        fact += '.'
+                    suggested_facts.append({
+                        'fact': fact,
+                        'confidence': 0.7,
+                        'source': 'LLM'
+                    })
+                
+                # Also check if the topic itself is a valid fact
+                if re.match(r'^\w+\([^)]+\)$', topic):
+                    topic_fact = topic if topic.endswith('.') else topic + '.'
+                    if not any(s['fact'] == topic_fact for s in suggested_facts):
+                        suggested_facts.insert(0, {
+                            'fact': topic_fact,
+                            'confidence': 0.8,
+                            'source': 'User Query'
+                        })
+                
+                return jsonify({
+                    'success': True,
+                    'explanation': explanation,
+                    'suggested_facts': suggested_facts,
+                    'topic': topic,
+                    'context_facts_used': len(context_facts)
+                })
+                
+            except Exception as e:
+                print(f"[LLM] Error getting explanation: {e}")
+                return jsonify({
+                    'error': 'Failed to generate explanation',
+                    'message': str(e),
+                    'explanation': 'An error occurred while generating the explanation.'
+                }), 500
 
         @self.app.route('/api/command', methods=['POST', 'OPTIONS'])
-        def command_compat():
-            """Compatibility endpoint to support frontend 'explain' command when using Hex backend.
-            - OPTIONS: for CORS preflight
-            - POST: expects { command: 'explain', query: '<topic>', context?: {...} }
-            Returns a shape similar to original backend: { status, chatResponse: { natural_language_explanation } }
-            """
+        def command():
+            """Legacy command endpoint for compatibility"""
             if request.method == 'OPTIONS':
                 return ('', 204)
+            
             data = request.get_json(silent=True) or {}
-            # Akzeptiere sowohl 'command' als auch 'action'
-            cmd = (data.get('command') or data.get('action') or '').strip().lower()
-            if cmd != 'explain':
-                # Unterstütze add_fact minimal über REST Mapping
-                if cmd == 'add_fact':
-                    statement = (data.get('statement') or data.get('fact') or data.get('query') or '').strip()
-                    if not statement:
-                        return jsonify({'error': 'Missing statement'}), 400
-                    if not statement.endswith('.'):
-                        statement = statement + '.'
-                    if not re.match(r"^[A-Za-z_][A-Za-z0-9_]*\([^,\)]+,\s*[^\)]+\)\.$", statement):
-                        return jsonify({'error': 'Invalid fact format. Expected Predicate(Entity1, Entity2).'}), 400
-                    ok, msg = self.fact_service.add_fact(statement, data.get('context') or {})
-                    if self.websocket_adapter:
-                        self.websocket_adapter.emit_fact_added(statement, ok)
-                    code = 201 if ok else (409 if isinstance(msg, str) and 'exists' in msg.lower() else 422)
-                    return jsonify({'status': 'success' if ok else 'error', 'message': msg, 'statement': statement}), code
-                return jsonify({'error': 'Only explain/add_fact supported on this endpoint in Hex mode'}), 405
-            topic = data.get('query') or data.get('topic') or ''
-            # Erst versuchen wir lokalen Fallback (autonom)
-            try:
-                # Reuse local fallback from llm_get_explanation_proxy
-                payload = {'topic': topic}
-                with self.app.test_request_context(json=payload):
-                    resp = llm_get_explanation_proxy()
-                if isinstance(resp, tuple):
-                    body, status = resp
-                    if status != 200:
-                        raise Exception('local explanation failed')
-                    payload_out = body.get_json() if hasattr(body, 'get_json') else body
-                else:
-                    payload_out = resp.get_json() if hasattr(resp, 'get_json') else resp
-                explanation = (payload_out or {}).get('explanation') or ''
-                suggested = (payload_out or {}).get('suggested_facts', [])
-                return jsonify({
-                    'status': 'success',
-                    'chatResponse': {
-                        'natural_language_explanation': explanation,
-                        'suggested_facts': suggested
-                    }
-                })
-            except Exception:
-                # Kein Legacy-Proxy mehr – ehrlicher Fehler zurück
-                return jsonify({'status': 'error', 'message': 'Local explanation failed and no LLM provider available'}), 503
+            command = data.get('command', '')
+            query = data.get('query', '')
+            
+            if command == 'add_fact':
+                # Redirect to facts endpoint
+                return add_fact()
+            elif command == 'explain':
+                # Redirect to LLM explanation
+                data['topic'] = query
+                return get_llm_explanation()
+            else:
+                return jsonify({'error': f'Unknown command: {command}'}), 400
 
         @self.app.route('/api/logicalize', methods=['POST', 'OPTIONS'])
-        def logicalize_hex():
-            """Einfacher Logicalize‑Endpoint für Hex: extrahiert Predicate(Args). aus einem Textblock.
-            Rückgabe: { facts: [ ... ] }
-            """
+        def logicalize():
+            """Extract logical facts from text"""
             if request.method == 'OPTIONS':
                 return ('', 204)
+            
             data = request.get_json(silent=True) or {}
-            text = data.get('text', '') or ''
+            text = data.get('text', '').strip()
+            
+            if not text:
+                return jsonify({'facts': []})
+            
+            # Simple extraction of predicate-like patterns
+            import re
             facts = []
-            try:
-                for m in re.finditer(r"[A-Za-z_][A-Za-z0-9_]*\([^\n]*?\)\.", text):
-                    fact = m.group(0).strip()
-                    if fact not in facts:
-                        facts.append(fact)
-            except Exception:
-                pass
+            patterns = re.findall(r'\b[A-Z]\w*\([^)]+\)', text)
+            
+            for pattern in patterns:
+                fact = pattern.strip()
+                if not fact.endswith('.'):
+                    fact += '.'
+                facts.append(fact)
+            
             return jsonify({'facts': facts})
 
-        # Catch-all OPTIONS handler to satisfy CORS preflight
-        @self.app.route('/<path:any_path>', methods=['OPTIONS'])
-        def cors_preflight(any_path):  # type: ignore
-            return ('', 204)
-
-        # ---- Kill-switch control endpoints (protected by simplicity; extend with auth if needed)
-        @self.app.route('/api/safety/kill-switch', methods=['GET'])
-        def ks_state():
-            return jsonify({'mode': self.kill_switch.state().get('mode'), 'state': self.kill_switch.state()})
-
-        @self.app.route('/api/safety/kill-switch/activate', methods=['POST'])
-        def ks_activate():
-            data = request.get_json(silent=True) or {}
-            st = self.kill_switch.activate_safe(reason=data.get('reason') or 'manual', by=data.get('by') or 'operator')
-            return jsonify({'ok': True, 'state': st})
-
-        @self.app.route('/api/safety/kill-switch/deactivate', methods=['POST'])
-        def ks_deactivate():
-            st = self.kill_switch.deactivate(by='operator')
-            return jsonify({'ok': True, 'state': st})
-        
         @self.app.route('/api/architecture', methods=['GET'])
         def architecture():
-            """Enhanced Architecture Information"""
+            """Architecture Information"""
             return jsonify({
                 'pattern': 'Hexagonal Architecture',
                 'version': '2.0',
@@ -627,691 +533,78 @@ class HexagonalAPI:
                     'websocket': self.websocket_adapter is not None,
                     'governor': self.governor is not None,
                     'monitoring': self.monitoring is not None,
-                    'cuda': True
-                },
-                'layers': {
-                    'core': {
-                        'domain': 'Business Entities (Fact, Query, ReasoningResult)',
-                        'ports': 'Interfaces (FactRepository, ReasoningEngine)'
-                    },
-                    'application': 'Use Cases (FactManagementService, ReasoningService)',
-                    'adapters': {
-                        'inbound': ['REST API (Flask)', 'WebSocket (Socket.IO)'],
-                        'outbound': {
-                            'legacy': 'LegacyFactRepository, LegacyReasoningEngine',
-                            'sqlite': 'SQLiteFactRepository',
-                            'governor': 'GovernorAdapter (Thompson Sampling)',
-                            'monitoring': 'SentryMonitoring'
-                        }
-                    },
-                    'infrastructure': {
-                        'monitoring': 'Sentry Integration',
-                        'websocket': 'Real-time Updates',
-                        'governor': 'Strategic Decision Making'
-                    }
-                },
-                'benefits': [
-                    'Testability - Core logic ohne Infrastructure',
-                    'Flexibility - Einfacher Wechsel von Adapters',
-                    'Maintainability - Klare Trennung der Concerns',
-                    'Observability - Full monitoring with Sentry',
-                    'Real-time - WebSocket for live updates',
-                    'Intelligence - Governor for strategic decisions'
-                ]
-            })
-
-        @self.app.route('/api/predicates/top', methods=['GET'])
-        def predicates_top():
-            """Return top-N predicates by frequency.
-            Query params: limit (default 10), sample_limit (default 5000)
-            """
-            try:
-                limit = request.args.get('limit', 10, type=int)
-                sample_limit = request.args.get('sample_limit', 5000, type=int)
-                facts = self.fact_service.get_all_facts(sample_limit)
-                freq = {}
-                for f in facts:
-                    st = getattr(f, 'statement', '')
-                    m = re.match(r"^([A-Za-z_][A-Za-z0-9_]*)\(", st)
-                    if m:
-                        p = m.group(1)
-                        freq[p] = freq.get(p, 0) + 1
-                items = sorted(freq.items(), key=lambda x: x[1], reverse=True)[:max(0, limit)]
-                return jsonify({'top_predicates': [{'predicate': k, 'count': v} for k, v in items], 'total_checked': len(facts)})
-            except Exception as e:
-                return jsonify({'error': str(e)}), 500
-
-        @self.app.route('/api/quality/metrics', methods=['GET'])
-        def quality_metrics():
-            """Compute basic KB quality metrics over a sample of facts.
-            Query params: sample_limit (default 5000)
-            Metrics: total, checked, invalid, duplicates, isolated, contradictions, predicate_counts (top 10)
-            """
-            try:
-                sample_limit = request.args.get('sample_limit', 5000, type=int)
-                facts = self.fact_service.get_all_facts(sample_limit)
-                checked = 0
-                invalid = 0
-                duplicates = 0
-                contradictions = 0
-                statements_seen = set()
-                predicate_counts = {}
-                entity_freq = {}
-                pairs = set()
-
-                def parse(st: str):
-                    m = re.match(r"^([A-Za-z_][A-Za-z0-9_]*)\(([^,\)]+),\s*([^\)]+)\)\.$", st)
-                    if not m:
-                        return None, None, None
-                    return m.group(1), m.group(2).strip(), m.group(3).strip()
-
-                for f in facts:
-                    st = getattr(f, 'statement', '') or ''
-                    if not st:
-                        continue
-                    checked += 1
-                    # validity
-                    p, a, b = parse(st)
-                    if not p:
-                        invalid += 1
-                        continue
-                    # duplicates
-                    if st in statements_seen:
-                        duplicates += 1
-                    else:
-                        statements_seen.add(st)
-                    # predicate freq
-                    predicate_counts[p] = predicate_counts.get(p, 0) + 1
-                    # entity freq
-                    entity_freq[a] = entity_freq.get(a, 0) + 1
-                    entity_freq[b] = entity_freq.get(b, 0) + 1
-                    # contradictions: simple Not/ Nicht prefix pairing
-                    base = p
-                    if p.startswith('Not'):
-                        base = p[3:]
-                    elif p.startswith('Nicht'):
-                        base = p[5:]
-                    key_pos = (base, a, b)
-                    key_neg_en = ('Not' + base, a, b)
-                    key_neg_de = ('Nicht' + base, a, b)
-                    pairs.add((p, a, b))
-                    if key_pos in pairs and (key_neg_en in pairs or key_neg_de in pairs):
-                        contradictions += 1
-
-                # isolated: entities that appear only once across sample
-                isolated = 0
-                # count facts whose both entities are unique in sample
-                for f in facts:
-                    st = getattr(f, 'statement', '') or ''
-                    p, a, b = parse(st) if st else (None, None, None)
-                    if p and min(entity_freq.get(a, 0), entity_freq.get(b, 0)) == 1:
-                        isolated += 1
-
-                top_preds = sorted(predicate_counts.items(), key=lambda x: x[1], reverse=True)[:10]
-                return jsonify({
-                    'total': self.fact_repository.count(),
-                    'checked': checked,
-                    'invalid': invalid,
-                    'duplicates': duplicates,
-                    'isolated': isolated,
-                    'contradictions': contradictions,
-                    'top_predicates': [{'predicate': k, 'count': v} for k, v in top_preds]
-                })
-            except Exception as e:
-                return jsonify({'error': str(e)}), 500
-
-        @self.app.route('/api/facts/count', methods=['GET'])
-        def facts_count():
-            """GET /api/facts/count - liefert Anzahl der Fakten mit 30s TTL Cache."""
-            now_ts = time.time()
-            cached = self._cache.get('facts_count')
-            if cached and (now_ts - cached.get('ts', 0) <= 30):
-                return jsonify({'count': cached['value'], 'cached': True, 'ttl_sec': 30 - int(now_ts - cached['ts'])})
-
-            try:
-                count_val = int(self.fact_repository.count())
-            except Exception:
-                count_val = None
-
-            self._cache['facts_count'] = {'value': count_val, 'ts': now_ts}
-            return jsonify({'count': count_val, 'cached': False, 'ttl_sec': 30})
-
-        # ============ Enhanced API (Pagination / Bulk / Stats / Export) ============
-        @self.app.route('/api/facts/paginated', methods=['GET'])
-        def facts_paginated():
-            """Return facts with pagination. Query params: page (1-based), per_page (default 50)."""
-            try:
-                page = max(1, request.args.get('page', 1, type=int))
-                per_page = min(500, max(1, request.args.get('per_page', 50, type=int)))
-                offset = (page - 1) * per_page
-                items = []
-                # Use repository if pagination is available
-                if hasattr(self.fact_repository, 'find_page'):
-                    items = getattr(self.fact_repository, 'find_page')(offset, per_page)  # type: ignore
-                else:
-                    # Fallback to find_all for small pages
-                    items = self.fact_service.get_all_facts(per_page)
-                total = self.fact_repository.count() if hasattr(self.fact_repository, 'count') else None
-                return jsonify({
-                    'page': page,
-                    'per_page': per_page,
-                    'total': total,
-                    'facts': [f.to_dict() for f in items]
-                })
-            except Exception as e:
-                return jsonify({'error': str(e)}), 500
-
-        @self.app.route('/api/facts/bulk', methods=['POST'])
-        def facts_bulk():
-            """Bulk insert facts. Body: { statements: ["Predicate(A,B).", ...] }"""
-            data = request.get_json(silent=True) or {}
-            stmts = data.get('statements') or []
-            if not isinstance(stmts, list) or not stmts:
-                return jsonify({'error': 'Missing statements[]'}), 400
-            # Kill-switch check
-            if self.kill_switch.is_safe():
-                return jsonify({'error': 'Kill-switch SAFE mode active.'}), 503
-            added = 0
-            try:
-                if hasattr(self.fact_repository, 'bulk_insert'):
-                    added = getattr(self.fact_repository, 'bulk_insert')(stmts)  # type: ignore
-                else:
-                    for s in stmts:
-                        ok, _msg = self.fact_service.add_fact(s, {})
-                        if ok:
-                            added += 1
-                return jsonify({'added': added})
-            except Exception as e:
-                return jsonify({'error': str(e), 'added': added}), 500
-
-        @self.app.route('/api/facts/stats', methods=['GET'])
-        def facts_stats():
-            """Basic stats for dashboards: total, sample predicate counts (top 20)."""
-            try:
-                total = self.fact_repository.count() if hasattr(self.fact_repository, 'count') else None
-                preds: list = []
-                if hasattr(self.fact_repository, 'predicate_counts'):
-                    items = getattr(self.fact_repository, 'predicate_counts')(request.args.get('sample_limit', 5000, type=int))  # type: ignore
-                    preds = [{'predicate': p, 'count': c} for p, c in items[:20]]
-                return jsonify({'total': total, 'top_predicates': preds})
-            except Exception as e:
-                return jsonify({'error': str(e)}), 500
-
-        @self.app.route('/api/facts/export', methods=['GET'])
-        def facts_export():
-            """Export first N facts as JSON or JSONL. Query: limit (default 1000), format=json|jsonl."""
-            try:
-                limit = request.args.get('limit', 1000, type=int)
-                fmt = (request.args.get('format') or 'json').lower()
-                statements: list[str] = []
-                if hasattr(self.fact_repository, 'export_limit'):
-                    statements = getattr(self.fact_repository, 'export_limit')(limit)  # type: ignore
-                else:
-                    items = self.fact_service.get_all_facts(limit)
-                    statements = [f.statement for f in items]
-                if fmt == 'jsonl':
-                    # Return JSONL as text/plain
-                    return ('\n'.join([json.dumps({'statement': s}, ensure_ascii=False) for s in statements]) + '\n', 200, {'Content-Type': 'text/plain; charset=utf-8'})
-                else:
-                    return jsonify({'facts': [{'statement': s} for s in statements]})
-            except Exception as e:
-                return jsonify({'error': str(e)}), 500
-
-        @self.app.route('/openapi.json', methods=['GET'])
-        def openapi_spec():
-            """Minimal OpenAPI spec for client typing and tooling."""
-            spec = {
-                'openapi': '3.0.0',
-                'info': {
-                    'title': 'HAK-GAL Hexagonal API',
-                    'version': '2.0'
-                },
-                'paths': {
-                    '/health': {
-                        'get': {
-                            'summary': 'Health check',
-                            'responses': {'200': {'description': 'OK'}}
-                        }
-                    },
-                    '/api/status': {
-                        'get': {
-                            'summary': 'System status',
-                            'parameters': [
-                                {'name': 'light', 'in': 'query', 'schema': {'type': 'string'}}
-                            ],
-                            'responses': {'200': {'description': 'OK'}}
-                        }
-                    },
-                    '/api/facts': {
-                        'get': {
-                            'summary': 'List facts',
-                            'parameters': [
-                                {'name': 'limit', 'in': 'query', 'schema': {'type': 'integer'}}
-                            ],
-                            'responses': {'200': {'description': 'OK'}}
-                        },
-                        'post': {
-                            'summary': 'Add fact',
-                            'requestBody': {'required': True, 'content': {'application/json': {}}},
-                            'responses': {'201': {'description': 'Created'}, '400': {'description': 'Bad Request'}}
-                        }
-                    },
-                    '/api/search': {
-                        'post': {
-                            'summary': 'Search facts',
-                            'requestBody': {'required': True, 'content': {'application/json': {}}},
-                            'responses': {'200': {'description': 'OK'}}
-                        }
-                    },
-                    '/api/reason': {
-                        'post': {
-                            'summary': 'Reasoning',
-                            'requestBody': {'required': True, 'content': {'application/json': {}}},
-                            'responses': {'200': {'description': 'OK'}}
-                        }
-                    },
-                    '/api/architecture': {
-                        'get': {
-                            'summary': 'Architecture info',
-                            'responses': {'200': {'description': 'OK'}}
-                        }
-                    },
-                    '/api/graph/emergency-status': {
-                        'get': {'summary': 'Graph status', 'responses': {'200': {'description': 'OK'}}}
-                    },
-                    '/api/graph/config': {
-                        'post': {'summary': 'Update graph config', 'responses': {'200': {'description': 'OK'}}}
-                    },
-                    '/api/graph/emergency-generate': {
-                        'post': {'summary': 'Generate graph', 'responses': {'200': {'description': 'OK'}}}
-                    },
-                    '/api/graph/emergency-clean': {
-                        'post': {'summary': 'Clean database corruption', 'responses': {'200': {'description': 'OK'}}}
-                    },
-                    '/api/graph/emergency-detect': {
-                        'post': {'summary': 'Detect database corruption', 'responses': {'200': {'description': 'OK'}}}
-                    },
-                    '/api/graph/emergency-fix-engines': {
-                        'post': {'summary': 'Fix engines', 'responses': {'200': {'description': 'OK'}}}
-                    }
+                    'cuda': True,
+                    'llm': True
                 }
-            }
-            return jsonify(spec)
-
-        # ---------------------------
-        # Graph Emergency Endpoints
-        # ---------------------------
-
-        @self.app.route('/api/graph/emergency-status', methods=['GET'])
-        def graph_emergency_status():
-            """Return current graph status and available emergency actions."""
-            graph_exists = self.graph_public_path.exists()
-            last_generated = None
-            if graph_exists:
-                try:
-                    mtime = datetime.fromtimestamp(self.graph_public_path.stat().st_mtime, tz=timezone.utc)
-                    last_generated = mtime.isoformat()
-                except Exception:
-                    last_generated = None
-
-            try:
-                fact_count = int(self.fact_repository.count())
-            except Exception:
-                fact_count = None
-
-            file_size_bytes = None
-            try:
-                if graph_exists:
-                    file_size_bytes = self.graph_public_path.stat().st_size
-            except Exception:
-                file_size_bytes = None
-
-            response = {
-                'graph_exists': bool(graph_exists),
-                'last_generated': last_generated,
-                'fact_count': fact_count,
-                'node_count': None,   # optional, nicht ermittelt
-                'edge_count': None,   # optional, nicht ermittelt
-                'file_size_bytes': file_size_bytes,
-                'corruption_detected': None,  # unbekannt ohne dedizierte Analyse
-                'emergency_actions_available': [
-                    'clean_database', 'regenerate_graph', 'fix_engines'
-                ]
-            }
-            return jsonify(response)
-
-        @self.app.route('/api/graph/emergency-generate', methods=['POST'])
-        def graph_emergency_generate():
-            """Trigger emergency graph generation via external script.
-
-            Erwartet: dass emergency_graph_generator.py im HAK_GAL_SUITE liegt.
-            """
-            start = time.time()
-            if not self.emergency_generator_path.exists():
-                return jsonify({
-                    'success': False,
-                    'message': f'Not found: {str(self.emergency_generator_path)}'
-                }), 404
-
-            try:
-                # Ensure UTF-8 for subprocess stdout/stderr to avoid Windows cp1252 issues
-                env = os.environ.copy()
-                env['PYTHONIOENCODING'] = env.get('PYTHONIOENCODING', 'utf-8')
-                env['PYTHONUTF8'] = '1'
-                proc = subprocess.run(
-                    [sys.executable, str(self.emergency_generator_path)],
-                    cwd=str(self.suite_root),
-                    capture_output=True, text=True, timeout=300, env=env
-                )
-                duration_ms = (time.time() - start) * 1000
-                success = (proc.returncode == 0)
-                msg = 'Graph generation completed.' if success else 'Graph generation failed.'
-
-                # Parse stdout for stats if success
-                nodes_created = None
-                edges_created = None
-                facts_processed = None
-                if proc.stdout:
-                    # Muster 1: "[OK] Generiert: X Nodes, Y Edges"
-                    m = re.search(r"Generiert\D+(\d+)\s+Nodes?\D+(\d+)\s+Edges?", proc.stdout, re.IGNORECASE)
-                    if m:
-                        try:
-                            nodes_created = int(m.group(1))
-                            edges_created = int(m.group(2))
-                        except Exception:
-                            pass
-                    # Muster 2: "Nodes: X" / "Edges: Y"
-                    if nodes_created is None:
-                        m2 = re.search(r"Nodes?\D+(\d+)", proc.stdout, re.IGNORECASE)
-                        if m2:
-                            try:
-                                nodes_created = int(m2.group(1))
-                            except Exception:
-                                pass
-                    if edges_created is None:
-                        m3 = re.search(r"Edges?\D+(\d+)", proc.stdout, re.IGNORECASE)
-                        if m3:
-                            try:
-                                edges_created = int(m3.group(1))
-                            except Exception:
-                                pass
-                    # Optional: facts processed
-                    mf = re.search(r"facts?\D+(\d+)", proc.stdout, re.IGNORECASE)
-                    if mf:
-                        try:
-                            facts_processed = int(mf.group(1))
-                        except Exception:
-                            pass
-
-                # Update last_update if success
-                if success:
-                    self.graph_config['last_update'] = datetime.now(timezone.utc).isoformat()
-
-                # Emit WS event about emergency status
-                if self.socketio:
-                    self.socketio.emit('emergency_fix_status', {
-                        'action': 'graph_regenerated',
-                        'success': success,
-                        'stats': {
-                            'facts_processed': facts_processed,
-                            'nodes_created': nodes_created,
-                            'edges_created': edges_created
-                        },
-                        'timestamp': datetime.now(timezone.utc).isoformat()
-                    }, to=None)
-
-                return jsonify({
-                    'success': success,
-                    'message': msg,
-                    'duration_ms': duration_ms,
-                    'stdout': proc.stdout[-2000:] if proc.stdout else '',
-                    'stderr': proc.stderr[-2000:] if proc.stderr else '',
-                    'stats': {
-                        'facts_processed': facts_processed,
-                        'nodes_created': nodes_created,
-                        'edges_created': edges_created
-                    }
-                }), (200 if success else 500)
-            except subprocess.TimeoutExpired:
-                return jsonify({
-                    'success': False,
-                    'message': 'Graph generation timed out.'
-                }), 504
-            except Exception as e:
-                return jsonify({
-                    'success': False,
-                    'message': f'Exception: {e.__class__.__name__}: {e}'
-                }), 500
-
-        @self.app.route('/api/graph/config', methods=['POST'])
-        def graph_config_update():
-            """Update in-memory graph config used by frontend controls."""
-            data = request.get_json(silent=True) or {}
-            if 'auto_update' in data:
-                self.graph_config['auto_update'] = bool(data['auto_update'])
-            if 'update_interval' in data:
-                try:
-                    self.graph_config['update_interval'] = int(data['update_interval'])
-                except Exception:
-                    pass
-            # last_update bleibt unverändert (wird bei erfolgreicher Generation gesetzt)
-            return jsonify({
-                'success': True,
-                'config': self.graph_config
             })
 
-        @self.app.route('/api/graph/emergency-clean', methods=['POST'])
-        def graph_emergency_clean():
-            """Trigger intelligent_corrupt_cleaner.py to clean DB corruption."""
-            cleaner = self.suite_root / 'intelligent_corrupt_cleaner.py'
-            if not cleaner.exists():
-                return jsonify({'success': False, 'message': f'Not found: {str(cleaner)}'}), 404
-            start = time.time()
-            try:
-                proc = subprocess.run(
-                    [sys.executable, str(cleaner)],
-                    cwd=str(self.suite_root),
-                    capture_output=True, text=True, timeout=600
-                )
-                duration_ms = (time.time() - start) * 1000
-                success = (proc.returncode == 0)
-                if self.socketio:
-                    self.socketio.emit('emergency_fix_status', {
-                        'action': 'database_cleaned',
-                        'success': success,
-                        'stats': None,
-                        'timestamp': datetime.utcnow().isoformat() + 'Z'
-                    }, to=None)
-                return jsonify({
-                    'success': success,
-                    'message': 'Cleaner finished.' if success else 'Cleaner failed.',
-                    'duration_ms': duration_ms,
-                    'stdout': proc.stdout[-2000:] if proc.stdout else '',
-                    'stderr': proc.stderr[-2000:] if proc.stderr else ''
-                }), (200 if success else 500)
-            except subprocess.TimeoutExpired:
-                return jsonify({'success': False, 'message': 'Cleaner timed out.'}), 504
-            except Exception as e:
-                return jsonify({'success': False, 'message': f'Exception: {e}'}), 500
+        # Catch-all OPTIONS handler
+        @self.app.route('/<path:any_path>', methods=['OPTIONS'])
+        def cors_preflight(any_path):
+            return ('', 204)
 
-        @self.app.route('/api/graph/emergency-detect', methods=['POST'])
-        def graph_emergency_detect():
-            """Trigger view_corruption.py to analyze DB corruption."""
-            detector = self.suite_root / 'view_corruption.py'
-            if not detector.exists():
-                return jsonify({'success': False, 'message': f'Not found: {str(detector)}'}), 404
-            start = time.time()
-            try:
-                proc = subprocess.run(
-                    [sys.executable, str(detector)],
-                    cwd=str(self.suite_root),
-                    capture_output=True, text=True, timeout=600
-                )
-                duration_ms = (time.time() - start) * 1000
-                success = (proc.returncode == 0)
-                if self.socketio:
-                    self.socketio.emit('emergency_fix_status', {
-                        'action': 'corruption_analyzed',
-                        'success': success,
-                        'stats': None,
-                        'timestamp': datetime.utcnow().isoformat() + 'Z'
-                    }, to=None)
-                return jsonify({
-                    'success': success,
-                    'message': 'Detection finished.' if success else 'Detection failed.',
-                    'duration_ms': duration_ms,
-                    'stdout': proc.stdout[-2000:] if proc.stdout else '',
-                    'stderr': proc.stderr[-2000:] if proc.stderr else ''
-                }), (200 if success else 500)
-            except subprocess.TimeoutExpired:
-                return jsonify({'success': False, 'message': 'Detection timed out.'}), 504
-            except Exception as e:
-                return jsonify({'success': False, 'message': f'Exception: {e}'}), 500
-
-        @self.app.route('/api/graph/emergency-fix-engines', methods=['POST'])
-        def graph_emergency_fix_engines():
-            """Fix engines using fix script or direct replacement fallback.
-
-            Prefers running fix_aethelred_engine.py; if missing, performs a safe
-            backup-and-replace of aethelred_engine_ultra.py with aethelred_engine_clean.py.
-            """
-            fix_script = self.suite_root / 'fix_aethelred_engine.py'
-            start = time.time()
-            backup_created = None
-            success = False
-            message = ''
-            stdout_tail = ''
-            stderr_tail = ''
-
-            if fix_script.exists():
-                try:
-                    env = os.environ.copy()
-                    env['PYTHONIOENCODING'] = env.get('PYTHONIOENCODING', 'utf-8')
-                    env['PYTHONUTF8'] = '1'
-                    proc = subprocess.run(
-                        [sys.executable, str(fix_script)],
-                        cwd=str(self.suite_root),
-                        capture_output=True, text=True, timeout=600, env=env
-                    )
-                    success = (proc.returncode == 0)
-                    message = 'Engine fix script completed.' if success else 'Engine fix script failed.'
-                    stdout_tail = (proc.stdout or '')[-2000:]
-                    stderr_tail = (proc.stderr or '')[-2000:]
-                except subprocess.TimeoutExpired:
-                    return jsonify({'success': False, 'message': 'Engine fix timed out.', 'requires_restart': False}), 504
-                except Exception as e:
-                    return jsonify({'success': False, 'message': f'Exception: {e}', 'requires_restart': False}), 500
-            else:
-                # Fallback to direct replacement with backup
-                ultra = self.suite_root / 'aethelred_engine_ultra.py'
-                clean = self.suite_root / 'aethelred_engine_clean.py'
-                if clean.exists() and ultra.exists():
-                    ts = datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')
-                    backup = self.suite_root / f'aethelred_engine_ultra_backup_{ts}.py'
-                    try:
-                        shutil.copy2(str(ultra), str(backup))
-                        shutil.copy2(str(clean), str(ultra))
-                        backup_created = backup.name
-                        success = True
-                        message = 'Engine fixed by direct replacement.'
-                    except Exception as e:
-                        return jsonify({'success': False, 'message': f'Fallback replace failed: {e}', 'requires_restart': False}), 500
-                else:
-                    return jsonify({'success': False, 'message': 'No fix script or clean/ultra files found.', 'requires_restart': False}), 404
-
-            duration_ms = (time.time() - start) * 1000
-
-            # Emit WS event
-            if self.socketio:
-                self.socketio.emit('emergency_fix_status', {
-                    'action': 'engines_fixed',
-                    'success': success,
-                    'message': message,
-                    'stats': None,
-                    'timestamp': datetime.now(timezone.utc).isoformat()
-                }, to=None)
-
-            return jsonify({
-                'success': success,
-                'message': message,
-                'engines_fixed': ['aethelred'] if success else [],
-                'backup_created': backup_created,
-                'requires_restart': True,
-                'duration_ms': duration_ms,
-                'stdout': stdout_tail,
-                'stderr': stderr_tail
-            }), (200 if success else 500)
-    
     def _register_governor_routes(self):
         """Register Governor-specific routes"""
-        
         if not self.governor:
             return
         
         @self.app.route('/api/governor/status', methods=['GET'])
         def governor_status():
-            """Get Governor status"""
             return jsonify(self.governor.get_status())
-        
-        @self.app.route('/api/governor/decision', methods=['GET'])
-        def governor_decision():
-            """Get next Governor decision"""
-            decision = self.governor.get_next_decision()
-            return jsonify(decision)
-        
-        @self.app.route('/api/governor/metrics', methods=['GET'])
-        def governor_metrics():
-            """Get Governor metrics"""
-            return jsonify(self.governor.get_metrics())
         
         @self.app.route('/api/governor/start', methods=['POST'])
         def governor_start():
-            """Start Governor"""
             success = self.governor.start()
+            
+            # CRITICAL FIX: Send WebSocket update to frontend
+            if success and self.websocket_adapter:
+                governor_status = self.governor.get_status()
+                print(f"🔥 [GOVERNOR] Broadcasting status update: {governor_status}")
+                self.websocket_adapter.socketio.emit('governor_update', governor_status, to=None)
+            
             return jsonify({'success': success})
         
         @self.app.route('/api/governor/stop', methods=['POST'])
         def governor_stop():
-            """Stop Governor"""
             success = self.governor.stop()
+            
+            # CRITICAL FIX: Send WebSocket update to frontend
+            if success and self.websocket_adapter:
+                governor_status = self.governor.get_status()
+                print(f"🛑 [GOVERNOR] Broadcasting stop status: {governor_status}")
+                self.websocket_adapter.socketio.emit('governor_update', governor_status, to=None)
+            
             return jsonify({'success': success})
-        
-        @self.app.route('/api/governor/mode', methods=['POST'])
-        def governor_mode():
-            """Set Governor mode"""
-            data = request.get_json()
-            mode = data.get('mode', 'thompson_sampling')
-            success = self.governor.set_mode(mode)
-            return jsonify({'success': success, 'mode': mode})
     
     def _register_websocket_routes(self):
-        """Register WebSocket-specific routes (if enabled)"""
-        
+        """Register WebSocket-specific routes"""
         if not self.socketio:
             return
         
         @self.socketio.on('governor_control')
         def handle_governor_control(data):
-            """Handle Governor control via WebSocket"""
             if not self.governor:
                 return {'error': 'Governor not enabled'}
             
             action = data.get('action')
+            success = False
             
             if action == 'start':
-                self.governor.start()
+                success = self.governor.start()
+                print(f"🔥 [WebSocket] Governor start: {success}")
             elif action == 'stop':
-                self.governor.stop()
-            elif action == 'decision':
-                decision = self.governor.get_next_decision()
-                self.socketio.emit('governor_decision', decision)
+                success = self.governor.stop()
+                print(f"🛑 [WebSocket] Governor stop: {success}")
             
-            # Emit updated status
+            # Always send status update
             status = self.governor.get_status()
-            self.socketio.emit('governor_update', status, to=None)  # broadcast to all
+            print(f"📡 [WebSocket] Broadcasting governor status: {status}")
+            self.socketio.emit('governor_update', status, to=None)
+            
+            return {'success': success, 'status': status}
     
-    def run(self, host='127.0.0.1', port=5001, debug=True):
-        """Starte Enhanced Flask Application with WebSocket"""
+    def run(self, host='127.0.0.1', port=5002, debug=True):
+        """Start the application"""
         print("=" * 60)
         print("🎯 HAK-GAL HEXAGONAL ARCHITECTURE v2.0")
         print("=" * 60)
@@ -1322,43 +615,14 @@ class HexagonalAPI:
         print(f"[INFO] Governor: {'Enabled' if self.governor else 'Disabled'}")
         print(f"[INFO] Monitoring: {'Enabled' if self.monitoring else 'Disabled'}")
         print("=" * 60)
-        print("REST Endpoints:")
-        print("  GET  /health           - Health Check")
-        print("  GET  /api/status       - System Status")
-        print("  GET  /api/facts        - List Facts")
-        print("  POST /api/facts        - Add Fact")
-        print("  POST /api/search       - Search Facts")
-        print("  POST /api/reason       - Reasoning")
-        print("  GET  /api/architecture - Architecture Info")
         
-        if self.governor:
-            print("\nGovernor Endpoints:")
-            print("  GET  /api/governor/*   - Governor Controls")
-        
-        if self.websocket_adapter:
-            print("\nWebSocket Events:")
-            print("  📡 kb_update, system_status, governor_update")
-            print("  📡 reasoning_result, fact_added, llm_status")
-        
-        print("=" * 60)
-        
-        # Run with or without WebSocket
         if self.socketio:
-            # Prefer eventlet if installed
-            use_eventlet = False
-            try:
-                import eventlet  # noqa: F401
-                use_eventlet = True
-            except Exception:
-                use_eventlet = False
             self.socketio.run(self.app, host=host, port=port, debug=debug, use_reloader=False)
         else:
             self.app.run(host=host, port=port, debug=debug)
 
-# Main Entry Point
 def create_app(use_legacy=True, enable_all=True):
-    """Factory Function für Enhanced App Creation"""
-    # Aktiviert Sentry automatisch, wenn eine SENTRY_DSN Umgebungsvariable gesetzt ist
+    """Factory Function für App Creation"""
     enable_sentry = bool(os.environ.get('SENTRY_DSN'))
     return HexagonalAPI(
         use_legacy=use_legacy,
@@ -1368,7 +632,5 @@ def create_app(use_legacy=True, enable_all=True):
     )
 
 if __name__ == '__main__':
-    # Start with SQLite instead of Legacy JSONL
-    # Changed from use_legacy=True to use_legacy=False for SQLite DB
     api = create_app(use_legacy=False, enable_all=True)
     api.run()

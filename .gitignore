@@ -91,3 +91,24 @@ native/mojo_kernels/Debug/
 native/mojo_kernels/*.dll
 native/mojo_kernels/*.pyd
 native/mojo_kernels/*.so
+
+
+# Virtual Environment
+.venv_hexa/
+.venv/
+venv/
+
+# Logs
+*.log
+mcp_server.log
+mcp_write_audit.log
+
+# Large binaries
+caddy.exe
+
+# System files
+nul
+
+# Python
+__pycache__/
+*.pyc

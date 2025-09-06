@@ -865,12 +865,12 @@ const ProSettingsEnhanced: React.FC = () => {
                   <p className="font-mono">2025.08.04</p>
                 </div>
                 <div>
-                  <p className="text-muted-foreground">Backend URL</p>
-                  <p className="font-mono text-xs">http://localhost:5001</p>
+                  <p className="text-muted-foreground">Backend</p>
+                  <p className="font-mono text-xs">/api</p>
                 </div>
                 <div>
-                  <p className="text-muted-foreground">Frontend URL</p>
-                  <p className="font-mono text-xs">http://localhost:5173</p>
+                  <p className="text-muted-foreground">WebSocket</p>
+                  <p className="font-mono text-xs">/socket.io</p>
                 </div>
                 <div>
                   <p className="text-muted-foreground">Knowledge Base</p>

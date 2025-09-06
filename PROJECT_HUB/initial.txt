@@ -1,0 +1,33 @@
+HAK_GAL ? Initial Instructions for LLMs (ASCII)
+
+Purpose
+- Consistent, safe onboarding for new LLM instances (Claude, DeepSeek, Gemini, GPT5).
+
+Do this (read-only by default)
+1) Read SSoT
+   - Read ssot.md and your *_context.md.
+   - Compute SSoT_ID = SHA256(ssot.md)[:12] and include it in your header.
+2) Ask the Operator to run (do NOT call APIs yourself):
+   - tools/list
+   - get_system_status
+   - health_check_json
+   - niche_list
+3) After receiving outputs, propose only read-only analyses:
+   - kb_stats, get_predicates_stats, semantic_similarity("..."), consistency_check, validate_facts
+   - niche_stats("<core_niche>"), niche_query("<core_niche>", "<term>", 5)
+4) Never write without explicit approval.
+   - If approved: add_fact/update_fact (audit & backups); DB maintenance via db_* tools.
+
+MCP usage (operator-facing)
+- JSON-RPC: method = "tools/call", params.name = "<tool>", params.arguments = { ... }
+- Never call methods like get_system_status directly as JSON-RPC method.
+
+Delegation (via MCP delegate_task)
+- Vendor prefixes: DeepSeek:chat, Gemini:2.5-flash, Claude:sonnet
+- Prompt header: SSoT_ID + Agent + "Follow SSoT + niche; ASCII-only; be concise."
+
+Output policy
+- ASCII-only. Short, precise. No flooding.
+
+Where to learn more
+- docs/SSOT_NICHES_GUIDE.md (canonical guide for LLMs)

@@ -1,0 +1,67 @@
+"""
+Stub-Implementierung für Mojo-Kernels
+=====================================
+
+Zweck:
+- Erlaubt gefahrloses Aktivieren des Mojo-Adapters (MOJO_ENABLED=true),
+  auch ohne echte Mojo-Toolchain.
+- Beibehaltung der Signaturen und semantisch identischen Ergebnisse
+  gegenüber den Python-Fallbacks im Adapter.
+
+Hinweis:
+- Dies ist KEINE beschleunigte Version. Sie dient nur als Drop-in-Ersatz,
+  bis native Mojo-Bibliotheken bereitstehen.
+"""
+
+from __future__ import annotations
+
+import re
+from typing import List, Tuple
+
+
+def validate_facts_batch(statements: List[str]) -> List[bool]:
+    """Validiert Faktenstatements wie der Server-Regex.
+
+    Format: Predicate(Entity1, Entity2).
+    """
+    pattern = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*\([^,\)]+,\s*[^\)]+\)\.\s*$")
+    results: List[bool] = []
+    for s in statements:
+        results.append(bool(pattern.match((s or "").strip())))
+    return results
+
+
+def find_duplicates(statements: List[str], threshold: float = 0.9) -> List[Tuple[int, int, float]]:
+    """Einfache Token-basierte Jaccard-Ähnlichkeit als Duplikatheuristik.
+
+    Rückgabe: Liste von (index_i, index_j, score)
+    """
+    def tokens(s: str) -> set:
+        return set(re.findall(r"[A-Za-z0-9_]+", (s or "").lower()))
+
+    tok = [tokens(s) for s in statements]
+    n = len(tok)
+    out: List[Tuple[int, int, float]] = []
+    thr = max(0.0, min(1.0, float(threshold)))
+    for i in range(n):
+        ti = tok[i]
+        if not ti:
+            continue
+        for j in range(i + 1, n):
+            tj = tok[j]
+            if not tj:
+                continue
+            inter = len(ti & tj)
+            union = len(ti | tj) or 1
+            score = inter / union
+            if score >= thr:
+                out.append((i, j, float(score)))
+    return out
+
+
+__all__ = [
+    "validate_facts_batch",
+    "find_duplicates",
+]
+
+

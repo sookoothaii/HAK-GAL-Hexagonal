@@ -1,0 +1,226 @@
+{
+  "ux_microtexts": {
+    "version": "1.0.0",
+    "language": "en",
+    "tone": "professional_friendly"
+  },
+  
+  "tooltips": {
+    "node_classes": {
+      "READ_ONLY": "Safe to execute - only reads data, no modifications",
+      "WRITE_SENSITIVE": "CAUTION: Modifies data - requires explicit approval",
+      "LLM_DELEGATION": "Sends task to AI agent - may take 30-90 seconds",
+      "COMPUTATION": "Performs calculations locally - safe but may be resource intensive",
+      "UTILITY": "Flow control - manages workflow execution logic"
+    },
+    
+    "node_actions": {
+      "add_node": "Drag from palette or double-click canvas",
+      "delete_node": "Select and press Delete or right-click → Remove",
+      "edit_params": "Double-click node to edit parameters",
+      "connect_nodes": "Drag from output handle to input handle",
+      "run_node": "Right-click → Run This Node Only"
+    },
+    
+    "execution_modes": {
+      "dry_run": "Preview mode - shows what would happen without making changes",
+      "execute": "Live mode - actually performs operations (approval required for writes)",
+      "debug": "Step-by-step mode with breakpoints and inspection"
+    },
+    
+    "status_indicators": {
+      "pending": "Waiting to start",
+      "running": "Currently executing...",
+      "success": "Completed successfully",
+      "error": "Failed - check logs for details",
+      "approval_waiting": "Waiting for human approval",
+      "cancelled": "Execution stopped by user"
+    }
+  },
+  
+  "error_messages": {
+    "connection_errors": {
+      "cycle_detected": "Cannot create connection: This would create a circular dependency",
+      "incompatible_types": "Cannot connect: Output type {source_type} incompatible with input type {target_type}",
+      "missing_required": "Cannot execute: Node '{node_id}' is missing required parameter '{param}'"
+    },
+    
+    "execution_errors": {
+      "timeout": "Node '{node_id}' exceeded timeout of {timeout}s",
+      "auth_required": "Authentication required for write operation. Please provide auth_token",
+      "approval_denied": "Approval denied by {approver} with reason: {reason}",
+      "mcp_unavailable": "MCP server is not responding. Check if server is running on port {port}",
+      "rate_limited": "Rate limit exceeded. Please wait {seconds}s before retry"
+    },
+    
+    "validation_errors": {
+      "invalid_workflow": "Workflow validation failed: {details}",
+      "no_start_node": "Workflow must have at least one node without incoming edges",
+      "unreachable_nodes": "Nodes {node_ids} are unreachable from start",
+      "missing_ssot": "SSoT ID mismatch: Expected {expected}, got {actual}"
+    }
+  },
+  
+  "approval_dialogs": {
+    "write_approval": {
+      "title": "Write Operation Approval Required",
+      "message": "Node '{node_label}' will modify data:\n\nOperation: {operation}\nTarget: {target}\nChanges: {changes}\n\nDo you approve this operation?",
+      "confirm_button": "Approve & Execute",
+      "deny_button": "Deny",
+      "dry_run_button": "Preview Only"
+    },
+    
+    "bulk_approval": {
+      "title": "Multiple Write Operations Pending",
+      "message": "This workflow contains {count} write operations:\n{operations_list}\n\nApprove all?",
+      "confirm_button": "Approve All",
+      "deny_button": "Review Each",
+      "dry_run_button": "Dry Run All"
+    },
+    
+    "delegation_approval": {
+      "title": "AI Delegation Confirmation",
+      "message": "Send task to {agent}?\n\nTask: {task}\nEstimated time: {duration}s\nEstimated cost: {tokens} tokens",
+      "confirm_button": "Send",
+      "deny_button": "Cancel",
+      "modify_button": "Edit Task"
+    }
+  },
+  
+  "info_banners": {
+    "dry_run_active": {
+      "type": "info",
+      "message": "DRY RUN MODE - No actual changes will be made. Perfect for testing!",
+      "dismissible": false
+    },
+    
+    "execution_mode": {
+      "type": "warning",
+      "message": "LIVE MODE - Operations will modify data. Ensure you have backups.",
+      "dismissible": true
+    },
+    
+    "approval_pending": {
+      "type": "warning",
+      "message": "{count} operations waiting for approval. Click to review.",
+      "action": "review_approvals"
+    },
+    
+    "execution_complete": {
+      "type": "success",
+      "message": "Workflow completed successfully in {duration}s. {nodes_executed} nodes executed.",
+      "dismissible": true
+    },
+    
+    "execution_failed": {
+      "type": "error",
+      "message": "Workflow failed at node '{node_id}'. Error: {error}",
+      "action": "view_logs"
+    }
+  },
+  
+  "button_labels": {
+    "primary_actions": {
+      "new_workflow": "New Workflow",
+      "open_workflow": "Open",
+      "save_workflow": "Save",
+      "save_as": "Save As...",
+      "run_dry": "Dry Run",
+      "run_live": "Execute",
+      "stop": "Stop",
+      "clear": "Clear Canvas"
+    },
+    
+    "node_actions": {
+      "configure": "Configure",
+      "test_node": "Test This Node",
+      "view_output": "View Output",
+      "copy_node": "Duplicate",
+      "disable_node": "Disable",
+      "convert_to_mock": "Mock Mode"
+    },
+    
+    "workflow_actions": {
+      "validate": "Validate",
+      "export_json": "Export JSON",
+      "import_json": "Import JSON",
+      "share": "Share",
+      "schedule": "Schedule",
+      "view_history": "History"
+    }
+  },
+  
+  "status_messages": {
+    "workflow_states": {
+      "idle": "Ready to run",
+      "validating": "Validating workflow...",
+      "preparing": "Preparing execution environment...",
+      "running": "Executing node {current}/{total}",
+      "paused": "Execution paused - click Resume to continue",
+      "completed": "Workflow completed",
+      "failed": "Workflow failed",
+      "cancelled": "Workflow cancelled by user"
+    },
+    
+    "save_states": {
+      "unsaved": "Unsaved changes",
+      "saving": "Saving...",
+      "saved": "All changes saved",
+      "save_error": "Failed to save: {error}",
+      "auto_saved": "Auto-saved at {time}"
+    }
+  },
+  
+  "help_texts": {
+    "getting_started": "1. Drag nodes from palette\n2. Connect nodes with edges\n3. Configure parameters\n4. Run dry-run first\n5. Execute when ready",
+    
+    "safety_tips": "Safety First:\n- Always dry-run before execute\n- Check node colors (red = writes)\n- Review approvals carefully\n- Keep backups of important data",
+    
+    "keyboard_shortcuts": "Shortcuts:\n- Ctrl+S: Save\n- Ctrl+Z: Undo\n- Delete: Remove selected\n- Space: Pan canvas\n- Ctrl+A: Select all\n- F5: Run dry-run"
+  },
+  
+  "empty_states": {
+    "no_nodes": {
+      "title": "Empty Canvas",
+      "message": "Drag nodes from the palette to get started",
+      "action": "Show Tutorial"
+    },
+    
+    "no_workflows": {
+      "title": "No Saved Workflows",
+      "message": "Create your first workflow or import an existing one",
+      "action": "Create New"
+    },
+    
+    "no_results": {
+      "title": "No Results Yet",
+      "message": "Run the workflow to see results here",
+      "action": "Run Dry-Run"
+    }
+  },
+  
+  "confirmations": {
+    "delete_node": "Delete node '{label}'? This cannot be undone.",
+    "clear_canvas": "Clear entire workflow? All unsaved changes will be lost.",
+    "close_unsaved": "You have unsaved changes. Save before closing?",
+    "override_workflow": "Replace current workflow? This will discard unsaved changes.",
+    "stop_execution": "Stop workflow execution? Progress will be lost."
+  },
+  
+  "accessibility": {
+    "aria_labels": {
+      "canvas": "Workflow canvas",
+      "palette": "Node palette",
+      "minimap": "Workflow overview",
+      "properties": "Node properties panel",
+      "logs": "Execution logs"
+    },
+    
+    "screen_reader": {
+      "node_added": "Node {label} added to canvas",
+      "connection_made": "Connected {source} to {target}",
+      "execution_started": "Workflow execution started",
+      "approval_required": "Approval required for {count} operations"
+    }
+  }
+}

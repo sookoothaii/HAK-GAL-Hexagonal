@@ -1,0 +1,270 @@
+{
+  "node_taxonomy": {
+    "version": "1.0.0",
+    "created": "2025-01-11",
+    "author": "Claude-Opus-4.1",
+    "description": "HAK-GAL Workflow Node Classification and Palette"
+  },
+  
+  "node_classes": {
+    "READ_ONLY": {
+      "description": "Safe nodes that only retrieve information",
+      "risk_level": "none",
+      "approval_required": false,
+      "color": "#10B981",
+      "icon": "eye",
+      "examples": [
+        "get_facts_count",
+        "search_knowledge",
+        "list_files",
+        "get_system_status"
+      ]
+    },
+    
+    "WRITE_SENSITIVE": {
+      "description": "Nodes that modify state - require explicit approval",
+      "risk_level": "high",
+      "approval_required": true,
+      "color": "#EF4444",
+      "icon": "edit",
+      "examples": [
+        "add_fact",
+        "write_file",
+        "delete_fact",
+        "db_vacuum"
+      ]
+    },
+    
+    "LLM_DELEGATION": {
+      "description": "Nodes that invoke AI agents",
+      "risk_level": "medium",
+      "approval_required": false,
+      "color": "#8B5CF6",
+      "icon": "brain",
+      "timeout_default": 90,
+      "examples": [
+        "delegate_task",
+        "consensus_evaluator",
+        "delegation_optimizer"
+      ]
+    },
+    
+    "COMPUTATION": {
+      "description": "Nodes that perform calculations or simulations",
+      "risk_level": "low",
+      "approval_required": false,
+      "color": "#3B82F6",
+      "icon": "calculator",
+      "examples": [
+        "execute_code",
+        "db_benchmark_inserts",
+        "semantic_similarity"
+      ]
+    },
+    
+    "UTILITY": {
+      "description": "Flow control and helper nodes",
+      "risk_level": "none",
+      "approval_required": false,
+      "color": "#6B7280",
+      "icon": "cog",
+      "builtin": true,
+      "types": [
+        {
+          "name": "Delay",
+          "description": "Wait for specified duration",
+          "params": {"seconds": "number"},
+          "icon": "clock"
+        },
+        {
+          "name": "Branch",
+          "description": "Conditional execution path",
+          "params": {"condition": "expression", "true_path": "node_id", "false_path": "node_id"},
+          "icon": "git-branch"
+        },
+        {
+          "name": "Retry",
+          "description": "Retry failed node with backoff",
+          "params": {"max_attempts": "number", "backoff_factor": "number"},
+          "icon": "refresh"
+        },
+        {
+          "name": "Parallel",
+          "description": "Execute multiple nodes simultaneously",
+          "params": {"node_ids": "array", "wait_all": "boolean"},
+          "icon": "layers"
+        },
+        {
+          "name": "ApprovalGate",
+          "description": "Require human approval to proceed",
+          "params": {"message": "string", "timeout_seconds": "number"},
+          "icon": "shield"
+        },
+        {
+          "name": "Logger",
+          "description": "Log intermediate results",
+          "params": {"level": "enum[info,warn,error]", "message": "string"},
+          "icon": "file-text"
+        }
+      ]
+    }
+  },
+  
+  "node_catalog": [
+    {
+      "id": "get_facts_count",
+      "class": "READ_ONLY",
+      "label": "Get Facts Count",
+      "short_help": "Returns total number of facts in knowledge base",
+      "params": {},
+      "output": "number",
+      "avg_duration_ms": 30
+    },
+    {
+      "id": "search_knowledge",
+      "class": "READ_ONLY",
+      "label": "Search Knowledge",
+      "short_help": "Semantic search in knowledge base",
+      "params": {
+        "query": {"type": "string", "required": true},
+        "limit": {"type": "number", "default": 10}
+      },
+      "output": "array",
+      "avg_duration_ms": 50
+    },
+    {
+      "id": "add_fact",
+      "class": "WRITE_SENSITIVE",
+      "label": "Add Fact",
+      "short_help": "Add new fact to knowledge base (REQUIRES APPROVAL)",
+      "params": {
+        "statement": {"type": "string", "required": true},
+        "source": {"type": "string", "default": "workflow"},
+        "auth_token": {"type": "string", "sensitive": true}
+      },
+      "output": "boolean",
+      "avg_duration_ms": 100
+    },
+    {
+      "id": "write_file",
+      "class": "WRITE_SENSITIVE",
+      "label": "Write File",
+      "short_help": "Write content to file (REQUIRES APPROVAL)",
+      "params": {
+        "path": {"type": "string", "required": true},
+        "content": {"type": "string", "required": true},
+        "auth_token": {"type": "string", "sensitive": true}
+      },
+      "output": "boolean",
+      "avg_duration_ms": 150
+    },
+    {
+      "id": "delegate_task",
+      "class": "LLM_DELEGATION",
+      "label": "Delegate to AI",
+      "short_help": "Send task to specified AI agent",
+      "params": {
+        "target_agent": {"type": "string", "required": true, "enum": ["DeepSeek:deepseek-chat", "Claude:sonnet", "Gemini:gemini-1.5-flash"]},
+        "task_description": {"type": "string", "required": true},
+        "context": {"type": "object", "default": {}},
+        "timeout": {"type": "number", "default": 90}
+      },
+      "output": "string",
+      "avg_duration_ms": 5000
+    },
+    {
+      "id": "semantic_similarity",
+      "class": "COMPUTATION",
+      "label": "Find Similar Facts",
+      "short_help": "Find semantically similar facts",
+      "params": {
+        "statement": {"type": "string", "required": true},
+        "threshold": {"type": "number", "default": 0.8},
+        "limit": {"type": "number", "default": 50}
+      },
+      "output": "array",
+      "avg_duration_ms": 200
+    },
+    {
+      "id": "execute_code",
+      "class": "COMPUTATION",
+      "label": "Execute Code",
+      "short_help": "Run code in sandboxed environment",
+      "params": {
+        "code": {"type": "string", "required": true},
+        "language": {"type": "string", "required": true, "enum": ["python", "javascript"]},
+        "timeout": {"type": "number", "default": 30}
+      },
+      "output": "object",
+      "avg_duration_ms": 500
+    },
+    {
+      "id": "list_files",
+      "class": "READ_ONLY",
+      "label": "List Files",
+      "short_help": "List files in directory",
+      "params": {
+        "path": {"type": "string", "default": "."},
+        "pattern": {"type": "string"},
+        "recursive": {"type": "boolean", "default": false}
+      },
+      "output": "array",
+      "avg_duration_ms": 100
+    },
+    {
+      "id": "health_check",
+      "class": "READ_ONLY",
+      "label": "Health Check",
+      "short_help": "System health and status check",
+      "params": {},
+      "output": "object",
+      "avg_duration_ms": 50
+    },
+    {
+      "id": "consensus_evaluator",
+      "class": "LLM_DELEGATION",
+      "label": "Consensus Evaluator",
+      "short_help": "Evaluate consensus between multiple outputs",
+      "params": {
+        "task_id": {"type": "string", "required": true},
+        "outputs": {"type": "array", "required": true},
+        "method": {"type": "string", "default": "semantic_similarity"},
+        "threshold": {"type": "number", "default": 0.7}
+      },
+      "output": "object",
+      "avg_duration_ms": 3000
+    }
+  ],
+  
+  "safety_rules": {
+    "default_policy": "DENY_WRITES",
+    "read_only_always_allowed": true,
+    "write_requires_approval": true,
+    "delegation_timeout_max": 300,
+    "computation_timeout_max": 60,
+    "approval_timeout_default": 300,
+    "dry_run_mandatory_first": true
+  },
+  
+  "visual_conventions": {
+    "node_shape": {
+      "READ_ONLY": "rounded",
+      "WRITE_SENSITIVE": "hexagon",
+      "LLM_DELEGATION": "diamond",
+      "COMPUTATION": "rectangle",
+      "UTILITY": "circle"
+    },
+    "edge_style": {
+      "success": "solid",
+      "error": "dashed",
+      "approval": "dotted"
+    },
+    "status_indicators": {
+      "pending": "#FCD34D",
+      "running": "#60A5FA",
+      "success": "#34D399",
+      "error": "#F87171",
+      "cancelled": "#9CA3AF"
+    }
+  }
+}

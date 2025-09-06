@@ -1,7 +1,11 @@
-// V4 - Cleaned and synchronized with the new store actions - WITH PERMANENT FIX
+// V4 - ORIGINAL VERSION RESTORED - Using own WebSocket connection
 import { io, Socket } from 'socket.io-client';
 import { useGovernorStore } from '@/stores/useGovernorStore';
-import { getActiveBackend } from '@/config/backends';
+import { getApiBaseUrl } from '@/services/api';
+import { appConfig } from '@/config/app.config';
+
+// SINGLETON INSTANCE - Only ONE WebSocket connection!
+let singletonInstance: WebSocketService | null = null;
 
 class WebSocketService {
   private socket: Socket | null = null;
@@ -11,16 +15,40 @@ class WebSocketService {
   }
   
   private connect() {
-    const activeBackend = getActiveBackend();
-    const BACKEND_URL = activeBackend.wsUrl;
-    console.log(`[WebSocket] Connecting to ${activeBackend.name} at:`, BACKEND_URL);
+    // CRITICAL: Prevent multiple connections
+    if (this.socket && (this.socket.connected || this.socket.connecting)) {
+      console.log('[WebSocket] Already connected or connecting, skipping...');
+      return;
+    }
     
-    this.socket = io(BACKEND_URL, {
-      transports: ['websocket'],
+    const baseUrl = getApiBaseUrl();
+    const apiKey = appConfig.API_KEY;
+    const path = appConfig.WS_PATH;
+
+    console.log(`[WebSocket] Connecting via proxy at: ${baseUrl} (path=${path})`);
+    
+    this.socket = io(baseUrl, {
+      path,
+      transports: ['websocket','polling'],
       reconnection: true,
+      reconnectionDelay: appConfig.WS_RECONNECTION_DELAY,
+      reconnectionDelayMax: appConfig.WS_RECONNECTION_DELAY_MAX,
+      reconnectionAttempts: appConfig.WS_RECONNECTION_ATTEMPTS,
+      autoConnect: false,  // Don't auto-connect
+      extraHeaders: apiKey ? { 'X-API-Key': apiKey } : undefined,
+      auth: apiKey ? { apiKey } : undefined,
     });
     
     this.setupEventListeners();
+    
+    // Manually connect after setup
+    this.socket.connect();
+    
+    // CRITICAL: Make socket available globally for WebSocketManager
+    if (typeof window !== 'undefined') {
+      (window as any).__GOVERNOR_SOCKET__ = this.socket;
+      console.log('[WebSocket] Socket exposed globally for sharing');
+    }
   }
   
   private fixLLMProviders(providers: any[]): any[] {
@@ -46,7 +74,7 @@ class WebSocketService {
     if (!this.socket) return;
     
     this.socket.on('connect', () => {
-      console.log('✅ WebSocket connected to HAK-GAL Backend');
+      console.log('✅ WebSocket connected to HAK-GAL Backend (via proxy)');
       useGovernorStore.getState().handleConnectionStatus(true);
       this.socket?.emit('request_initial_data');
     });
@@ -61,6 +89,7 @@ class WebSocketService {
     });
     
     this.socket.on('governor_update', (data) => {
+      console.log('🎯 Governor Update:', data);  // Debug log to see what's coming from backend
       useGovernorStore.getState().handleGovernorUpdate(data);
     });
     
@@ -152,31 +181,24 @@ class WebSocketService {
       useGovernorStore.getState().handleGovernorDetailedUpdate(data);
     });
 
-    // --- HEXAGONAL BACKEND EVENT HANDLERS ---
     this.socket.on('graph_update', (data) => {
       console.log('🕸️ [Hexagonal] Graph Update received:', data);
-      // The data from the backend is { factCount, nodeCount, edgeCount }
-      // We pass this to the store action that now supports these new fields.
       useGovernorStore.getState().handleKbUpdate({ metrics: data });
     });
 
     this.socket.on('hexagonal_status_update', (data) => {
       console.log('💠 [Hexagonal] Status Update received:', data);
-      // This is a placeholder for a potential new, unified status event.
-      // TODO: Map data to the appropriate store actions.
     });
     
     this.socket.on('initial_data', (data) => {
       console.log('📦 Initial data received:', data);
       
-      // Fix LLM providers in initial data
       if (data.llm_providers && data.llm_providers.length > 0) {
         console.log('🤖 Initial LLM Providers (before fix):', data.llm_providers);
         data.llm_providers = this.fixLLMProviders(data.llm_providers);
         console.log('✅ Initial LLM Providers (after fix):', data.llm_providers);
       }
       
-      // Check for different possible formats
       if (data.kb_metrics) {
         console.log('Found kb_metrics (snake_case):', data.kb_metrics);
         useGovernorStore.getState().handleKbUpdate({ 
@@ -206,7 +228,32 @@ class WebSocketService {
       }
     });
     
-    // Handle dual response events
+    // CRITICAL: Handle reasoning_complete for LLM responses!
+    this.socket.on('reasoning_complete', (data) => {
+      console.log('🧠 Reasoning Complete received:', data);
+      const store = useGovernorStore.getState();
+      
+      // Update query in Governor Store
+      if (data.queryId) {
+        store.updateQueryResponse(data.queryId, {
+          status: 'success',
+          ...data.response
+        });
+      }
+      
+      // Also update Intelligence Store if available
+      try {
+        const { useIntelligenceStore } = require('@/stores/useIntelligenceStore');
+        const intelligenceStore = useIntelligenceStore.getState();
+        intelligenceStore.handleIntelligenceUpdate({
+          neural: data.neural,
+          knowledge: data.knowledge
+        });
+      } catch (e) {
+        // Intelligence store might not be available
+      }
+    });
+    
     this.socket.on('dual_response', (data) => {
       console.log('🔄 Dual Response received:', data);
       console.log('  - Query ID:', data.queryId);
@@ -239,10 +286,8 @@ class WebSocketService {
   
   public sendCommand(command: string, query?: string | object) {
     if (command === 'ask_dual' && typeof query === 'object') {
-      // Handle dual response command
       this.emit('ask_dual', query);
     } else {
-      // Legacy command handling
       const fullQuery = `${command} ${query || ''}`.trim();
       const newId = crypto.randomUUID();
       
@@ -274,38 +319,36 @@ class WebSocketService {
     this.emit(event, data);
   }
 
-  // Enhanced: Auto-learning configuration
   public updateAutoLearningConfig(config: any) {
     this.emit('auto_learning_config', config);
   }
 
-  // Enhanced: Engine configuration
   public updateEngineConfig(engineName: string, config: any) {
     this.emit('engine_config', { engine: engineName, config });
   }
 
-  // Enhanced: Emergency fixes control
   public toggleEmergencyFix(fixName: string, enabled: boolean) {
     this.emit('emergency_fix_control', { fix: fixName, enabled });
   }
 
-  // Enhanced: Monitoring control
   public toggleMonitoring(monitoringType: string, enabled: boolean) {
     this.emit('monitoring_control', { type: monitoringType, enabled });
   }
 
-  // Enhanced: Request detailed system status
   public requestSystemStatus() {
     this.emit('request_system_status');
   }
 
-  // Enhanced: Request emergency status
   public requestEmergencyStatus() {
     this.emit('request_emergency_status');
   }
 }
 
-export const wsService = new WebSocketService();
+// CRITICAL: Return singleton to prevent multiple connections
+if (!singletonInstance) {
+  singletonInstance = new WebSocketService();
+}
+export const wsService = singletonInstance;
 
 export const useGovernorSocket = () => {
   return wsService;

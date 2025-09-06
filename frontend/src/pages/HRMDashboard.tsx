@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
   Brain, Cpu, Zap, TrendingUp, Database, Activity,
-  CheckCircle, AlertTriangle, RefreshCw, Play, Pause
+  CheckCircle, AlertTriangle, RefreshCw, Play, Pause, Sparkles
 } from 'lucide-react';
 import { useIntelligenceStore } from '@/stores/useIntelligenceStore';
 import { useGovernorStore } from '@/stores/useGovernorStore';
@@ -167,11 +167,10 @@ const HRMDashboard: React.FC = () => {
     const loadHRMStatus = async () => {
       setIsLoading(true);
       try {
-        // Get HRM status
-        const { API_BASE_URL } = await import('@/config/backends');
-        const hrmResponse = await fetch(`${API_BASE_URL}/api/hrm/status`);
-        if (hrmResponse.ok) {
-          const hrmData = await hrmResponse.json();
+        const { httpClient } = await import('@/services/api');
+        const hrmResponse = await httpClient.get(`/api/hrm/status`);
+        if (hrmResponse.status === 200) {
+          const hrmData = hrmResponse.data;
           
           // Update store with real data
           updateNeuralReasoning({
@@ -192,9 +191,9 @@ const HRMDashboard: React.FC = () => {
         }
         
         // Get HRM info for vocabulary
-        const infoResponse = await fetch(`${API_BASE_URL}/api/hrm/info`);
-        if (infoResponse.ok) {
-          const infoData = await infoResponse.json();
+        const infoResponse = await httpClient.get(`/api/hrm/info`);
+        if (infoResponse.status === 200) {
+          const infoData = infoResponse.data;
           
           updateNeuralReasoning({
             vocabulary: new Map([['size', infoData.vocabulary_size || 729]])
@@ -229,15 +228,9 @@ const HRMDashboard: React.FC = () => {
   // Test a single query against HRM
   const runTestQuery = async (query: string, expected: boolean) => {
     try {
-      const { API_BASE_URL } = await import('@/config/backends');
-      const response = await fetch(`${API_BASE_URL}/api/hrm/reason`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query })
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
+      const { httpClient } = await import('@/services/api');
+      const { data } = await httpClient.post(`/api/hrm/reason`, { query });
+      if (data) {
         const isCorrect = (data.confidence > 0.5) === expected;
         
         // Update neural reasoning with latest result
@@ -286,18 +279,12 @@ const HRMDashboard: React.FC = () => {
   const startTraining = async () => {
     setIsTraining(true);
     try {
-      const { API_BASE_URL } = await import('@/config/backends');
-      const response = await fetch(`${API_BASE_URL}/api/hrm/training/extend`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          epochs: 100,
-          learning_rate: 0.001
-        })
+      const { httpClient } = await import('@/services/api');
+      const { data: result } = await httpClient.post(`/api/hrm/training/extend`, {
+        epochs: 100,
+        learning_rate: 0.001
       });
-      
-      if (response.ok) {
-        const result = await response.json();
+      if (result) {
         
         // Update with training results
         updateNeuralReasoning({
@@ -320,17 +307,9 @@ const HRMDashboard: React.FC = () => {
   // Batch processing handler
   const runBatchQueries = async (queries: string[]) => {
     try {
-      const { API_BASE_URL } = await import('@/config/backends');
-      const response = await fetch(`${API_BASE_URL}/api/hrm/batch`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ queries })
-      });
-      
-      if (response.ok) {
-        const results = await response.json();
-        return results;
-      }
+      const { httpClient } = await import('@/services/api');
+      const { data: results } = await httpClient.post(`/api/hrm/batch`, { queries });
+      return results;
     } catch (error) {
       console.error('Batch processing failed:', error);
       return [];
@@ -366,11 +345,14 @@ const HRMDashboard: React.FC = () => {
             {neural.modelStatus.toUpperCase()}
           </Badge>
           <Badge 
-            variant={metrics.gpuUsage !== undefined ? "default" : "outline"}
-            className={metrics.gpuUsage !== undefined ? "bg-green-500/10 text-green-500 border-green-500/20" : ""}
+            variant={neural.modelStatus === 'operational' ? "default" : "outline"}
+            className={neural.modelStatus === 'operational' ? "bg-green-500/10 text-green-500 border-green-500/20" : ""}
           >
-            <Cpu className="w-3 h-3 mr-1" />
-            {metrics.gpuUsage !== undefined ? "CUDA Active" : "CPU Mode"}
+            {neural.modelStatus === 'operational' ? (
+              <><Sparkles className="w-3 h-3 mr-1" />GPU Mode (CUDA)</>
+            ) : (
+              <><Cpu className="w-3 h-3 mr-1" />CPU Mode</>
+            )}
           </Badge>
           {isConnected && (
             <Badge variant="outline" className="text-xs">

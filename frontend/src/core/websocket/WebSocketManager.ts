@@ -1,4 +1,4 @@
-// WebSocket Manager - Centralized WebSocket Connection
+// WebSocket Manager - ORIGINAL VERSION
 // Phase 2: State Architecture Unification  
 // Single connection replacing 3 separate hooks
 
@@ -22,6 +22,16 @@ class WebSocketManagerImpl implements WebSocketManager {
   private maxReconnectAttempts = 5;
   
   connect(): void {
+    // Use the existing socket from useGovernorSocket to prevent double connections
+    const governorSocket = (window as any).__GOVERNOR_SOCKET__;
+    if (governorSocket) {
+      console.log('[WebSocketManager] Using existing Governor socket');
+      this.socket = governorSocket;
+      this.setupCoreHandlers();
+      return;
+    }
+    
+    /* Original code - only used if no Governor socket exists
     if (this.socket?.connected) {
       console.log('[WebSocketManager] Already connected');
       return;
@@ -38,6 +48,7 @@ class WebSocketManagerImpl implements WebSocketManager {
     });
     
     this.setupCoreHandlers();
+    */
   }
   
   private setupCoreHandlers(): void {

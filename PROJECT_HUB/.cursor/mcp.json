@@ -1,0 +1,39 @@
+{
+  "mcpServers": {
+    "hak_gal_hexagonal": {
+      "type": "stdio",
+      "command": "D:\\MCP Mods\\HAK_GAL_HEXAGONAL\\.venv_hexa\\Scripts\\python.exe",
+      "args": [
+        "-u",
+        "D:\\MCP Mods\\HAK_GAL_HEXAGONAL\\hak_gal_mcp_v2.py"
+      ],
+      "env": {
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONUTF8": "1",
+        "PYTHONUNBUFFERED": "1",
+        "PYTHONPATH": "D:\\MCP Mods\\HAK_GAL_HEXAGONAL",
+        "HAKGAL_API_BASE_URL": "http://127.0.0.1:5001",
+        "HAKGAL_WRITE_ENABLED": "false",
+        "HAKGAL_WRITE_TOKEN": "",
+        "HAKGAL_HUB_PATH": "D:\\MCP Mods\\HAK_GAL_HEXAGONAL\\PROJECT_HUB",
+        "HAKGAL_AUTO_SNAPSHOT_ON_SHUTDOWN": "false",
+        "HAKGAL_AUTO_DIGEST_ON_INIT": "false"
+      },
+      "disabled": false
+    },
+    "hak-gal": {
+      "type": "stdio",
+      "command": "D:\\MCP Mods\\HAK_GAL_HEXAGONAL\\.venv_hexa\\Scripts\\python.exe",
+      "args": [
+        "D:/MCP Mods/HAK_GAL_HEXAGONAL/src_hexagonal/infrastructure/mcp/mcp_server.py"
+      ],
+      "env": {
+        "PYTHONPATH": "D:/MCP Mods/HAK_GAL_HEXAGONAL",
+        "PYTHONIOENCODING": "utf-8"
+      },
+      "disabled": false
+    }
+  }
+}
+
+

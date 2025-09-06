@@ -2,11 +2,10 @@
   "mcpServers": {
     "hak-gal": {
       "command": "python",
-      "args": [
-        "D:/MCP Mods/HAK_GAL_HEXAGONAL/src_hexagonal/infrastructure/mcp/mcp_server.py"
-      ],
+      "args": ["D:\\MCP Mods\\HAK_GAL_HEXAGONAL\\hak_gal_mcp_sqlite_full.py"],
+      "cwd": "D:\\MCP Mods\\HAK_GAL_HEXAGONAL",
       "env": {
-        "PYTHONPATH": "D:/MCP Mods/HAK_GAL_HEXAGONAL"
+        "PYTHONPATH": "D:\\MCP Mods\\HAK_GAL_HEXAGONAL"
       }
     }
   }

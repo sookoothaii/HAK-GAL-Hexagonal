@@ -386,7 +386,7 @@ class ThesisEngine(BaseHexagonalEngine):
             duration_minutes: How long to run
         """
         self.logger.info(f"Starting Thesis Engine for {duration_minutes} minutes")
-        self.logger.info(f"Using HEXAGONAL API on port {self.port}")
+        self.logger.info(f"Using HEXAGONAL API on port {self.api_port}")
         self.logger.info(f"Max facts to analyze: {self.max_facts}")
         
         start_time = time.time()

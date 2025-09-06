@@ -83,6 +83,19 @@ class FactManagementService(FactManagementUseCase):
             'reasoning_available': self.reasoning_engine is not None
         }
 
+    def delete_fact(self, statement: str) -> tuple[bool, str]:
+        """Lösche einen Fact und gib Erfolg zurück."""
+        if not self.repository.exists(statement):
+            return False, "Fact not found"
+
+        # FIX: Call the correct repository method `delete_by_statement`
+        deleted_count = self.repository.delete_by_statement(statement)
+
+        if deleted_count > 0:
+            return True, f"Fact deleted: {statement}"
+        else:
+            return False, "Failed to delete fact or fact not found"
+
 class ReasoningService(ReasoningUseCase):
     """
     Application Service für Reasoning
@@ -95,13 +108,14 @@ class ReasoningService(ReasoningUseCase):
         self.repository = fact_repository
     
     def reason(self, query: str) -> ReasoningResult:
-        """Führe Reasoning aus mit Device Info"""
+        """Führe Reasoning aus mit Device Info und Feedback Support"""
         
         # Nutze Reasoning Engine
         result = self.engine.compute_confidence(query)
         
         # Map zu Domain Entity
         confidence = result.get('confidence', 0.0)
+        base_confidence = result.get('base_confidence', confidence)
         
         # Use original reasoning terms if available, otherwise generate
         reasoning_terms = result.get('reasoning_terms', [])
@@ -124,9 +138,19 @@ class ReasoningService(ReasoningUseCase):
             success=result.get('success', True)
         )
         
+        # Add all metadata from engine
+        reasoning_result.metadata = {
+            'base_confidence': base_confidence,
+            'feedback_applied': result.get('feedback_applied', False)
+        }
+        
         # Add device info if available
         if 'device' in result:
-            reasoning_result.metadata = {'device': result['device']}
+            reasoning_result.metadata['device'] = result['device']
+            
+        # Add feedback history if available
+        if 'feedback_history' in result:
+            reasoning_result.metadata['feedback_history'] = result['feedback_history']
         
         return reasoning_result
     

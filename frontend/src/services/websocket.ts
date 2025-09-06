@@ -1,6 +1,6 @@
 // WebSocket Service with Dynamic Backend Support
 import io, { Socket } from 'socket.io-client';
-import { WS_URL } from '@/config/backends';  // FIXED: Use dynamic URL
+import { getApiBaseUrl } from '@/services/api';
 import { useGovernorStore } from '@/stores/useGovernorStore';
 import { convertToCamelCase } from '@/lib/utils';
 
@@ -12,12 +12,20 @@ class WebSocketService {
     if (this.socket?.connected) return;
 
     // Use dynamic backend URL instead of hardcoded
-    console.log(`🔌 Connecting to WebSocket at ${WS_URL}`);
-    
-    this.socket = io(WS_URL, {  // FIXED: Dynamic URL
+    const baseUrl = getApiBaseUrl();
+    const path = '/socket.io';
+    const apiKey = (import.meta as any)?.env?.VITE_API_KEY || '';
+
+    console.log(`🔌 Connecting to WebSocket at origin ${baseUrl} (path=${path})`);
+
+    // Prefer same-origin connection; attach auth via query
+    this.socket = io(baseUrl, {
+      path,
       reconnectionAttempts: 5,
       reconnectionDelay: 3000,
       transports: ['websocket'],
+      extraHeaders: apiKey ? { 'X-API-Key': apiKey } : undefined,
+      auth: apiKey ? { apiKey } : undefined,
     });
 
     this.setupEventHandlers();

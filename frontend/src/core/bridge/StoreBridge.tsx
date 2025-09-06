@@ -21,7 +21,7 @@ export const useStoreBridge = () => {
   const wsManager = getWebSocketManager();
   
   useEffect(() => {
-    // Connect WebSocket
+    // Connect WebSocket - will use shared socket from useGovernorSocket
     wsManager.connect();
     
     // Get store actions

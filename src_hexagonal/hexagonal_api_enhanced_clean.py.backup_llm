@@ -1,0 +1,554 @@
+"""
+REST API Adapter with WebSocket, Governor & Sentry - CLEAN VERSION WITHOUT MOCKS
+================================================================================
+Nach HAK/GAL Verfassung: NO FAKE DATA, ONLY REAL RESULTS
+"""
+
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+from typing import Dict, Any, Optional
+import sys
+import os
+import time
+from pathlib import Path
+import subprocess
+from datetime import datetime, timezone
+import re
+import shutil
+from functools import wraps
+from dotenv import load_dotenv
+
+# --- API Key Authentication Decorator ---
+def require_api_key(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        # Load API key from environment. Fallback to a default if not set for safety.
+        load_dotenv(dotenv_path=Path(__file__).resolve().parents[1] / '.env')
+        api_key = os.environ.get("HAKGAL_API_KEY")
+        if not api_key:
+            # This case should not happen if .env is set up, but as a safeguard:
+            return jsonify({"error": "API key not configured on server."}), 500
+
+        # Get key from request header
+        provided_key = request.headers.get('X-API-Key')
+        if not provided_key or provided_key != api_key:
+            return jsonify({"error": "Forbidden: Invalid or missing API key."}), 403
+        
+        return f(*args, **kwargs)
+    return decorated_function
+
+
+# Add src_hexagonal to path
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from application.services import FactManagementService, ReasoningService
+from adapters.legacy_adapters import LegacyFactRepository, LegacyReasoningEngine
+from adapters.native_adapters import NativeReasoningEngine
+from adapters.sqlite_adapter import SQLiteFactRepository
+from adapters.websocket_adapter import create_websocket_adapter
+from adapters.governor_adapter import get_governor_adapter
+from adapters.system_monitor import get_system_monitor
+from core.domain.entities import Query
+
+# Import infrastructure if available
+try:
+    from infrastructure.sentry_monitoring import SentryMonitoring
+    SENTRY_AVAILABLE = True
+except ImportError:
+    SENTRY_AVAILABLE = False
+    print("⚠️ Sentry not available - monitoring disabled")
+
+class HexagonalAPI:
+    """
+    Enhanced REST API Adapter - HONEST VERSION
+    No mocks, no fake data, only real results
+    """
+    
+    def __init__(self, use_legacy: bool = True, enable_websocket: bool = True, 
+                 enable_governor: bool = True, enable_sentry: bool = False):
+        self.app = Flask(__name__)
+        # Enable permissive CORS for local dev (Frontend on 5173)
+        CORS(
+            self.app,
+            resources={r"/*": {"origins": "*"}},
+            supports_credentials=True,
+            expose_headers=["*"],
+            allow_headers=["Content-Type", "Authorization", "X-Requested-With"],
+            methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        )
+        
+        # Paths
+        self.hex_root = Path(__file__).resolve().parents[1]
+        self.suite_root = (self.hex_root.parent / 'HAK_GAL_SUITE')
+
+        # Load environment from HAK_GAL_SUITE/.env if present
+        try:
+            env_path = self.suite_root / '.env'
+            if env_path.exists():
+                try:
+                    from dotenv import load_dotenv
+                    load_dotenv(dotenv_path=str(env_path), override=False)
+                    print(f"[ENV] Loaded environment from {env_path}")
+                except Exception:
+                    # Manual parser
+                    for line in env_path.read_text(encoding='utf-8', errors='ignore').splitlines():
+                        line = line.strip()
+                        if not line or line.startswith('#'):
+                            continue
+                        if line.lower().startswith('export '):
+                            line = line[7:].strip()
+                        if '=' in line:
+                            key, val = line.split('=', 1)
+                            key = key.strip()
+                            val = val.strip().strip('"').strip("'")
+                            if key and key not in os.environ:
+                                os.environ[key] = val
+                    print(f"[ENV] Loaded environment (manual) from {env_path}")
+        except Exception as e:
+            print(f"[ENV] Failed to load .env: {e}")
+
+        # Dependency Injection
+        if use_legacy:
+            print("[INFO] Using Legacy Adapters (Original HAK-GAL)")
+            self.fact_repository = LegacyFactRepository()
+            self.reasoning_engine = LegacyReasoningEngine()
+        else:
+            print("[INFO] Using SQLite Adapters (Development DB)")
+            self.fact_repository = SQLiteFactRepository()
+            # Verwende das trainierte HRM (NativeReasoningEngine)
+            self.reasoning_engine = NativeReasoningEngine()
+        
+        # Initialize Application Services
+        self.fact_service = FactManagementService(
+            fact_repository=self.fact_repository,
+            reasoning_engine=self.reasoning_engine
+        )
+        
+        self.reasoning_service = ReasoningService(
+            reasoning_engine=self.reasoning_engine,
+            fact_repository=self.fact_repository
+        )
+        
+        # Initialize WebSocket Support
+        self.websocket_adapter = None
+        self.socketio = None
+        self.system_monitor = None
+        if enable_websocket:
+            self.websocket_adapter, self.socketio = create_websocket_adapter(
+                self.app, 
+                self.fact_repository, 
+                self.reasoning_engine
+            )
+            print("[OK] WebSocket Support enabled")
+            
+            # Initialize System Monitor and start monitoring
+            self.system_monitor = get_system_monitor(self.socketio)
+            self.system_monitor.start_monitoring()
+            print("[OK] System Monitoring started")
+        
+        # Initialize Governor
+        self.governor = None
+        if enable_governor:
+            self.governor = get_governor_adapter()
+            print("[OK] Governor initialized (not started - use Frontend to control)")
+        
+        # Initialize Sentry Monitoring
+        self.monitoring = None
+        if enable_sentry and SENTRY_AVAILABLE:
+            tentative_monitor = SentryMonitoring()
+            if tentative_monitor.initialize(self.app):
+                self.monitoring = tentative_monitor
+                print("[OK] Sentry Monitoring enabled")
+            else:
+                self.monitoring = None
+        
+        # Simple in-memory cache with TTL
+        self._cache: Dict[str, Dict[str, Any]] = {}
+
+        # Register Routes
+        self._register_routes()
+        self._register_governor_routes()
+        self._register_websocket_routes()
+        
+        # Ensure CORS headers on every response
+        @self.app.after_request
+        def add_cors_headers(response):
+            try:
+                origin = request.headers.get('Origin', '*')
+                response.headers['Access-Control-Allow-Origin'] = origin
+                response.headers['Vary'] = 'Origin'
+                response.headers['Access-Control-Allow-Credentials'] = 'true'
+                response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With'
+                response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, PATCH, DELETE, OPTIONS'
+            except Exception:
+                pass
+            return response
+    
+    def _register_routes(self):
+        """Register all REST Endpoints - NO MOCKS"""
+        
+        @self.app.route('/health', methods=['GET'])
+        def health():
+            """Health Check"""
+            return jsonify({
+                'status': 'operational',
+                'architecture': 'hexagonal_clean',
+                'port': (int(os.environ.get('HAKGAL_PORT', '5001')) if (os.environ.get('HAKGAL_PORT', '5001') or '').isdigit() else 5001),
+                'repository': self.fact_repository.__class__.__name__
+            })
+        
+        @self.app.route('/api/status', methods=['GET'])
+        def status():
+            """System Status"""
+            base_status = self.fact_service.get_system_status()
+            
+            if self.governor:
+                base_status['governor'] = self.governor.get_status()
+            
+            if self.websocket_adapter:
+                base_status['websocket'] = {
+                    'enabled': True,
+                    'connected_clients': len(self.websocket_adapter.connected_clients)
+                }
+            
+            if self.system_monitor:
+                base_status['monitoring'] = self.system_monitor.get_status()
+                base_status['system_metrics'] = self.system_monitor.get_system_metrics()
+            
+            return jsonify(base_status)
+        
+        @self.app.route('/api/facts', methods=['GET'])
+        def get_facts():
+            """GET /api/facts - Get all facts"""
+            limit = request.args.get('limit', 100, type=int)
+            facts = self.fact_service.get_all_facts(limit)
+            
+            return jsonify({
+                'facts': [f.to_dict() for f in facts],
+                'count': len(facts),
+                'total': self.fact_repository.count()
+            })
+        
+        @self.app.route('/api/facts', methods=['POST'])
+        @require_api_key
+        def add_fact():
+            """POST /api/facts - Add new fact"""
+            data = request.get_json(silent=True) or {}
+
+            statement = (data.get('statement') or data.get('query') or data.get('fact') or '').strip()
+            if not statement:
+                return jsonify({'error': 'Missing statement'}), 400
+
+            if not statement.endswith('.'):
+                statement = statement + '.'
+
+            if not re.match(r"^[A-Za-z_][A-Za-z0-9_]*\([^,\)]+,\s*[^\)]+\)\.$", statement):
+                return jsonify({'error': 'Invalid fact format. Expected Predicate(Entity1, Entity2).'}), 400
+
+            context = data.get('context', {})
+            success, message = self.fact_service.add_fact(statement, context)
+            
+            # Emit WebSocket event
+            if self.websocket_adapter:
+                self.websocket_adapter.emit_fact_added(statement, success)
+            
+            # Track with Sentry
+            if self.monitoring:
+                SentryMonitoring.capture_fact_added(statement, success)
+            
+            status_code = 201 if success else (409 if isinstance(message, str) and 'exists' in message.lower() else 422)
+            return jsonify({
+                'success': success,
+                'message': message,
+                'statement': statement
+            }), status_code
+        
+        @self.app.route('/api/search', methods=['POST', 'OPTIONS'])
+        def search_facts():
+            """POST /api/search - Search facts"""
+            if request.method == 'OPTIONS':
+                return ('', 204)
+            data = request.get_json()
+            
+            if not data or 'query' not in data:
+                return jsonify({'error': 'Missing query'}), 400
+            
+            query = Query(
+                text=data['query'],
+                limit=data.get('limit', 10),
+                min_confidence=data.get('min_confidence', 0.5)
+            )
+            
+            facts = self.fact_service.search_facts(query)
+            
+            return jsonify({
+                'query': query.text,
+                'results': [f.to_dict() for f in facts],
+                'count': len(facts)
+            })
+        
+        @self.app.route('/api/reason', methods=['POST', 'OPTIONS'])
+        def reason():
+            """POST /api/reason - Reasoning"""
+            if request.method == 'OPTIONS':
+                return ('', 204)
+            data = request.get_json()
+            
+            if not data or 'query' not in data:
+                return jsonify({'error': 'Missing query'}), 400
+            
+            query = data['query']
+            start_time = time.time()
+            
+            result = self.reasoning_service.reason(query)
+            
+            duration_ms = (time.time() - start_time) * 1000
+            
+            # Emit WebSocket event
+            if self.websocket_adapter:
+                self.websocket_adapter.emit_reasoning_complete(
+                    query, result.confidence, duration_ms
+                )
+            
+            # Track with Sentry
+            if self.monitoring:
+                SentryMonitoring.capture_reasoning_performance(
+                    query, result.confidence, duration_ms
+                )
+            
+            response = {
+                'query': result.query,
+                'confidence': result.confidence,
+                'reasoning_terms': result.reasoning_terms,
+                'success': result.success,
+                'high_confidence': result.is_high_confidence(),
+                'duration_ms': duration_ms
+            }
+            
+            # Add device info if available
+            if result.metadata and 'device' in result.metadata:
+                response['device'] = result.metadata['device']
+            
+            return jsonify(response)
+
+        @self.app.route('/api/llm/get-explanation', methods=['POST'])
+        def llm_get_explanation():
+            """
+            LLM Explanation endpoint – nur interne LLM-Provider, kein Legacy-Proxy.
+            """
+            payload = request.get_json(silent=True) or {}
+
+            # Direkte LLM-Provider
+            try:
+                from adapters.llm_providers import DeepSeekProvider, MistralProvider, GeminiProvider, MultiLLMProvider
+                from adapters.fact_extractor import extract_facts_from_llm
+                
+                providers = [
+                    GeminiProvider(),     # Gemini FIRST - verified working
+                    DeepSeekProvider(),   # DeepSeek as fallback
+                    # MistralProvider() removed - 401 Unauthorized
+                ]
+                llm = MultiLLMProvider(providers)
+                
+                if llm.is_available():
+                    topic = payload.get('topic') or payload.get('query') or ''
+                    context_facts = payload.get('context_facts') or []
+                    prompt = (
+                        f"Query: {topic}\n\n"
+                        f"Context facts:\n{os.linesep.join(context_facts) if context_facts else 'None'}\n\n"
+                        "Please provide a deep, step-by-step explanation addressing the query. "
+                        "After your explanation, suggest additional logical facts that would be relevant to add to the knowledge base. "
+                        "Format suggested facts as: Predicate(Entity1, Entity2)."
+                    )
+                    
+                    explanation = llm.generate_response(prompt)
+                    
+                    # Only extract facts if we got a real LLM response
+                    if explanation and not explanation.startswith("Error") and "timed out" not in explanation:
+                        suggested = extract_facts_from_llm(explanation, topic)
+                        return jsonify({
+                            'status': 'success',
+                            'explanation': explanation,
+                            'suggested_facts': suggested
+                        })
+                    else:
+                        # LLM error - return the error message
+                        return jsonify({
+                            'status': 'error',
+                            'explanation': explanation,
+                            'suggested_facts': [],
+                            'message': 'LLM provider failed'
+                        }), 503
+                        
+            except Exception as e:
+                pass  # LLM providers not available
+
+            # Kein weiterer Fallback – ehrlicher Fehler
+            return jsonify({
+                'status': 'error',
+                'explanation': 'No LLM service available. Cannot generate explanation.',
+                'suggested_facts': [],
+                'message': 'Please configure LLM API keys in .env file for internal providers'
+            }), 503
+
+        @self.app.route('/api/command', methods=['POST', 'OPTIONS'])
+        @require_api_key
+        def command_compat():
+            """
+            Compatibility endpoint - NO MOCKS
+            """
+            if request.method == 'OPTIONS':
+                return ('', 204)
+                
+            data = request.get_json(silent=True) or {}
+            cmd = (data.get('command') or data.get('action') or '').strip().lower()
+            
+            if cmd == 'add_fact':
+                statement = (data.get('statement') or data.get('fact') or data.get('query') or '').strip()
+                if not statement:
+                    return jsonify({'error': 'Missing statement'}), 400
+                if not statement.endswith('.'):
+                    statement = statement + '.'
+                if not re.match(r"^[A-Za-z_][A-Za-z0-9_]*\([^,\)]+,\s*[^\)]+\)\.$", statement):
+                    return jsonify({'error': 'Invalid fact format. Expected Predicate(Entity1, Entity2).'}), 400
+                ok, msg = self.fact_service.add_fact(statement, data.get('context') or {})
+                if self.websocket_adapter:
+                    self.websocket_adapter.emit_fact_added(statement, ok)
+                code = 201 if ok else (409 if isinstance(msg, str) and 'exists' in msg.lower() else 422)
+                return jsonify({'status': 'success' if ok else 'error', 'message': msg, 'statement': statement}), code
+                
+            elif cmd == 'explain':
+                topic = data.get('query') or data.get('topic') or ''
+                # Use the real LLM endpoint
+                payload = {'topic': topic}
+                with self.app.test_request_context(json=payload):
+                    resp = llm_get_explanation()
+                if isinstance(resp, tuple):
+                    body, status = resp
+                    if status != 200:
+                        # Return error transparently
+                        return body, status
+                    payload_out = body.get_json() if hasattr(body, 'get_json') else body
+                else:
+                    payload_out = resp.get_json() if hasattr(resp, 'get_json') else resp
+                    
+                explanation = (payload_out or {}).get('explanation') or ''
+                suggested = (payload_out or {}).get('suggested_facts', [])
+                
+                return jsonify({
+                    'status': payload_out.get('status', 'error'),
+                    'chatResponse': {
+                        'natural_language_explanation': explanation,
+                        'suggested_facts': suggested
+                    }
+                })
+                
+            return jsonify({'error': 'Only explain/add_fact supported'}), 405
+
+        @self.app.route('/api/facts/count', methods=['GET'])
+        def facts_count():
+            """GET /api/facts/count - Get fact count with cache"""
+            now_ts = time.time()
+            cached = self._cache.get('facts_count')
+            if cached and (now_ts - cached.get('ts', 0) <= 30):
+                return jsonify({'count': cached['value'], 'cached': True, 'ttl_sec': 30 - int(now_ts - cached['ts'])})
+
+            try:
+                count_val = int(self.fact_repository.count())
+            except Exception:
+                count_val = None
+
+            self._cache['facts_count'] = {'value': count_val, 'ts': now_ts}
+            return jsonify({'count': count_val, 'cached': False, 'ttl_sec': 30})
+
+        # Catch-all OPTIONS handler
+        @self.app.route('/<path:any_path>', methods=['OPTIONS'])
+        def cors_preflight(any_path):
+            return ('', 204)
+    
+    def _register_governor_routes(self):
+        """Register Governor-specific routes"""
+        
+        if not self.governor:
+            return
+        
+        @self.app.route('/api/governor/status', methods=['GET'])
+        def governor_status():
+            return jsonify(self.governor.get_status())
+        
+        @self.app.route('/api/governor/start', methods=['POST'])
+        @require_api_key
+        def governor_start():
+            success = self.governor.start()
+            return jsonify({'success': success})
+        
+        @self.app.route('/api/governor/stop', methods=['POST'])
+        @require_api_key
+        def governor_stop():
+            success = self.governor.stop()
+            return jsonify({'success': success})
+    
+    def _register_websocket_routes(self):
+        """Register WebSocket-specific routes"""
+        
+        if not self.socketio:
+            return
+        
+        @self.socketio.on('governor_control')
+        def handle_governor_control(data):
+            # --- API Key Authentication for WebSocket ---
+            api_key = os.environ.get("HAKGAL_API_KEY")
+            provided_key = data.get('apiKey') or (request.args.get('apiKey'))
+
+            if not api_key or not provided_key or provided_key != api_key:
+                print(f"WebSocket auth failed for sid {request.sid}")
+                # It's better not to emit an error to prevent leaking info,
+                # just ignore the request. For debugging, we can emit.
+                return {'error': 'Authentication failed'}
+
+            if not self.governor:
+                return {'error': 'Governor not enabled'}
+            
+            action = data.get('action')
+            
+            if action == 'start':
+                self.governor.start()
+            elif action == 'stop':
+                self.governor.stop()
+            
+            status = self.governor.get_status()
+            self.socketio.emit('governor_update', status, to=None)
+    
+    def run(self, host='127.0.0.1', port=5001, debug=True):
+        """Start Flask Application"""
+        print("=" * 60)
+        print("🎯 HAK-GAL HEXAGONAL ARCHITECTURE - CLEAN VERSION")
+        print("=" * 60)
+        print("✅ NO MOCKS, NO FAKE DATA, ONLY REAL RESULTS")
+        print(f"[START] Starting on http://{host}:{port}")
+        print(f"📦 Repository: {self.fact_repository.__class__.__name__}")
+        print(f"🧠 Reasoning: {self.reasoning_engine.__class__.__name__}")
+        print(f"🔌 WebSocket: {'Enabled' if self.websocket_adapter else 'Disabled'}")
+        print(f"[INFO] Governor: {'Enabled' if self.governor else 'Disabled'}")
+        print(f"📊 System Monitor: {'Active' if self.system_monitor else 'Disabled'}")
+        print("=" * 60)
+        
+        if self.socketio:
+            self.socketio.run(self.app, host=host, port=port, debug=debug, use_reloader=False)
+        else:
+            self.app.run(host=host, port=port, debug=debug)
+
+# Main Entry Point
+def create_app(use_legacy=False, enable_all=True):
+    """Factory Function for Clean App Creation"""
+    enable_sentry = bool(os.environ.get('SENTRY_DSN'))
+    return HexagonalAPI(
+        use_legacy=use_legacy,
+        enable_websocket=enable_all,
+        enable_governor=enable_all,
+        enable_sentry=enable_sentry
+    )
+
+if __name__ == '__main__':
+    api = create_app(use_legacy=False, enable_all=True)
+    api.run()
