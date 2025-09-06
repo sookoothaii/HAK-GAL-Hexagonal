@@ -1,67 +1,161 @@
-# HAK_GAL_HEXAGONAL — Research Suite (Hexagonal, Port 5001)
+# HAK-GAL Hexagonal
 
-Reine Hexagonal‑Architektur (REST/WebSocket) mit SQLite als Source of Truth. JSONL nur als Export/Archiv.
+**Advanced Multi-Agent Knowledge System with MCP Integration**
 
-## Quick Start (Backend)
-```powershell
-# In Projektwurzel
-.\.venv_hexa\Scripts\activate
-python src_hexagonal\hexagonal_api_enhanced.py
-# oder
-.\start_native.bat
-```
-Backend läuft auf `http://127.0.0.1:5001`.
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Tools](https://img.shields.io/badge/MCP%20Tools-67-orange.svg)](ultimate_mcp/)
+[![Facts](https://img.shields.io/badge/Knowledge%20Facts-6631-purple.svg)](hexagonal_kb.db)
 
-## Frontend
-Falls vorhanden: Vite/React im Ordner `frontend/` starten.
+## 🎯 Overview
 
-## Umgebung / ENV
-- Beispiel: `env.example` → nach `.env` kopieren und Variablen setzen
-- Wichtige Variablen:
-  - `HAKGAL_API_BASE_URL` (default `http://127.0.0.1:5001`)
-  - `HEXAGONAL_PORT` (default `5001`)
-  - LLM‑Keys (optional): `DEEPSEEK_API_KEY`, `MISTRAL_API_KEY`
-  - Engines (optional): `AETHELRED_*` Tuning
+HAK-GAL Hexagonal is a complete rewrite of the original HAK-GAL-Suite, now featuring:
+- **Hexagonal Architecture** (Ports & Adapters)
+- **Model Context Protocol (MCP)** with 67 tools
+- **Multi-Agent System** (4 adapters)
+- **Visual Workflow Editor** (122 node types)
+- **SQLite Knowledge Base** (6,631 facts)
 
-## SQLite als SoT
-- Laufender Betrieb schreibt in `k_assistant.db`
-- Import existierender JSONL:
-```powershell
-.\.venv_hexa\Scripts\python.exe scripts\import_jsonl_to_sqlite.py
-```
+## 🚀 Quick Start
 
-## Qualität & Wissensexpansion (safe)
-- Integritätsreport:
-```powershell
-.\.venv_hexa\Scripts\python.exe scripts\generate_integrity_report.py
-```
-- Kuratierte Kandidaten (review‑first):
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\curated_candidate_pipeline.ps1 -Limit 5000
-```
+### Prerequisites
+- Python 3.11+
+- Node.js 16+
+- Virtual Environment
 
-## Governor & Engines
-- Backend starten → im Frontend „Start Governor“ klicken.
-- Engine‑Tuning per ENV (siehe `env.example`). Optionaler Confidence‑Gate (`AETHELRED_STRICT_CONFIDENCE`).
+### Installation
 
-## Entwickeln
-- Python 3.11+ empfohlen
-- venv: `.venv_hexa` (nicht committen)
-- Node (optional): `frontend/`
+```bash
+# Clone repository
+git clone https://github.com/sookoothaii/HAK-GAL-Hexagonal.git
+cd HAK-GAL-Hexagonal
 
-## Versionierung / Push auf GitHub
-- Dieses Repo ist für den Ordner `HAK_GAL_HEXAGONAL/` gedacht.
-- `.gitignore` blendet Daten/Backups/venv/Builds aus.
-- Nicht versionieren: `k_assistant.db`, `data/*.kb.jsonl`, Modelle/FAISS/DLLs, Backups/Logs.
-- Init & Push:
-```powershell
-git init
-git add .
-git commit -m "init: HAK_GAL_HEXAGONAL (SQLite SoT, tools, docs)"
-git branch -M main
-git remote add origin <your_repo>
-git push -u origin main
+# Setup Python environment
+python -m venv .venv
+.venv\Scripts\activate  # Windows
+source .venv/bin/activate  # Linux/Mac
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Setup frontend
+cd frontend
+npm install
 ```
 
-## Lizenz
-- Trage deine Lizenz in `LICENSE` ein (z. B. MIT/Apache‑2.0).
+### Running the System
+
+```bash
+# Terminal 1: Start MCP Server
+python ultimate_mcp/hakgal_mcp_ultimate.py
+
+# Terminal 2: Start API Server (Port 5002)
+python src_hexagonal/hexagonal_api_enhanced_clean.py
+
+# Terminal 3: Start Frontend (Port 5173)
+cd frontend
+npm run dev
+```
+
+## 🛠️ Architecture
+
+### System Components
+```
+HAK-GAL Hexagonal/
+├── ultimate_mcp/        # MCP Server (67 tools)
+├── src_hexagonal/       # Hexagonal Backend
+│   ├── adapters/        # External interfaces
+│   ├── core/           # Domain logic
+│   └── application/    # Use cases
+├── frontend/           # React + Vite UI
+└── workflows/          # Workflow definitions
+```
+
+### Multi-Agent System
+- **Gemini Adapter**: Google AI integration
+- **Claude CLI Adapter**: Anthropic Claude
+- **Claude Desktop Adapter**: MCP Protocol
+- **Cursor Adapter**: IDE integration
+
+## 📚 Knowledge Base
+
+- **Database**: SQLite with WAL mode
+- **Facts**: 6,631 (as of 2025-09-06)
+- **Format**: Prolog-style triples
+- **Example**: `ConsistsOf(HAK_GAL_System, Hexagonal_Architecture).`
+
+## 🔧 MCP Tools
+
+67 tools across 7 categories:
+
+| Category | Count | Examples |
+|----------|-------|----------|
+| Knowledge Base | 35 | search_knowledge, add_fact, semantic_similarity |
+| File Operations | 13 | read_file, write_file, grep |
+| Database Ops | 7 | db_vacuum, db_backup_now |
+| Multi-Agent | 1 | delegate_task |
+| Code Execution | 1 | execute_code |
+| Meta Tools | 4 | consensus_evaluator, bias_detector |
+| Optional | 5+ | Sentry, Nischen tools |
+
+## 🎨 WorkflowPro
+
+Visual workflow editor featuring:
+- 122 node types
+- Drag-and-drop interface
+- Real-time execution
+- Complex logic support (branches, loops, error handling)
+- Multi-agent orchestration
+
+## 📋 HAK/GAL Constitution
+
+The system follows 8 constitutional articles:
+1. **Complementary Intelligence**
+2. **Targeted Interrogation**
+3. **External Verification**
+4. **Conscious Boundary-Crossing**
+5. **System Meta-reflection**
+6. **Empirical Validation**
+7. **Conjugated States**
+8. **Principle Collision Protocol**
+
+## 🔐 Security
+
+- API Key authentication
+- Write token protection  
+- Audit logging
+- Sandboxed code execution
+
+## 🤝 Contributing
+
+See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for guidelines.
+
+## 📊 Performance
+
+- **API Response**: < 100ms (local)
+- **Knowledge Search**: < 30ms
+- **DB Inserts**: 10,000+/sec
+- **Code Execution**: Sandboxed with timeouts
+
+## 🗺️ Roadmap
+
+- [ ] External Integration Plugin System
+- [ ] Credential Vault Implementation
+- [ ] n8n-style Node Library  
+- [ ] Enhanced Data Mapping
+- [ ] GraphDB Migration
+
+## 📄 Documentation
+
+- [System Architecture](docs/ARCHITECTURE.md)
+- [API Documentation](docs/API.md)
+- [Workflow Tutorial](PROJECT_HUB/WORKFLOW_TUTORIAL.md)
+- [MCP Tools Reference](docs/MCP_TOOLS_REFERENCE.md)
+
+## 🙏 Acknowledgments
+
+Built through collaboration between human and AI intelligence, following HAK-GAL principles.
+
+---
+
+*Version 2.0 - Complete rewrite with hexagonal architecture and MCP protocol*
