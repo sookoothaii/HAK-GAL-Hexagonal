@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hak-gal.local/schemas/archimedes_experimental_designs.schema.json",
+  "title": "Archimedes Experimental Designs",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["hypothesis_id", "protocol", "materials_and_equipment", "predicted_outcomes", "potential_pitfalls", "llm_origin"],
+    "properties": {
+      "hypothesis_id": {"type": "string", "minLength": 3},
+      "protocol": {"type": "string", "minLength": 20},
+      "materials_and_equipment": {"type": "array", "items": {"type": "string"}},
+      "predicted_outcomes": {"type": "array", "items": {"type": "string"}},
+      "potential_pitfalls": {"type": "array", "items": {"type": "string"}},
+      "llm_origin": {"type": "string", "enum": ["DeepSeek", "Claude", "Gemini", "Assistant", "Other"]}
+    },
+    "additionalProperties": false
+  },
+  "minItems": 1
+}
+
+
+
+

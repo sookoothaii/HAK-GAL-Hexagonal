@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hak-gal.local/schemas/validation_report.schema.json",
+  "title": "Galileo Validation Report",
+  "type": "object",
+  "required": [
+    "timestamp", "total_hypotheses", "recommended_top_3",
+    "assumptions", "confidence_level", "seed", "tool_version",
+    "provenance", "matrix"
+  ],
+  "properties": {
+    "timestamp": { "type": "string" },
+    "total_hypotheses": { "type": "integer", "minimum": 0 },
+    "feasible_count": { "type": "integer", "minimum": 0 },
+    "recommended_top_3": { "type": "array", "items": { "type": "integer" }, "maxItems": 3 },
+    "total_resources_needed": { "type": "object" },
+    "confidence_level": { "type": "number", "minimum": 0, "maximum": 1 },
+    "assumptions": { "type": "array", "items": { "type": "string" } },
+    "confidence_interval": { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 },
+    "seed": { "type": "integer" },
+    "tool_version": { "type": "string" },
+    "provenance": { "type": "array", "items": { "type": "string" } },
+    "matrix": { "type": "array", "items": { "type": "object" } }
+  },
+  "additionalProperties": true
+}
+
+
+
+

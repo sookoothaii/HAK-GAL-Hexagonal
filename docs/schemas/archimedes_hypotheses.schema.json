@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hak-gal.local/schemas/archimedes_hypotheses.schema.json",
+  "title": "Archimedes Hypotheses",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["statement", "novelty_score", "feasibility_score", "llm_origin"],
+    "properties": {
+      "statement": {"type": "string", "minLength": 5},
+      "novelty_score": {"type": "number", "minimum": 0, "maximum": 1},
+      "feasibility_score": {"type": "number", "minimum": 0, "maximum": 1},
+      "llm_origin": {"type": "string", "enum": ["DeepSeek", "Claude", "Gemini", "Assistant", "Other"]}
+    },
+    "additionalProperties": false
+  },
+  "minItems": 1
+}
+
+
+
+
