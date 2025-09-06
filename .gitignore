@@ -1,57 +1,102 @@
 # Python
 __pycache__/
 *.py[cod]
-*.pyo
-*.pyd
+*$py.class
 *.so
-.env
-.venv/
-.venv_*/
+.Python
+env/
 venv/
-.env.*
-.pytest_cache/
-.mypy_cache/
-.cache/
+.venv/
+.venv_hexa/
+ENV/
+env.bak/
+venv.bak/
 
-# Node / Frontend
-frontend/node_modules/
-frontend/.vite/
-frontend/dist/
-frontend/.next/
-
-# Editors / OS
+# IDEs
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-debug.log*
+dist/
+build/
+
+# Environment
+.env
+.env.local
+.env.*.local
+secrets.json
+
+# Database
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Backups
+*.backup
+*.bak
+*.backup_*
+*.REDUCED_*
+*.broken_*
+*_backup_*
+backup*/
+
+# Logs
+*.log
+logs/
+agent_responses/
+cursor_exchange/
+claude_desktop_exchange/
+
+# OS
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# Project artifacts
-backups/
-logs/
-*.log
-*.zip
-*.tar
-*.tar.gz
-*.7z
-*.bak
+# Project specific
+hexagonal_kb.db.backup*
+temp_benchmarks_*
+PROJECT_HUB/**/*.jsonl
+PROJECT_HUB/**/snapshots/
 
-# Knowledge base data (do not version real data)
-k_assistant.db
-k_assistant_dev.db
-data/*.kb.jsonl
-faiss/
-models/
-*.faiss
-*.pth
+# Test & Coverage
+.coverage
+.pytest_cache/
+htmlcov/
+.tox/
+*.cover
+.hypothesis/
+
+# Compiled files
+*.com
+*.class
 *.dll
+*.exe
+*.o
+*.so
 
-# Reports (optional keep)
-PROJECT_HUB/reports/*.json
+# Archives
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
 
-# Misc
-*.coverage
-coverage.xml
-
-ARCHIVE_20250814_cleanup/
-
-ARCHIVE_20250814_cleanup/
+# Temporary
+tmp/
+temp/
+.temp/
+*.tmp
