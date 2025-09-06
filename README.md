@@ -5,9 +5,9 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Tools](https://img.shields.io/badge/MCP%20Tools-67-orange.svg)](ultimate_mcp/)
-[![Facts](https://img.shields.io/badge/Knowledge%20Facts-6631-purple.svg)](hexagonal_kb.db)
+[![Facts](https://img.shields.io/badge/Knowledge%20Facts-6631-purple.svg)](https://github.com/sookoothaii/HAK-GAL-Hexagonal/releases/tag/v2.0.0)
 
-## 🎯 Overview
+## Overview
 
 HAK-GAL Hexagonal is a complete rewrite of the original HAK-GAL-Suite, now featuring:
 - **Hexagonal Architecture** (Ports & Adapters)
@@ -16,36 +16,46 @@ HAK-GAL Hexagonal is a complete rewrite of the original HAK-GAL-Suite, now featu
 - **Visual Workflow Editor** (122 node types)
 - **SQLite Knowledge Base** (6,631 facts)
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Python 3.11+
 - Node.js 16+
-- Virtual Environment
+- Git
+- curl or wget
 
 ### Installation
 
 ```bash
-# Clone repository
+# 1. Clone repository
 git clone https://github.com/sookoothaii/HAK-GAL-Hexagonal.git
 cd HAK-GAL-Hexagonal
 
-# Setup Python environment
+# 2. WICHTIG: Download Knowledge Base (7.1 MB)
+# Windows:
+download_kb.bat
+# Linux/Mac:
+chmod +x download_kb.sh
+./download_kb.sh
+
+# 3. Run automatic setup
+python setup.py
+
+# Alternative manual setup:
 python -m venv .venv
 .venv\Scripts\activate  # Windows
 source .venv/bin/activate  # Linux/Mac
-
-# Install dependencies
 pip install -r requirements.txt
-
-# Setup frontend
-cd frontend
-npm install
+cd frontend && npm install && cd ..
 ```
 
 ### Running the System
 
 ```bash
+# Activate virtual environment first!
+.venv\Scripts\activate  # Windows
+source .venv/bin/activate  # Linux/Mac
+
 # Terminal 1: Start MCP Server
 python ultimate_mcp/hakgal_mcp_ultimate.py
 
@@ -57,7 +67,9 @@ cd frontend
 npm run dev
 ```
 
-## 🛠️ Architecture
+Open http://localhost:5173 in your browser.
+
+## Architecture
 
 ### System Components
 ```
@@ -68,6 +80,7 @@ HAK-GAL Hexagonal/
 │   ├── core/           # Domain logic
 │   └── application/    # Use cases
 ├── frontend/           # React + Vite UI
+├── native/             # C++ performance modules
 └── workflows/          # Workflow definitions
 ```
 
@@ -77,14 +90,15 @@ HAK-GAL Hexagonal/
 - **Claude Desktop Adapter**: MCP Protocol
 - **Cursor Adapter**: IDE integration
 
-## 📚 Knowledge Base
+## Knowledge Base
 
 - **Database**: SQLite with WAL mode
 - **Facts**: 6,631 (as of 2025-09-06)
 - **Format**: Prolog-style triples
 - **Example**: `ConsistsOf(HAK_GAL_System, Hexagonal_Architecture).`
+- **Size**: 7.1 MB (downloaded separately)
 
-## 🔧 MCP Tools
+## MCP Tools
 
 67 tools across 7 categories:
 
@@ -96,9 +110,9 @@ HAK-GAL Hexagonal/
 | Multi-Agent | 1 | delegate_task |
 | Code Execution | 1 | execute_code |
 | Meta Tools | 4 | consensus_evaluator, bias_detector |
-| Optional | 5+ | Sentry, Nischen tools |
+| Sentry/Nischen | 6 | Optional monitoring tools |
 
-## 🎨 WorkflowPro
+## WorkflowPro
 
 Visual workflow editor featuring:
 - 122 node types
@@ -107,7 +121,7 @@ Visual workflow editor featuring:
 - Complex logic support (branches, loops, error handling)
 - Multi-agent orchestration
 
-## 📋 HAK/GAL Constitution
+## HAK/GAL Constitution
 
 The system follows 8 constitutional articles:
 1. **Complementary Intelligence**
@@ -119,51 +133,65 @@ The system follows 8 constitutional articles:
 7. **Conjugated States**
 8. **Principle Collision Protocol**
 
-## 🔐 Security
+## Configuration
+
+1. Copy `.env.example` to `.env`
+2. Add your API keys:
+   - `GEMINI_API_KEY` for Google AI
+   - `DEEPSEEK_API_KEY` for DeepSeek
+   - Other LLM providers as needed
+
+## Security
 
 - API Key authentication
 - Write token protection  
 - Audit logging
 - Sandboxed code execution
+- No network access from sandbox
 
-## 🤝 Contributing
+## Contributing
 
-See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for guidelines.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-## 📊 Performance
+## Performance
 
 - **API Response**: < 100ms (local)
 - **Knowledge Search**: < 30ms
 - **DB Inserts**: 10,000+/sec
 - **Code Execution**: Sandboxed with timeouts
+- **Native C++ modules**: For performance-critical operations
 
-## 🗺️ Roadmap
+## Documentation
 
-- [ ] External Integration Plugin System
-- [ ] Credential Vault Implementation
-- [ ] n8n-style Node Library  
-- [ ] Enhanced Data Mapping
-- [ ] GraphDB Migration
-
-## 📄 Documentation
-
+- [Database Setup](DATABASE_SETUP.md) - Knowledge Base installation
 - [System Architecture](docs/ARCHITECTURE.md)
 - [API Documentation](docs/API.md)
 - [Workflow Tutorial](PROJECT_HUB/WORKFLOW_TUTORIAL.md)
 - [MCP Tools Reference](docs/MCP_TOOLS_REFERENCE.md)
 
-## 🙏 Acknowledgments
+## Troubleshooting
+
+### System won't start
+- Ensure `hexagonal_kb.db` exists (run `download_kb.bat/sh`)
+- Check Python version >= 3.11
+- Verify all ports are free (5002, 5173)
+
+### Import errors
+- Activate virtual environment
+- Run `pip install -r requirements.txt`
+
+### Frontend issues
+- Clear browser cache
+- Run `npm install` in frontend directory
+
+## License
+
+MIT License - see [LICENSE](LICENSE) file.
+
+## Acknowledgments
 
 Built through collaboration between human and AI intelligence, following HAK-GAL principles.
 
 ---
 
-*Version 2.0 - Complete rewrite with hexagonal architecture and MCP protocol*
-
-
-## ⚠️ WICHTIGER HINWEIS
-
-Die Knowledge Base Datei (`hexagonal_kb.db`) ist NICHT im Repository enthalten!
-Siehe [DATABASE_SETUP.md](DATABASE_SETUP.md) für Installationsanweisungen.
-
-Das System funktioniert OHNE diese Datei NICHT!
+*Version 2.0.0 - Complete rewrite with hexagonal architecture and MCP protocol*
