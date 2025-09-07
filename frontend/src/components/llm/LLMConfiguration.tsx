@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -177,14 +177,57 @@ export const LLMConfiguration: React.FC<LLMConfigurationProps> = ({ onConfigChan
     ));
   };
 
-  const handleReorderProviders = (dragIndex: number, dropIndex: number) => {
-    const newProviders = [...providers];
-    const [removed] = newProviders.splice(dragIndex, 1);
-    newProviders.splice(dropIndex, 0, removed);
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setDragOverIndex(index);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
+
+  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault();
     
-    // Update order
-    const updatedProviders = newProviders.map((p, index) => ({ ...p, order: index }));
+    if (draggedIndex === null || draggedIndex === dropIndex) {
+      return;
+    }
+
+    const enabledProviders = providers
+      .filter(p => p.enabled)
+      .sort((a, b) => a.order - b.order);
+    
+    const draggedProvider = enabledProviders[draggedIndex];
+    const newProviders = [...enabledProviders];
+    
+    // Remove dragged item
+    newProviders.splice(draggedIndex, 1);
+    
+    // Insert at new position
+    newProviders.splice(dropIndex, 0, draggedProvider);
+    
+    // Update order for all providers
+    const updatedProviders = providers.map(provider => {
+      const enabledIndex = newProviders.findIndex(p => p.id === provider.id);
+      if (enabledIndex !== -1) {
+        return { ...provider, order: enabledIndex };
+      }
+      return provider;
+    });
+    
     setProviders(updatedProviders);
+    setDraggedIndex(null);
+    setDragOverIndex(null);
   };
 
   const handleTestProvider = async (providerId: string) => {
@@ -430,10 +473,19 @@ export const LLMConfiguration: React.FC<LLMConfigurationProps> = ({ onConfigChan
                         return (
                           <div
                             key={provider.id}
-                            className="flex items-center gap-3 p-3 border rounded-lg bg-muted/50"
+                            draggable
+                            onDragStart={(e) => handleDragStart(e, index)}
+                            onDragOver={(e) => handleDragOver(e, index)}
+                            onDragEnd={handleDragEnd}
+                            onDrop={(e) => handleDrop(e, index)}
+                            className={cn(
+                              "flex items-center gap-3 p-3 border rounded-lg bg-muted/50 cursor-move transition-all",
+                              draggedIndex === index && "opacity-50",
+                              dragOverIndex === index && "border-primary bg-primary/10"
+                            )}
                           >
-                            <div className="text-muted-foreground font-mono text-sm">
-                              {index + 1}
+                            <div className="text-muted-foreground font-mono text-sm select-none">
+                              ⋮⋮ {index + 1}
                             </div>
                             <Icon className={cn("w-4 h-4", provider.color)} />
                             <span className="font-medium">{provider.name}</span>
