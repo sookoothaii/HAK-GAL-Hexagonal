@@ -1,0 +1,126 @@
+tool_id,in_frontend,in_mcp,category,label,is_mcp_category,write,status
+add_fact,True,False,KNOWLEDGE_BASE,Add Fact,True,True,MISSING in MCP
+aethelred_fact_gen,True,False,ENGINES,Aethelred Fact Gen,False,False,OK (Workflow-only)
+analyze_duplicates,True,False,KNOWLEDGE_BASE,Analyze Duplicates,True,False,MISSING in MCP
+api_call,True,False,HTTP_REQUESTS,Generic API Call,False,False,OK (Workflow-only)
+assert_condition,True,False,DEBUGGING,Assert Condition,False,False,OK (Workflow-only)
+atomic_transaction,True,False,STATE_MANAGEMENT,Atomic Transaction,False,True,OK (Workflow-only)
+bias_detector,True,False,AI_DELEGATION,Detect Tool Bias,True,False,MISSING in MCP
+branch,True,False,FLOW_CONTROL,Branch,False,False,OK (Workflow-only)
+breakpoint,True,False,DEBUGGING,Breakpoint,False,False,OK (Workflow-only)
+bulk_add_facts,True,False,KNOWLEDGE_BASE,Bulk Add Facts,True,True,MISSING in MCP
+bulk_delete,True,False,KNOWLEDGE_BASE,Bulk Delete Facts,True,True,MISSING in MCP
+bulk_translate_predicates,True,False,KNOWLEDGE_BASE,Translate Predicates,True,True,MISSING in MCP
+circuit_breaker,True,False,ERROR_HANDLING,Circuit Breaker,False,False,OK (Workflow-only)
+consensus_evaluator,True,False,AI_DELEGATION,Consensus Eval,True,False,MISSING in MCP
+consistency_check,True,False,KNOWLEDGE_BASE,Check Consistency,True,False,MISSING in MCP
+context,False,True,,,False,,EXTRA in MCP
+create_file,True,False,FILE_OPERATIONS,Create File,True,True,MISSING in MCP
+csv_to_json,True,False,DATA_TRANSFORMATION,CSV to JSON,False,False,OK (Workflow-only)
+data_validator,True,False,DATA_TRANSFORMATION,Validate Data,False,False,OK (Workflow-only)
+db_backup_now,True,False,DB_ADMIN,Create DB Backup,True,True,MISSING in MCP
+db_backup_rotate,True,False,DB_ADMIN,Rotate DB Backups,True,True,MISSING in MCP
+db_benchmark_inserts,True,False,EXECUTION,Benchmark DB,True,False,MISSING in MCP
+db_checkpoint,True,False,DB_ADMIN,Force DB Checkpoint,True,True,MISSING in MCP
+db_enable_wal,True,False,DB_ADMIN,Enable WAL Mode,True,True,MISSING in MCP
+db_get_pragma,True,False,DB_ADMIN,Get DB PRAGMAs,True,False,MISSING in MCP
+db_vacuum,True,False,DB_ADMIN,Vacuum Database,True,True,MISSING in MCP
+delay,True,False,FLOW_CONTROL,Delay,False,False,OK (Workflow-only)
+delegate_task,True,False,AI_DELEGATION,Delegate to AI,True,False,MISSING in MCP
+delegation_optimizer,True,False,AI_DELEGATION,Optimize Delegation,True,False,MISSING in MCP
+delete_fact,True,False,KNOWLEDGE_BASE,Delete Fact,True,True,MISSING in MCP
+delete_file,True,False,FILE_OPERATIONS,Delete File,True,True,MISSING in MCP
+directory_tree,True,False,FILE_OPERATIONS,Get Directory Tree,True,False,MISSING in MCP
+edit_file,True,False,FILE_OPERATIONS,Edit File,True,True,MISSING in MCP
+error_transform,True,False,ERROR_HANDLING,Error to Success,False,False,OK (Workflow-only)
+execute_code,True,False,EXECUTION,Execute Code,True,False,MISSING in MCP
+export_facts,True,False,KNOWLEDGE_BASE,Export Facts,True,False,MISSING in MCP
+fallback_chain,True,False,ERROR_HANDLING,Fallback Chain,False,False,OK (Workflow-only)
+filter_items,True,False,ADVANCED_LOGIC,Filter Items,False,False,OK (Workflow-only)
+find_files,True,False,FILE_OPERATIONS,Find Files,True,False,MISSING in MCP
+find_isolated_facts,True,False,KNOWLEDGE_BASE,Find Isolated Facts,True,False,MISSING in MCP
+for_each,True,False,ITERATION,For Each Item,False,False,OK (Workflow-only)
+get_entities_stats,True,False,KNOWLEDGE_BASE,Get Entity Stats,True,False,MISSING in MCP
+get_fact_history,True,False,KNOWLEDGE_BASE,Get Fact History,True,False,MISSING in MCP
+get_facts_count,True,False,KNOWLEDGE_BASE,Get Facts Count,True,False,MISSING in MCP
+get_file_info,True,False,FILE_OPERATIONS,Get File Info,True,False,MISSING in MCP
+get_global_state,True,False,STATE_MANAGEMENT,Get Global State,False,False,OK (Workflow-only)
+get_knowledge_graph,True,False,KNOWLEDGE_BASE,Get Knowledge Graph,True,False,MISSING in MCP
+get_predicates_stats,True,False,KNOWLEDGE_BASE,Get Predicate Stats,True,False,MISSING in MCP
+get_recent_facts,True,False,KNOWLEDGE_BASE,Get Recent Facts,True,False,MISSING in MCP
+get_system_status,True,False,KNOWLEDGE_BASE,Get System Status,True,False,MISSING in MCP
+get_workflow_context,True,False,STATE_MANAGEMENT,Get Workflow Context,False,False,OK (Workflow-only)
+governor_decision,True,False,ENGINES,Governor Decision,False,False,OK (Workflow-only)
+grep,True,False,FILE_OPERATIONS,Search in Files,True,False,MISSING in MCP
+growth_stats,True,False,KNOWLEDGE_BASE,Get Growth Stats,True,False,MISSING in MCP
+health_check,True,False,EXECUTION,Health Check,True,False,MISSING in MCP
+health_check_json,True,False,EXECUTION,Health Check (JSON),True,False,MISSING in MCP
+http_request,True,False,HTTP_REQUESTS,HTTP Request,False,False,OK (Workflow-only)
+if_condition,True,False,ADVANCED_LOGIC,IF Condition,False,False,OK (Workflow-only)
+incr_counter,True,False,STATE_MANAGEMENT,Increment Counter,False,True,OK (Workflow-only)
+inference_chain,True,False,KNOWLEDGE_BASE,Get Inference Chain,True,False,MISSING in MCP
+json_parse,True,False,DATA_TRANSFORMATION,Parse JSON,False,False,OK (Workflow-only)
+json_stringify,True,False,DATA_TRANSFORMATION,Stringify JSON,False,False,OK (Workflow-only)
+kb_stats,True,False,KNOWLEDGE_BASE,Get KB Stats,True,False,MISSING in MCP
+language,False,True,,,False,,EXTRA in MCP
+limit,False,True,,,False,,EXTRA in MCP
+list_audit,True,False,KNOWLEDGE_BASE,List Audit Trail,True,False,MISSING in MCP
+list_files,True,False,FILE_OPERATIONS,List Files,True,False,MISSING in MCP
+log_node_input,True,False,DEBUGGING,Log Input,False,False,OK (Workflow-only)
+log_node_output,True,False,DEBUGGING,Log Output,False,False,OK (Workflow-only)
+loop_over_items,True,False,ITERATION,Loop Over Items,False,False,OK (Workflow-only)
+map_transform,True,False,ITERATION,Map Transform,False,False,OK (Workflow-only)
+merge_data,True,False,ADVANCED_LOGIC,Merge Data,False,False,OK (Workflow-only)
+mock_data,True,False,DEBUGGING,Mock Data,False,False,OK (Workflow-only)
+move_file,True,False,FILE_OPERATIONS,Move/Rename File,True,True,MISSING in MCP
+multi_edit,True,False,FILE_OPERATIONS,Multi-Edit File,True,True,MISSING in MCP
+niche_list,True,False,NICHE_SYSTEM,List All Niches,True,False,MISSING in MCP
+niche_query,True,False,NICHE_SYSTEM,Query a Niche,True,False,MISSING in MCP
+niche_stats,True,False,NICHE_SYSTEM,Get Niche Stats,True,False,MISSING in MCP
+outputs,False,True,,,False,,EXTRA in MCP
+parallel,True,False,FLOW_CONTROL,Parallel,False,False,OK (Workflow-only)
+path,False,True,,,False,,EXTRA in MCP
+project_hub_digest,True,False,PROJECT_HUB,Create Hub Digest,True,False,MISSING in MCP
+project_list_snapshots,True,False,PROJECT_HUB,List Project Snapshots,True,False,MISSING in MCP
+project_snapshot,True,False,PROJECT_HUB,Create Project Snapshot,True,True,MISSING in MCP
+properties,False,True,,,False,,EXTRA in MCP
+query,False,True,,,False,,EXTRA in MCP
+query_related,True,False,KNOWLEDGE_BASE,Query Related Facts,True,False,MISSING in MCP
+rate_limiter,True,False,TIME_SCHEDULING,Rate Limiter,False,False,OK (Workflow-only)
+read_file,True,False,FILE_OPERATIONS,Read File,True,False,MISSING in MCP
+reduce_aggregate,True,False,ITERATION,Reduce/Aggregate,False,False,OK (Workflow-only)
+regex_extract,True,False,DATA_TRANSFORMATION,Regex Extract,False,False,OK (Workflow-only)
+reliability_checker,True,False,AI_DELEGATION,Check Tool Reliability,True,False,MISSING in MCP
+rest_client,True,False,HTTP_REQUESTS,REST Client,False,False,OK (Workflow-only)
+retry_with_backoff,True,False,ERROR_HANDLING,Retry with Backoff,False,False,OK (Workflow-only)
+schedule_task,True,False,TIME_SCHEDULING,Schedule Task,False,False,OK (Workflow-only)
+schedule_trigger,True,False,FLOW_CONTROL,Schedule Trigger,False,False,OK (Workflow-only)
+search,True,False,FILE_OPERATIONS,Unified Search,True,False,MISSING in MCP
+search_by_predicate,True,False,KNOWLEDGE_BASE,Search by Predicate,True,False,MISSING in MCP
+search_knowledge,True,False,KNOWLEDGE_BASE,Search Knowledge,True,False,MISSING in MCP
+semantic_similarity,True,False,KNOWLEDGE_BASE,Find Similar,True,False,MISSING in MCP
+sentry_find_organizations,True,False,SENTRY_MONITORING,Find Sentry Orgs,True,False,MISSING in MCP
+sentry_find_projects,True,False,SENTRY_MONITORING,Find Sentry Projects,True,False,MISSING in MCP
+sentry_search_issues,True,False,SENTRY_MONITORING,Search Sentry Issues,True,False,MISSING in MCP
+sentry_test_connection,True,False,SENTRY_MONITORING,Test Sentry Connection,True,False,MISSING in MCP
+sentry_whoami,True,False,SENTRY_MONITORING,Sentry Who Am I,True,False,MISSING in MCP
+set_fields,True,False,DATA_TRANSFORMATION,Set/Edit Fields,False,False,OK (Workflow-only)
+set_global_state,True,False,STATE_MANAGEMENT,Set Global State,False,True,OK (Workflow-only)
+set_workflow_context,True,False,STATE_MANAGEMENT,Set Workflow Context,False,True,OK (Workflow-only)
+sort_items,True,False,ADVANCED_LOGIC,Sort Items,False,False,OK (Workflow-only)
+split_in_batches,True,False,ITERATION,Split In Batches,False,False,OK (Workflow-only)
+string_template,True,False,DATA_TRANSFORMATION,String Template,False,False,OK (Workflow-only)
+switch_case,True,False,ADVANCED_LOGIC,Switch/Case,False,False,OK (Workflow-only)
+task,False,True,,,False,,EXTRA in MCP
+task_description,False,True,,,False,,EXTRA in MCP
+test_trigger,True,False,DEBUGGING,Manual Test Trigger,False,False,OK (Workflow-only)
+thesis_pattern_analysis,True,False,ENGINES,THESIS Pattern Analysis,False,False,OK (Workflow-only)
+timeout,False,True,,,False,,EXTRA in MCP
+timeout_handler,True,False,TIME_SCHEDULING,Timeout Handler,False,False,OK (Workflow-only)
+timer_trigger,True,False,TIME_SCHEDULING,Timer Trigger,False,False,OK (Workflow-only)
+try_catch,True,False,ERROR_HANDLING,Try/Catch Block,False,False,OK (Workflow-only)
+update_fact,True,False,KNOWLEDGE_BASE,Update Fact,True,True,MISSING in MCP
+validate_facts,True,False,KNOWLEDGE_BASE,Validate Facts Syntax,True,False,MISSING in MCP
+wait_for_webhook,True,False,FLOW_CONTROL,Wait for Webhook,False,False,OK (Workflow-only)
+webhook_send,True,False,HTTP_REQUESTS,Send Webhook,False,False,OK (Workflow-only)
+write_file,True,False,FILE_OPERATIONS,Write File,True,True,MISSING in MCP

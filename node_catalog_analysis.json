@@ -1,0 +1,40 @@
+{
+  "total_tools": 0,
+  "mcp_tools_count": 0,
+  "workflow_tools_count": 0,
+  "write_tools_count": 0,
+  "categories": [
+    "KNOWLEDGE_BASE",
+    "DB_ADMIN",
+    "PROJECT_HUB",
+    "NICHE_SYSTEM",
+    "SENTRY_MONITORING",
+    "AI_DELEGATION",
+    "ENGINES",
+    "FILE_OPERATIONS",
+    "EXECUTION",
+    "ERROR_HANDLING",
+    "DATA_TRANSFORMATION",
+    "ITERATION",
+    "HTTP_REQUESTS",
+    "ADVANCED_LOGIC",
+    "FLOW_CONTROL",
+    "STATE_MANAGEMENT",
+    "DEBUGGING",
+    "TIME_SCHEDULING"
+  ],
+  "mcp_categories": [
+    "KNOWLEDGE_BASE",
+    "DB_ADMIN",
+    "PROJECT_HUB",
+    "NICHE_SYSTEM",
+    "SENTRY_MONITORING",
+    "AI_DELEGATION",
+    "FILE_OPERATIONS",
+    "EXECUTION"
+  ],
+  "all_tools": [],
+  "mcp_tools": [],
+  "workflow_tools": [],
+  "write_tools": []
+}

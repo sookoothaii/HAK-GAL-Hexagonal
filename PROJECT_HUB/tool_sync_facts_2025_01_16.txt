@@ -1,0 +1,34 @@
+# Tool Synchronization Facts for Knowledge Base Import
+# Generated: 2025-01-16
+# Usage: Import via bulk_add_facts with valid auth_token
+
+ToolCount(HAK_GAL_Frontend, 115).
+ToolCount(HAK_GAL_Backend_MCP, 68).
+ToolCount(HAK_GAL_Shared, 65).
+ToolCount(HAK_GAL_Frontend_Only, 50).
+ToolCount(HAK_GAL_Backend_Only, 3).
+ToolCount(HAK_GAL_Write_Enabled, 22).
+ToolSyncAnalysis(2025_01_16, completed).
+ToolDiscrepancy(Frontend_StatusBar, shows_122_actual_115).
+BackendOnlyTool(backup_kb, DB_ADMIN_category).
+BackendOnlyTool(restore_kb, DB_ADMIN_category).
+BackendOnlyTool(list_recent_facts, duplicate_of_get_recent_facts).
+MCPToolsPerCategory(KNOWLEDGE_BASE, 26).
+MCPToolsPerCategory(FILE_OPERATIONS, 13).
+MCPToolsPerCategory(DB_ADMIN, 6).
+MCPToolsPerCategory(AI_DELEGATION, 5).
+MCPToolsPerCategory(SENTRY_MONITORING, 5).
+MCPToolsPerCategory(EXECUTION, 4).
+MCPToolsPerCategory(PROJECT_HUB, 3).
+MCPToolsPerCategory(NICHE_SYSTEM, 3).
+WorkflowSpecificTools(Frontend_Only, 50).
+SystemSynchronization(HAK_GAL, excellent_minor_fixes_needed).
+SSoTUpdate(Tools_Count, from_66_to_68).
+ReportGenerated(tool_sync_report_2025_01_16, PROJECT_HUB).
+AnalysisScript(extract_node_catalog.py, frontend_tool_extraction).
+AnalysisScript(extract_mcp_tools.py, backend_tool_extraction).
+AnalysisScript(compare_with_mcp.py, tool_comparison).
+ToolSyncRecommendation(fix_frontend_statusbar, change_122_to_115).
+ToolSyncRecommendation(add_backup_kb, to_DB_ADMIN_category).
+ToolSyncRecommendation(add_restore_kb, to_DB_ADMIN_category).
+ToolSyncRecommendation(remove_list_recent_facts, duplicate_tool).

@@ -1,0 +1,234 @@
+{
+  "KNOWLEDGE_BASE": {
+    label: "Knowledge Base",
+    icon: null,
+    color: null,
+    tools: [
+      { id: "search_knowledge", label: "Search Knowledge", params: { query: "", limit: 10 }},
+      { id: "get_facts_count", label: "Get Facts Count", params: {}},
+      { id: "add_fact", label: "Add Fact", params: { statement: "", source: "workflow" }, write: true},
+      { id: "delete_fact", label: "Delete Fact", params: { statement: "" }, write: true },
+      { id: "update_fact", label: "Update Fact", params: { old_statement: "", new_statement: "" }, write: true },
+      { id: "bulk_add_facts", label: "Bulk Add Facts", params: { statements: [] }, write: true },
+      { id: "bulk_delete", label: "Bulk Delete Facts", params: { statements: [] }, write: true },
+      { id: "bulk_translate_predicates", label: "Translate Predicates", params: { mapping: {} }, write: true },
+      { id: "get_recent_facts", label: "Get Recent Facts", params: { count: 10 } },
+      { id: "get_predicates_stats", label: "Get Predicate Stats", params: {} },
+      { id: "get_system_status", label: "Get System Status", params: {} },
+      { id: "kb_stats", label: "Get KB Stats", params: {} },
+      { id: "list_audit", label: "List Audit Trail", params: { limit: 20 } },
+      { id: "export_facts", label: "Export Facts", params: { count: null, direction: "tail" } },
+      { id: "growth_stats", label: "Get Growth Stats", params: { days: 30 } },
+      { id: "semantic_similarity", label: "Find Similar", params: { statement: "", threshold: 0.8 }},
+      { id: "consistency_check", label: "Check Consistency", params: { limit: 1000 }},
+      { id: "validate_facts", label: "Validate Facts Syntax", params: { limit: 1000 } },
+      { id: "get_entities_stats", label: "Get Entity Stats", params: { min_occurrences: 2 } },
+      { id: "search_by_predicate", label: "Search by Predicate", params: { predicate: "" } },
+      { id: "get_fact_history", label: "Get Fact History", params: { statement: "" } },
+      { id: "query_related", label: "Query Related Facts", params: { entity: "" } },
+      { id: "analyze_duplicates", label: "Analyze Duplicates", params: { threshold: 0.9 } },
+      { id: "get_knowledge_graph", label: "Get Knowledge Graph", params: { entity: "", depth: 2 } },
+      { id: "find_isolated_facts", label: "Find Isolated Facts", params: { limit: 50 } },
+      { id: "inference_chain", label: "Get Inference Chain", params: { start_fact: "" } }]
+  },
+  "DB_ADMIN": {
+    label: "DB Admin",
+    icon: null,
+    color: null,
+    tools: [
+      { id: "db_get_pragma", label: "Get DB PRAGMAs", params: {} },
+      { id: "db_enable_wal", label: "Enable WAL Mode", params: { synchronous: "NORMAL" }, write: true },
+      { id: "db_vacuum", label: "Vacuum Database", params: {}, write: true },
+      { id: "db_checkpoint", label: "Force DB Checkpoint", params: { mode: "TRUNCATE" }, write: true },
+      { id: "db_backup_now", label: "Create DB Backup", params: {}, write: true },
+      { id: "db_backup_rotate", label: "Rotate DB Backups", params: { keep_last: 10 }, write: true }]
+  },
+  "PROJECT_HUB": {
+    label: "Project Hub",
+    icon: null,
+    color: null,
+    tools: [
+      { id: "project_snapshot", label: "Create Project Snapshot", params: { title: "", description: "" }, write: true },
+      { id: "project_list_snapshots", label: "List Project Snapshots", params: { limit: 20 } },
+      { id: "project_hub_digest", label: "Create Hub Digest", params: { limit_files: 3 } }]
+  },
+  "NICHE_SYSTEM": {
+    label: "Niche System",
+    icon: null,
+    color: "#a855f7",
+    tools: [
+      { id: "niche_list", label: "List All Niches", params: {} },
+      { id: "niche_stats", label: "Get Niche Stats", params: { niche_name: "" } },
+      { id: "niche_query", label: "Query a Niche", params: { niche_name: "", query: "" } }]
+  },
+  "SENTRY_MONITORING": {
+    label: "Sentry Monitoring",
+    icon: null,
+    color: null,
+    tools: [
+      { id: "sentry_test_connection", label: "Test Sentry Connection", params: {} },
+      { id: "sentry_whoami", label: "Sentry Who Am I", params: {} },
+      { id: "sentry_find_organizations", label: "Find Sentry Orgs", params: {} },
+      { id: "sentry_find_projects", label: "Find Sentry Projects", params: { organization_slug: "" } },
+      { id: "sentry_search_issues", label: "Search Sentry Issues", params: { query: "is:unresolved" } }]
+  },
+  "AI_DELEGATION": {
+    label: "AI Agents",
+    icon: null,
+    color: null,
+    tools: [
+      { id: "delegate_task", label: "Delegate to AI", params: { target_agent: "Gemini:gemini-1.5-flash", task_description: "" }},
+      { id: "consensus_evaluator", label: "Consensus Eval", params: { task_id: "", outputs: [], method: "semantic_similarity" }},
+      { id: "delegation_optimizer", label: "Optimize Delegation", params: { task_description: "", available_tools: [] }},
+      { id: "reliability_checker", label: "Check Tool Reliability", params: { tool_name: "", task: "" } },
+      { id: "bias_detector", label: "Detect Tool Bias", params: { tool_outputs: {} } }]
+  },
+  "ENGINES": {
+    label: "HAK-GAL Engines",
+    icon: null,
+    color: "#a855f7", 
+    tools: [
+      { id: "thesis_pattern_analysis", label: "THESIS Pattern Analysis", params: { duration_minutes: 1 }, type: "engine"},
+      { id: "aethelred_fact_gen", label: "Aethelred Fact Gen", params: { topic: "knowledge systems", duration_minutes: 1 }, type: "engine"},
+      { id: "governor_decision", label: "Governor Decision", params: { strategy: "thompson_sampling" }, type: "engine"}]
+  },
+  "FILE_OPERATIONS": {
+    label: "File Operations",
+    icon: null,
+    color: null,
+    tools: [
+      { id: "read_file", label: "Read File", params: { path: "" }},
+      { id: "write_file", label: "Write File", params: { path: "", content: "" }, write: true},
+      { id: "list_files", label: "List Files", params: { path: ".", pattern: "*" }},
+      { id: "get_file_info", label: "Get File Info", params: { path: "" } },
+      { id: "directory_tree", label: "Get Directory Tree", params: { path: ".", maxDepth: 3 } },
+      { id: "create_file", label: "Create File", params: { path: "", content: "" }, write: true },
+      { id: "delete_file", label: "Delete File", params: { path: "" }, write: true },
+      { id: "move_file", label: "Move/Rename File", params: { source: "", destination: "" }, write: true },
+      { id: "grep", label: "Search in Files", params: { pattern: "", path: "." }},
+      { id: "find_files", label: "Find Files", params: { pattern: "*" } },
+      { id: "search", label: "Unified Search", params: { query: "" } },
+      { id: "edit_file", label: "Edit File", params: { path: "", oldText: "", newText: "" }, write: true },
+      { id: "multi_edit", label: "Multi-Edit File", params: { path: "", edits: [] }, write: true }]
+  },
+  "EXECUTION": {
+    label: "Execution",
+    icon: null,
+    color: null,
+    tools: [
+      { id: "execute_code", label: "Execute Code", params: { code: "", language: "python", timeout: 30 }},
+      { id: "health_check", label: "Health Check", params: {}},
+      { id: "health_check_json", label: "Health Check (JSON)", params: {}},
+      { id: "db_benchmark_inserts", label: "Benchmark DB", params: { rows: null, batch: 1000 }}]
+  },
+  "ERROR_HANDLING": {
+    label: "Error Handling",
+    icon: null,
+    color: "#ef4444",
+    tools: [
+      { id: "try_catch", label: "Try/Catch Block", params: { try_nodes: [], catch_nodes: [], finally_nodes: [] }, type: "try_catch"},
+      { id: "retry_with_backoff", label: "Retry with Backoff", params: { max_retries: null, backoff_ms: null, exponential: true }},
+      { id: "circuit_breaker", label: "Circuit Breaker", params: { failure_threshold: null, timeout_ms: null, reset_timeout_ms: 60000 }},
+      { id: "fallback_chain", label: "Fallback Chain", params: { fallback_nodes: [], default_value: null }},
+      { id: "error_transform", label: "Error to Success", params: { error_map: {}, default_success: true }}
+    ]
+  },
+  "DATA_TRANSFORMATION": {
+    label: "Data Transform",
+    icon: null,
+    color: "#06b6d4",
+    tools: [
+      { id: "json_parse", label: "Parse JSON", params: { json_string: "", safe_mode: null, default_on_error: {} }},
+      { id: "json_stringify", label: "Stringify JSON", params: { object: {}, pretty: null, replacer: null }},
+      { id: "string_template", label: "String Template", params: { template: "Hello {{name}}!", variables: { name: "World" } }},
+      { id: "regex_extract", label: "Regex Extract", params: { pattern: "(\\d+)", input: "", flags: "g" }},
+      { id: "data_validator", label: "Validate Data", params: { schema: { type: "object" }, strict: true }},
+      { id: "csv_to_json", label: "CSV to JSON", params: { csv_string: "", delimiter: ",", headers: true }},
+      { id: "set_fields", label: "Set/Edit Fields", params: { fields: { new_field: "value" }, mode: "merge" }}
+    ]
+  },
+  "ITERATION": {
+    label: "Loops & Iteration",
+    icon: null,
+    color: "#8b5cf6",
+    tools: [
+      { id: "for_each", label: "For Each Item", params: { array_field: "items", item_name: "item", batch_size: 1 }, type: "for_each"},
+      { id: "split_in_batches", label: "Split In Batches", params: { batch_size: null, reset: false }},
+      { id: "loop_over_items", label: "Loop Over Items", params: { max_iterations: null, break_condition: "" }},
+      { id: "map_transform", label: "Map Transform", params: { transform_expression: "{{ $item.field * 2 }}" }},
+      { id: "reduce_aggregate", label: "Reduce/Aggregate", params: { accumulator: null, operation: "sum", field: "value" }}
+    ]
+  },
+  "HTTP_REQUESTS": {
+    label: "HTTP Requests",
+    icon: null,
+    color: "#10b981",
+    tools: [
+      { id: "http_request", label: "HTTP Request", params: { method: "GET", url: "", headers: {}, body: "", timeout: 30000 }},
+      { id: "webhook_send", label: "Send Webhook", params: { url: "", method: "POST", payload: {}, headers: {} }},
+      { id: "api_call", label: "Generic API Call", params: { base_url: "", endpoint: "", auth_type: "none" }},
+      { id: "rest_client", label: "REST Client", params: { service: "custom", operation: "GET", path: "/" }}
+    ]
+  },
+  "ADVANCED_LOGIC": {
+    label: "Advanced Logic",
+    icon: null,
+    color: "#f59e0b",
+    tools: [
+      { id: "switch_case", label: "Switch/Case", params: { switch_value: "{{ $json.status }}", cases: { success: "path1", error: "path2" } }, type: "switch"},
+      { id: "if_condition", label: "IF Condition", params: { condition: "{{ $json.value > 10 }}", true_path: "", false_path: "" }, type: "if"},
+      { id: "merge_data", label: "Merge Data", params: { mode: "append", clashing_fields: "add_suffix" }},
+      { id: "filter_items", label: "Filter Items", params: { condition: "{{ $json.active === true }}" }},
+      { id: "sort_items", label: "Sort Items", params: { field: "created_at", order: "ascending" }}
+    ]
+  },
+  "FLOW_CONTROL": {
+    label: "Flow Control",
+    icon: null,
+    color: null,
+    tools: [
+      { id: "branch", label: "Branch", params: { condition: "", true_path: "", false_path: "" }, type: "branch"},
+      { id: "delay", label: "Delay", params: { seconds: 1 }, type: "delay"},
+      { id: "parallel", label: "Parallel", params: { node_ids: [] }, type: "parallel"},
+      { id: "wait_for_webhook", label: "Wait for Webhook", params: { timeout_ms: 300000 }, type: "wait"},
+      { id: "schedule_trigger", label: "Schedule Trigger", params: { cron: "0 9 * * *", timezone: "UTC" }, type: "trigger"}
+    ]
+  },
+  "STATE_MANAGEMENT": {
+    label: "State & Context",
+    icon: null,
+    color: "#a855f7",
+    tools: [
+      { id: "get_global_state", label: "Get Global State", params: { key: "", default: null }},
+      { id: "set_global_state", label: "Set Global State", params: { key: "", value: "" }, write: true},
+      { id: "get_workflow_context", label: "Get Workflow Context", params: { context_path: "" }},
+      { id: "set_workflow_context", label: "Set Workflow Context", params: { context_path: "", value: "" }, write: true},
+      { id: "incr_counter", label: "Increment Counter", params: { counter_name: "", step: 1 }, write: true},
+      { id: "atomic_transaction", label: "Atomic Transaction", params: { keys: [], operations: [] }, write: true}
+    ]
+  },
+  "DEBUGGING": {
+    label: "Debug & Test",
+    icon: null,
+    color: "#84cc16",
+    tools: [
+      { id: "breakpoint", label: "Breakpoint", params: { enabled: null, message: "Debug checkpoint" }},
+      { id: "log_node_input", label: "Log Input", params: { log_level: "DEBUG", prefix: "INPUT" }},
+      { id: "log_node_output", label: "Log Output", params: { log_level: "DEBUG", prefix: "OUTPUT" }},
+      { id: "mock_data", label: "Mock Data", params: { mock_response: {}, enabled: true }},
+      { id: "assert_condition", label: "Assert Condition", params: { condition: "", error_message: "Assertion failed" }},
+      { id: "test_trigger", label: "Manual Test Trigger", params: { test_data: {}, description: "Test execution" }}
+    ]
+  },
+  "TIME_SCHEDULING": {
+    label: "Time & Scheduling",
+    icon: null,
+    color: "#6366f1",
+    tools: [
+      { id: "timer_trigger", label: "Timer Trigger", params: { interval_ms: null, repeat: null, max_executions: 0 }},
+      { id: "rate_limiter", label: "Rate Limiter", params: { max_calls: null, window_ms: null, burst_limit: 10 }},
+      { id: "timeout_handler", label: "Timeout Handler", params: { timeout_ms: null, on_timeout: "fail" }},
+      { id: "schedule_task", label: "Schedule Task", params: { cron_expression: "0 0 * * *", timezone: "UTC", enabled: true }}
+    ]
+  }
+}

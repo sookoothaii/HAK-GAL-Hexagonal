@@ -1,0 +1,36 @@
+# Enhanced n8n Workflow Pattern Facts v2.0
+# Generated: 2025-01-16
+# Purpose: Document enhanced production patterns
+
+WorkflowPatternV2(ttl_state_management, zombie_state_prevention).
+WorkflowPatternV2(state_snapshotting, periodic_backup_strategy).
+WorkflowPatternV2(structured_error_format, code_message_context_standard).
+WorkflowPatternV2(error_telemetry, sentry_integration_pattern).
+WorkflowPatternV2(hybrid_loops, resource_aware_selection).
+WorkflowPatternV2(exit_guards, infinite_loop_prevention).
+WorkflowPatternV2(idempotency_keys, duplicate_prevention).
+WorkflowPatternV2(checkpoint_resume, long_running_recovery).
+WorkflowPatternV2(blue_green_deployment, zero_downtime_rollout).
+WorkflowPatternV2(chaos_testing, error_scenario_validation).
+ProductionGuidance(ttl_everything, prevent_state_leaks).
+ProductionGuidance(atomic_transactions, race_condition_safety).
+ProductionGuidance(structured_errors, faster_debugging).
+ProductionGuidance(mandatory_exit_conditions, loop_safety).
+ProductionGuidance(regular_snapshots, disaster_recovery).
+LoopSelection(for_each, under_100_items).
+LoopSelection(split_in_batches, api_pagination).
+LoopSelection(loop_over_items, conditional_repeat).
+LoopSelection(parallel, independent_operations).
+ErrorFormat(standard_structure, code_message_context).
+DeploymentStrategy(blue_green, gradual_rollout).
+ChaosTest(api_failures, rate_limit_500_timeout).
+ChaosTest(state_corruption, invalid_checkpoint_data).
+ChaosTest(resource_limits, cpu_memory_exhaustion).
+MonitoringMetric(execution_duration, per_node_tracking).
+MonitoringMetric(error_rate, by_type_tracking).
+MonitoringMetric(throughput, items_per_second).
+PitfallAvoided(zombie_states, ttl_implementation).
+PitfallAvoided(silent_failures, always_log_errors).
+PitfallAvoided(infinite_loops, exit_conditions_mandatory).
+PitfallAvoided(state_explosion, checkpoint_size_limits).
+DocumentUpdated(WORKFLOW_N8N_PATTERNS.md, v2_production_guidance).

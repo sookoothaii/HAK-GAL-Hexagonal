@@ -1,0 +1,116 @@
+category,id,label,write
+KNOWLEDGE_BASE,search_knowledge,Search Knowledge,False
+KNOWLEDGE_BASE,get_facts_count,Get Facts Count,False
+KNOWLEDGE_BASE,add_fact,Add Fact,True
+KNOWLEDGE_BASE,delete_fact,Delete Fact,True
+KNOWLEDGE_BASE,update_fact,Update Fact,True
+KNOWLEDGE_BASE,bulk_add_facts,Bulk Add Facts,True
+KNOWLEDGE_BASE,bulk_delete,Bulk Delete Facts,True
+KNOWLEDGE_BASE,bulk_translate_predicates,Translate Predicates,True
+KNOWLEDGE_BASE,get_recent_facts,Get Recent Facts,False
+KNOWLEDGE_BASE,get_predicates_stats,Get Predicate Stats,False
+KNOWLEDGE_BASE,get_system_status,Get System Status,False
+KNOWLEDGE_BASE,kb_stats,Get KB Stats,False
+KNOWLEDGE_BASE,list_audit,List Audit Trail,False
+KNOWLEDGE_BASE,export_facts,Export Facts,False
+KNOWLEDGE_BASE,growth_stats,Get Growth Stats,False
+KNOWLEDGE_BASE,semantic_similarity,Find Similar,False
+KNOWLEDGE_BASE,consistency_check,Check Consistency,False
+KNOWLEDGE_BASE,validate_facts,Validate Facts Syntax,False
+KNOWLEDGE_BASE,get_entities_stats,Get Entity Stats,False
+KNOWLEDGE_BASE,search_by_predicate,Search by Predicate,False
+KNOWLEDGE_BASE,get_fact_history,Get Fact History,False
+KNOWLEDGE_BASE,query_related,Query Related Facts,False
+KNOWLEDGE_BASE,analyze_duplicates,Analyze Duplicates,False
+KNOWLEDGE_BASE,get_knowledge_graph,Get Knowledge Graph,False
+KNOWLEDGE_BASE,find_isolated_facts,Find Isolated Facts,False
+KNOWLEDGE_BASE,inference_chain,Get Inference Chain,False
+DB_ADMIN,db_get_pragma,Get DB PRAGMAs,False
+DB_ADMIN,db_enable_wal,Enable WAL Mode,True
+DB_ADMIN,db_vacuum,Vacuum Database,True
+DB_ADMIN,db_checkpoint,Force DB Checkpoint,True
+DB_ADMIN,db_backup_now,Create DB Backup,True
+DB_ADMIN,db_backup_rotate,Rotate DB Backups,True
+PROJECT_HUB,project_snapshot,Create Project Snapshot,True
+PROJECT_HUB,project_list_snapshots,List Project Snapshots,False
+PROJECT_HUB,project_hub_digest,Create Hub Digest,False
+NICHE_SYSTEM,niche_list,List All Niches,False
+NICHE_SYSTEM,niche_stats,Get Niche Stats,False
+NICHE_SYSTEM,niche_query,Query a Niche,False
+SENTRY_MONITORING,sentry_test_connection,Test Sentry Connection,False
+SENTRY_MONITORING,sentry_whoami,Sentry Who Am I,False
+SENTRY_MONITORING,sentry_find_organizations,Find Sentry Orgs,False
+SENTRY_MONITORING,sentry_find_projects,Find Sentry Projects,False
+SENTRY_MONITORING,sentry_search_issues,Search Sentry Issues,False
+AI_DELEGATION,delegate_task,Delegate to AI,False
+AI_DELEGATION,consensus_evaluator,Consensus Eval,False
+AI_DELEGATION,delegation_optimizer,Optimize Delegation,False
+AI_DELEGATION,reliability_checker,Check Tool Reliability,False
+AI_DELEGATION,bias_detector,Detect Tool Bias,False
+ENGINES,thesis_pattern_analysis,THESIS Pattern Analysis,False
+ENGINES,aethelred_fact_gen,Aethelred Fact Gen,False
+ENGINES,governor_decision,Governor Decision,False
+FILE_OPERATIONS,read_file,Read File,False
+FILE_OPERATIONS,write_file,Write File,True
+FILE_OPERATIONS,list_files,List Files,False
+FILE_OPERATIONS,get_file_info,Get File Info,False
+FILE_OPERATIONS,directory_tree,Get Directory Tree,False
+FILE_OPERATIONS,create_file,Create File,True
+FILE_OPERATIONS,delete_file,Delete File,True
+FILE_OPERATIONS,move_file,Move/Rename File,True
+FILE_OPERATIONS,grep,Search in Files,False
+FILE_OPERATIONS,find_files,Find Files,False
+FILE_OPERATIONS,search,Unified Search,False
+FILE_OPERATIONS,edit_file,Edit File,True
+FILE_OPERATIONS,multi_edit,Multi-Edit File,True
+EXECUTION,execute_code,Execute Code,False
+EXECUTION,health_check,Health Check,False
+EXECUTION,health_check_json,Health Check (JSON),False
+EXECUTION,db_benchmark_inserts,Benchmark DB,False
+ERROR_HANDLING,try_catch,Try/Catch Block,False
+ERROR_HANDLING,retry_with_backoff,Retry with Backoff,False
+ERROR_HANDLING,circuit_breaker,Circuit Breaker,False
+ERROR_HANDLING,fallback_chain,Fallback Chain,False
+ERROR_HANDLING,error_transform,Error to Success,False
+DATA_TRANSFORMATION,json_parse,Parse JSON,False
+DATA_TRANSFORMATION,json_stringify,Stringify JSON,False
+DATA_TRANSFORMATION,string_template,String Template,False
+DATA_TRANSFORMATION,regex_extract,Regex Extract,False
+DATA_TRANSFORMATION,data_validator,Validate Data,False
+DATA_TRANSFORMATION,csv_to_json,CSV to JSON,False
+DATA_TRANSFORMATION,set_fields,Set/Edit Fields,False
+ITERATION,for_each,For Each Item,False
+ITERATION,split_in_batches,Split In Batches,False
+ITERATION,loop_over_items,Loop Over Items,False
+ITERATION,map_transform,Map Transform,False
+ITERATION,reduce_aggregate,Reduce/Aggregate,False
+HTTP_REQUESTS,http_request,HTTP Request,False
+HTTP_REQUESTS,webhook_send,Send Webhook,False
+HTTP_REQUESTS,api_call,Generic API Call,False
+HTTP_REQUESTS,rest_client,REST Client,False
+ADVANCED_LOGIC,switch_case,Switch/Case,False
+ADVANCED_LOGIC,if_condition,IF Condition,False
+ADVANCED_LOGIC,merge_data,Merge Data,False
+ADVANCED_LOGIC,filter_items,Filter Items,False
+ADVANCED_LOGIC,sort_items,Sort Items,False
+FLOW_CONTROL,branch,Branch,False
+FLOW_CONTROL,delay,Delay,False
+FLOW_CONTROL,parallel,Parallel,False
+FLOW_CONTROL,wait_for_webhook,Wait for Webhook,False
+FLOW_CONTROL,schedule_trigger,Schedule Trigger,False
+STATE_MANAGEMENT,get_global_state,Get Global State,False
+STATE_MANAGEMENT,set_global_state,Set Global State,True
+STATE_MANAGEMENT,get_workflow_context,Get Workflow Context,False
+STATE_MANAGEMENT,set_workflow_context,Set Workflow Context,True
+STATE_MANAGEMENT,incr_counter,Increment Counter,True
+STATE_MANAGEMENT,atomic_transaction,Atomic Transaction,True
+DEBUGGING,breakpoint,Breakpoint,False
+DEBUGGING,log_node_input,Log Input,False
+DEBUGGING,log_node_output,Log Output,False
+DEBUGGING,mock_data,Mock Data,False
+DEBUGGING,assert_condition,Assert Condition,False
+DEBUGGING,test_trigger,Manual Test Trigger,False
+TIME_SCHEDULING,timer_trigger,Timer Trigger,False
+TIME_SCHEDULING,rate_limiter,Rate Limiter,False
+TIME_SCHEDULING,timeout_handler,Timeout Handler,False
+TIME_SCHEDULING,schedule_task,Schedule Task,False

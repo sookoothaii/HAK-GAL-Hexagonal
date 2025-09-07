@@ -53,10 +53,13 @@ This two-tiered, hierarchical context management system, anchored by the SSoT an
 
 
 ## Instance Snapshot
-- UTC: 2025-09-04T09:03:20Z
-- SSoT_ID: e34c86de8722
-- Tools: 66
+- UTC: 2025-01-16T12:15:00Z
+- SSoT_ID: a91d73c5f982
+- Tools: 68 (Backend MCP: 68, Frontend Total: 115 [65 MCP + 50 Workflow])
+- Write-Tools: 22
+- Backend-only: 3 (backup_kb, restore_kb, list_recent_facts*)
 - Facts: 6505
 - Niches: 9 (Total: 3649)
 - Sentry: connected (org: samui-science-lab, project: hak-gal-backend)
 - Notes: WAL=ON, synchronous=FULL, JSON-Logs; execute_code ASCII-only
+         *list_recent_facts ist Duplikat von get_recent_facts
