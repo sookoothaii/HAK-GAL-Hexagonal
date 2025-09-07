@@ -137,12 +137,13 @@ class TogetherAIProvider(LLMProvider):
             return f"Together AI API error: {str(e)[:200]}", provider_name
 
 class DeepSeekProvider(LLMProvider):
-    """DeepSeek API provider - Direct API calls for maximum speed."""
+    """DeepSeek API provider - Fixed implementation based on successful test."""
     
     def __init__(self):
         self.api_key = os.environ.get('DEEPSEEK_API_KEY', '')
         self.base_url = "https://api.deepseek.com/v1/chat/completions"
-        self.timeout = 8  # Maximum speed timeout
+        self.timeout = (5, 30)  # (connect timeout, read timeout)
+        self.session = requests.Session()  # Reuse connection
     
     def is_available(self) -> bool:
         api_key_present = bool(self.api_key)
@@ -155,44 +156,53 @@ class DeepSeekProvider(LLMProvider):
             return "DeepSeek API key not configured", provider_name
         
         try:
-            print(f"[{provider_name}] Direct API call (no proxy)...")
+            print(f"[{provider_name}] Direct API call...")
+            
             headers = {
-                "Authorization": f"Bearer {self.api_key}",
-                "Content-Type": "application/json"
-            }
-            data = {
-                "model": "deepseek-chat",
-                "messages": [
-                    {"role": "system", "content": "You are a helpful AI assistant that provides concise explanations."},
-                    {"role": "user", "content": prompt}
-                ],
-                "temperature": 0.7,
-                "max_tokens": 200  # Minimal for maximum speed
+                'Authorization': f'Bearer {self.api_key}',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'User-Agent': 'HAK-GAL/1.0'
             }
             
-            response = requests.post(
+            # EXACT configuration that worked in test
+            data = {
+                "model": "deepseek-chat",
+                "messages": [{"role": "user", "content": prompt}],
+                "max_tokens": 1000,
+                "temperature": 0.7,
+                "stream": False
+            }
+            
+            print(f"[{provider_name}] Sending request...")
+            response = self.session.post(
                 self.base_url,
                 headers=headers,
                 json=data,
-                timeout=self.timeout
+                timeout=self.timeout,
+                verify=True
             )
             
-            response.raise_for_status()
-            response_json = response.json()
+            print(f"[{provider_name}] Response status: {response.status_code}")
             
-            if "choices" in response_json and len(response_json["choices"]) > 0:
-                content = response_json["choices"][0]["message"]["content"]
-                print(f"[{provider_name}] Direct API success! (length: {len(content)})")
-                return content, provider_name
+            if response.status_code == 200:
+                result = response.json()
+                if "choices" in result and len(result["choices"]) > 0:
+                    content = result["choices"][0]["message"]["content"]
+                    print(f"[{provider_name}] Success! Response time: {response.elapsed.total_seconds():.2f}s")
+                    return content, provider_name
+                else:
+                    return f"DeepSeek: Invalid response format", provider_name
             else:
-                return f"Unexpected response format: {response_json}", provider_name
-
-        except requests.exceptions.Timeout:
-            return f"DeepSeek API timeout after {self.timeout} seconds", provider_name
-        except requests.exceptions.RequestException as e:
-            return f"DeepSeek API error: {str(e)}", provider_name
+                error_text = response.text[:200] if response.text else "No error details"
+                return f"DeepSeek API error {response.status_code}: {error_text}", provider_name
+                
+        except requests.exceptions.ConnectTimeout:
+            return "DeepSeek: Connection timeout (couldn't connect)", provider_name
+        except requests.exceptions.ReadTimeout:
+            return "DeepSeek: Read timeout (connected but slow response)", provider_name
         except Exception as e:
-            return f"DeepSeek error: {str(e)}", provider_name
+            return f"DeepSeek error: {type(e).__name__}: {str(e)[:100]}", provider_name
 
 class ClaudeProvider(LLMProvider):
     """Anthropic Claude API provider - Claude 3.5 Sonnet"""
