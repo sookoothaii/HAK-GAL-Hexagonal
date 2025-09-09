@@ -36,11 +36,13 @@ frontend/.vite/
 *~
 
 # Database
+hexagonal_kb.db
 *.db-journal
 *.db-shm
 *.db-wal
 hexagonal_kb_backup_*.db
 hexagonal_kb_recovered.db
+*.jsonl
 
 # Logs
 logs/

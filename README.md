@@ -4,8 +4,10 @@
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Tools](https://img.shields.io/badge/MCP%20Tools-67-orange.svg)](ultimate_mcp/)
-[![Facts](https://img.shields.io/badge/Knowledge%20Facts-6631-purple.svg)](https://github.com/sookoothaii/HAK-GAL-Hexagonal/releases/tag/v2.0.0)
+[![KB Tools](https://img.shields.io/badge/KB%20Tools-68-orange.svg)](ultimate_mcp/)
+[![FS Tools](https://img.shields.io/badge/FS%20Tools-20-yellow.svg)](filesystem_mcp/)
+[![Total Tools](https://img.shields.io/badge/Total%20Tools-88-purple.svg)](docs/MCP_TOOLS_REFERENCE.md)
+[![Facts](https://img.shields.io/badge/Knowledge%20Facts-6631-blue.svg)](https://github.com/sookoothaii/HAK-GAL-Hexagonal/releases/tag/v2.0.0)
 
 ## Overview
 
@@ -56,25 +58,52 @@ cd frontend && npm install && cd ..
 .venv\Scripts\activate  # Windows
 source .venv/bin/activate  # Linux/Mac
 
-# Terminal 1: Start MCP Server
+# Terminal 1: Start MCP KB Server
 python ultimate_mcp/hakgal_mcp_ultimate.py
 
-# Terminal 2: Start API Server (Port 5002)
+# Terminal 2: Start MCP Filesystem Server (NEW!)
+python filesystem_mcp/hak_gal_filesystem.py
+
+# Terminal 3: Start API Server (Port 5002)
 python src_hexagonal/hexagonal_api_enhanced_clean.py
 
-# Terminal 3: Start Frontend (Port 5173)
+# Terminal 4: Start Frontend (Port 5173)
 cd frontend
 npm run dev
 ```
 
 Open http://localhost:5173 in your browser.
 
+### Using Both MCP Servers
+
+For maximum functionality, run both MCP servers:
+- **KB Server** (`ultimate_mcp`): Knowledge base and AI operations
+- **Filesystem Server** (`filesystem_mcp`): Advanced file operations
+
+Configure Claude Desktop to use both servers in `%APPDATA%\Claude\claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "hak-gal-kb": {
+      "command": "python",
+      "args": ["path/to/ultimate_mcp/hakgal_mcp_ultimate.py"]
+    },
+    "hak-gal-filesystem": {
+      "command": "python",
+      "args": ["path/to/filesystem_mcp/hak_gal_filesystem.py"]
+    }
+  }
+}
+```
+
 ## Architecture
 
 ### System Components
 ```
 HAK-GAL Hexagonal/
-├── ultimate_mcp/        # MCP Server (67 tools)
+├── ultimate_mcp/        # MCP Server (68 KB tools)
+├── filesystem_mcp/      # Filesystem Server (20 tools) - NEW!
 ├── src_hexagonal/       # Hexagonal Backend
 │   ├── adapters/        # External interfaces
 │   ├── core/           # Domain logic
@@ -100,7 +129,10 @@ HAK-GAL Hexagonal/
 
 ## MCP Tools
 
-67 tools across 7 categories:
+**Total: 88 tools** across two specialized servers:
+
+### Knowledge Base Server (`ultimate_mcp`)
+68 tools across 7 categories:
 
 | Category | Count | Examples |
 |----------|-------|----------|
@@ -111,6 +143,17 @@ HAK-GAL Hexagonal/
 | Code Execution | 1 | execute_code |
 | Meta Tools | 4 | consensus_evaluator, bias_detector |
 | Sentry/Nischen | 6 | Optional monitoring tools |
+
+### Filesystem Server (`filesystem_mcp`) - NEW!
+20 specialized file operation tools:
+
+| Category | Count | Examples |
+|----------|-------|----------|
+| Execution | 1 | execute_code (sandboxed) |
+| File Operations | 10 | copy_batch, create_directory, move_file |
+| Analysis | 3 | file_diff, calculate_hash, tail_file |
+| Search & Edit | 5 | grep, find_files, multi_edit |
+| Code Tools | 1 | format_code |
 
 ## WorkflowPro
 

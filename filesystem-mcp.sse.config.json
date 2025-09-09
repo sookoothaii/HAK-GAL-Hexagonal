@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "hak-gal-filesystem": {
+      "type": "stdio",
+      "command": ".\\.venv_hexa\\Scripts\\python.exe",
+      "args": [
+        "-u",
+        "D:\\MCP Mods\\HAK_GAL_HEXAGONAL\\filesystem_mcp\\hak_gal_filesystem.py"
+      ],
+      "env": {
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONPATH": "D:\\MCP Mods\\HAK_GAL_HEXAGONAL",
+        "HAK_GAL_AUTH_TOKEN": "515f57956e7bd15ddc3817573598f190",
+        "HAK_GAL_WRITE_ENABLED": "true",
+        "HAK_GAL_BASE_PATH": "D:\\MCP Mods\\HAK_GAL_HEXAGONAL"
+      }
+    }
+  }
+}
