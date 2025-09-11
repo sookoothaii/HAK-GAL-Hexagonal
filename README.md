@@ -20,7 +20,7 @@ HAK-GAL Hexagonal is a complete rewrite of the original HAK-GAL-Suite, now featu
 - **Browser Integration** via [MCPSuperAssistant.ai](https://mcpsuperassistant.ai)
 - **Multi-Agent System** (4 adapters)
 - **Visual Workflow Editor** (122 node types)
-- **SQLite Knowledge Base** (6,631 facts)
+- **SQLite Knowledge Base** (4,234 facts)
 
 ## Quick Start with MCPSuperAssistant.ai (Browser)
 
