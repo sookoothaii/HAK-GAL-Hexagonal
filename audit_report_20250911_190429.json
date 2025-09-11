@@ -1,0 +1,181 @@
+{
+  "timestamp": "2025-09-11 19:04:18 UTC",
+  "tests": {
+    "backup_files": {
+      "count": 65,
+      "size_mb": 1.47,
+      "directories": 15,
+      "files": [
+        "audit_log.jsonl.backup",
+        "frontend\\cleanup_backup\\backends.ts.backup_20250812_074343",
+        "frontend\\cleanup_backup\\ProApp.backup_20250808_224804",
+        "frontend\\cleanup_backup\\ProApp.tsx.backup_20250812_075547",
+        "frontend\\cleanup_backup\\ProDashboard.backup_20250808_224804",
+        "frontend\\cleanup_backup\\ProDashboard.tsx.backup_20250812_075547",
+        "frontend\\cleanup_backup\\ProNavigation.backup_20250808_224804",
+        "frontend\\cleanup_backup\\ProNavigation.tsx.backup_20250812_075547",
+        "frontend\\cleanup_backup\\websocket.ts.backup_20250812_074343",
+        "frontend\\src\\hooks\\useHRMSocket.backup_20250818_055028.ts",
+        "frontend\\src\\hooks\\useHRMSocket.backup_20250818_055056.ts",
+        "frontend\\src\\stores\\useHRMStore.backup_20250818_055028.ts",
+        "frontend\\src\\stores\\useHRMStore.backup_20250818_055056.ts",
+        "scripts\\launch_5002_mojo.py.backup_20250816_072237",
+        "scripts\\launch_5002_WRITE.py.backup_deepseek",
+        "src_hexagonal\\hexagonal_api_enhanced.py.backup",
+        "src_hexagonal\\hexagonal_api_enhanced.py.backup_20250818_080026",
+        "src_hexagonal\\hexagonal_api_enhanced.py.backup_405_fix",
+        "src_hexagonal\\hexagonal_api_enhanced.py.backup_readonly_fix",
+        "src_hexagonal\\hexagonal_api_enhanced.py.backup_ultimate_20250818_080346"
+      ]
+    },
+    "tools": {
+      "unique_count": 0,
+      "duplicates": [],
+      "similar_pairs": 0,
+      "total_definitions": 0
+    },
+    "smt_verifier": {
+      "z3_available": true,
+      "verifier_functional": true,
+      "errors": [],
+      "z3_version": "4.15.1"
+    },
+    "governance_performance": {
+      "with_governance": 0.0,
+      "without_governance": 0.0,
+      "overhead_percent": 500.0
+    },
+    "database": {
+      "exists": true,
+      "size_mb": 2.72,
+      "facts_count": 3282,
+      "tables": [
+        "facts",
+        "sqlite_stat1",
+        "facts_v2",
+        "sqlite_sequence",
+        "fact_arguments",
+        "fact_dependencies",
+        "formulas",
+        "verified_queries",
+        "facts_extended",
+        "fact_relations",
+        "discovered_topics",
+        "tool_performance",
+        "tool_stats",
+        "tool_combinations"
+      ],
+      "integrity": "ok",
+      "top_predicates": [
+        [
+          "Produces",
+          338
+        ],
+        [
+          "Contains",
+          336
+        ],
+        [
+          "LocatedAt",
+          336
+        ],
+        [
+          "DependsOn",
+          334
+        ],
+        [
+          "Supports",
+          331
+        ],
+        [
+          "IsA",
+          329
+        ],
+        [
+          "Requires",
+          325
+        ],
+        [
+          "HasPart",
+          323
+        ],
+        [
+          "Causes",
+          315
+        ],
+        [
+          "Uses",
+          314
+        ]
+      ]
+    },
+    "llm_providers": {
+      "providers": {},
+      "api_keys_set": {
+        "Groq": true,
+        "DeepSeek": true,
+        "Gemini": true,
+        "Claude": true,
+        "TogetherAI": false
+      },
+      "functional": [
+        "Groq"
+      ]
+    },
+    "code_quality": {
+      "python_files": 455,
+      "total_lines": 107180,
+      "avg_file_size": 236,
+      "largest_files": [
+        [
+          "hakgal_mcp_ultimate.py",
+          2988
+        ],
+        [
+          "hak_gal_filesystem.py",
+          2564
+        ],
+        [
+          "test-mcp-claude.py",
+          2353
+        ],
+        [
+          "hak_gal_mcp_fixed.py",
+          1828
+        ],
+        [
+          "hakgal_mcp_v31_REPAIRED.py",
+          1792
+        ]
+      ],
+      "todo_fixme_count": 4
+    },
+    "dependencies": {
+      "requirements_exists": true,
+      "critical_packages": {
+        "requests": "2.32.4",
+        "sqlite3": "2.6.0",
+        "flask": "3.0.0",
+        "eventlet": "0.33.3"
+      },
+      "missing": [
+        "z3-solver"
+      ]
+    },
+    "monitoring": {
+      "sentry_configured": true,
+      "logging_enabled": true,
+      "metrics_endpoint": true,
+      "health_endpoint": true,
+      "log_files_count": 4
+    }
+  },
+  "metrics": {},
+  "issues": [
+    "CRITICAL: 65 backup files cluttering system",
+    "CRITICAL: Missing packages: z3-solver"
+  ],
+  "recommendations": [
+    "IMMEDIATE: Initialize Git and remove all backup files"
+  ]
+}

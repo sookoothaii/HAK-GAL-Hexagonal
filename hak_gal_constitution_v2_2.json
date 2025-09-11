@@ -1,0 +1,72 @@
+{
+  "version": "2.2",
+  "description": "HAK/GAL Machine-Readable Constitution. Reconstructed from analysis doc HAKGAL_CONSTITUTION_ANALYSIS_20250909_1815.md.",
+  "rules": [
+    {
+      "rule_id": "DEFAULT_PASS",
+      "description": "Default conditions for an action to be approved automatically.",
+      "conditions": {
+        "type": "ALL",
+        "clauses": [
+          {
+            "metric": "ExternallyLegal",
+            "operator": "EQUALS",
+            "value": true
+          },
+          {
+            "metric": "Universalizable",
+            "operator": "EQUALS",
+            "value": true
+          },
+          {
+            "metric": "HarmHumanProb",
+            "operator": "LESS_THAN_OR_EQUAL",
+            "value": 0.001
+          },
+          {
+            "metric": "SustainIndex",
+            "operator": "GREATER_THAN_OR_EQUAL",
+            "value": 0.85
+          }
+        ]
+      }
+    },
+    {
+      "rule_id": "OVERRIDE_GATE",
+      "description": "Conditions under which an operator can override a failed check, excluding external illegality.",
+      "conditions": {
+        "type": "ALL",
+        "clauses": [
+          {
+            "metric": "ExternallyLegal",
+            "operator": "EQUALS",
+            "value": true
+          },
+          {
+            "metric": "Override.Operator",
+            "operator": "EQUALS",
+            "value": true
+          },
+          {
+            "metric": "Override.PeerReview",
+            "operator": "EQUALS",
+            "value": true
+          },
+          {
+            "metric": "Override.Documentation",
+            "operator": "EQUALS",
+            "value": true
+          },
+          {
+            "metric": "Override.RiskExceptionJustified",
+            "operator": "EQUALS",
+            "value": true
+          }
+        ]
+      }
+    }
+  ],
+  "metadata": {
+    "source_analysis_id": "constitution_v22_analysis_f94a1e"
+  }
+}

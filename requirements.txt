@@ -48,3 +48,4 @@ regex>=2023.0.0
 
 # Sentry Integration (optional)
 sentry-sdk>=2.0.0
+z3-solver

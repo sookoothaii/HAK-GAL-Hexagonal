@@ -1,22 +1,12 @@
 {
   "mcpServers": {
     "hak-gal": {
-      "type": "stdio",
-      "command": ".\\.venv_hexa\\Scripts\\python.exe",
-      "args": [
-        "-u",
-        "D:\\MCP Mods\\HAK_GAL_HEXAGONAL\\ultimate_mcp\\hakgal_mcp_ultimate.py"
-      ],
-      "env": {
-        "PYTHONIOENCODING": "utf-8",
-        "PYTHONPATH": "D:\\MCP Mods\\HAK_GAL_HEXAGONAL",
-        "HAKGAL_API_BASE_URL": "http://127.0.0.1:5001",
-        "HAKGAL_WRITE_ENABLED": "true",
-        "HAKGAL_WRITE_TOKEN": "",
-        "HAKGAL_HUB_PATH": "D:\\MCP Mods\\HAK_GAL_HEXAGONAL\\PROJECT_HUB",
-        "HAKGAL_AUTO_SNAPSHOT_ON_SHUTDOWN": "false",
-        "HAKGAL_AUTO_DIGEST_ON_INIT": "false"
-      }
+      "type": "tcp",
+      "port": 3006
+    },
+    "hak-gal-filesystem": {
+      "type": "tcp",
+      "port": 3007
     }
   }
 }

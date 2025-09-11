@@ -142,7 +142,7 @@ class DeepSeekProvider(LLMProvider):
     def __init__(self):
         self.api_key = os.environ.get('DEEPSEEK_API_KEY', '')
         self.base_url = "https://api.deepseek.com/v1/chat/completions"
-        self.timeout = (5, 30)  # (connect timeout, read timeout)
+        self.timeout = (10, 60)  # (connect timeout, read timeout) - INCREASED
         self.session = requests.Session()  # Reuse connection
     
     def is_available(self) -> bool:
@@ -465,22 +465,54 @@ class MultiLLMProvider(LLMProvider):
                 print(f"[MultiLLM] Trying {provider_name} ({i+1}/{len(self.providers)})...")
                 try:
                     response_text, _ = provider.generate_response(prompt)
-                    # Check if response is valid (not an error message)
-                    # Only check for actual error messages, not content
-                    error_indicators = ['timeout', 'failed', 'unauthorized', 'not found', 'invalid', 'api error', 'api key', 'not configured']
-                    is_error = any(err in response_text.lower() for err in error_indicators)
-                    is_valid_length = len(response_text) > 10  # Low threshold
                     
-                    if response_text and is_valid_length and not is_error:
+                    # ROBUSTE Fehlerprüfung - Prüfe ZUERST ob es ein Fehler ist
+                    response_lower = response_text.lower()
+                    
+                    # Erweiterte Liste von Fehlerindikatoren
+                    error_indicators = [
+                        'timeout', 'failed', 'unauthorized', 'not found', 'invalid', 
+                        'api error', 'api key', 'not configured', 
+                        'error:', 'error ', 'connectionerror', 'max retries exceeded', 
+                        'ssl', 'nameres', 'httpsconnectionpool', 'couldn\'t connect',
+                        'connection refused', 'no such host', 'getaddrinfo failed'
+                    ]
+                    
+                    # Prüfe ob es definitiv ein Fehler ist
+                    is_definitely_error = False
+                    for err in error_indicators:
+                        if err in response_lower:
+                            is_definitely_error = True
+                            print(f"[MultiLLM] Detected error indicator: '{err}'")
+                            break
+                    
+                    # Zusätzliche Prüfung: Wenn Provider-Name + "error" im Text ist
+                    if f"{provider_name.lower()} error" in response_lower or \
+                       f"{provider_name.lower()}:" in response_lower and "error" in response_lower:
+                        is_definitely_error = True
+                        print(f"[MultiLLM] Detected provider-specific error")
+                    
+                    # Mindestlänge für sinnvolle Antwort (aber nicht für Fehler)
+                    MIN_GOOD_RESPONSE = 50  # Erhöht von 10
+                    is_valid_length = len(response_text) > MIN_GOOD_RESPONSE
+                    
+                    # Entscheidungslogik
+                    if is_definitely_error:
+                        print(f"[MultiLLM] {provider_name} returned error: {response_text[:150]}...")
+                        final_error = f"{provider_name}: {response_text[:200]}"
+                        continue  # Nächster Provider
+                    elif not is_valid_length:
+                        print(f"[MultiLLM] {provider_name} response too short ({len(response_text)} chars)")
+                        final_error = f"{provider_name}: Response too short"
+                        continue  # Nächster Provider
+                    else:
+                        # Erfolg!
                         print(f"[MultiLLM] Success with {provider_name}! (Length: {len(response_text)})")
                         return response_text, provider_name
-                    else:
-                        final_error = f"{provider_name}: {response_text}"
-                        print(f"[MultiLLM] {provider_name} returned: {response_text}")
-                        print(f"[MultiLLM] (Length: {len(response_text)}, IsError: {is_error}), trying next...")
+                        
                 except Exception as e:
-                    final_error = f"{provider_name}: {str(e)[:100]}"
-                    print(f"[MultiLLM] {provider_name} exception, trying next...")
+                    final_error = f"{provider_name}: Exception - {str(e)[:100]}"
+                    print(f"[MultiLLM] {provider_name} exception: {str(e)[:100]}")
         
         return f"All LLM providers failed. Last error: {final_error}", "None"
 

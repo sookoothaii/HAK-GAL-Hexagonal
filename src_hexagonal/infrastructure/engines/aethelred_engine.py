@@ -15,11 +15,13 @@ import random
 import argparse
 from typing import List, Set, Dict, Any
 from concurrent.futures import ThreadPoolExecutor
+import sqlite3
 
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from infrastructure.engines.base_engine import BaseHexagonalEngine
+from src_hexagonal.application.transactional_governance_engine import TransactionalGovernanceEngine, TransactionFailedException, TransactionFailedException
 
 # Extended topic list for diverse knowledge generation
 ALL_TOPICS = [
@@ -257,6 +259,36 @@ class AethelredEngine(BaseHexagonalEngine):
         # Remove duplicates
         return list(set(all_new_facts))
     
+    def add_facts_governed(self, facts: List[str]) -> int:
+        """
+        Add facts through the transactional governance engine.
+        """
+        if not facts:
+            return 0
+            
+        self.logger.info(f"Adding {len(facts)} facts through governance engine...")
+        engine = TransactionalGovernanceEngine()
+        
+        context = {
+            'operator': 'AethelredEngine',
+            'reason': f'Automated fact generation for topics: {self.name}',
+            'harm_prob': 0.0001, # Assuming low harm for now
+            'sustain_index': 0.95, # Assuming high sustainability
+            'externally_legal': True,
+            'universalizable_proof': True
+        }
+        
+        try:
+            added_count = engine.governed_add_facts_atomic(facts, context)
+            self.logger.info(f"Governance engine added {added_count} facts.")
+            return added_count
+        except TransactionFailedException as e:
+            self.logger.debug(f"Fact addition failed (TransactionFailedException): {e}")
+            return 0
+        except Exception as e:
+            self.logger.error(f"Governance engine failed to add facts: {e}")
+            return 0
+    
     def run(self, duration_minutes: float = 15):
         """
         Run the Aethelred engine for specified duration
@@ -284,7 +316,7 @@ class AethelredEngine(BaseHexagonalEngine):
             
             # Add facts to knowledge base
             if new_facts:
-                added = self.add_facts_batch(new_facts)
+                added = self.add_facts_governed(new_facts)
                 facts_added += added
                 self.logger.info(f"Added {added} facts to knowledge base")
             

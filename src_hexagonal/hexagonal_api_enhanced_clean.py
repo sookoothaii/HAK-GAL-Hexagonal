@@ -4,13 +4,21 @@ REST API Adapter with WebSocket, Governor & Sentry - CLEAN VERSION WITHOUT MOCKS
 Nach HAK/GAL Verfassung: NO FAKE DATA, ONLY REAL RESULTS
 """
 
+import os  # Import os at the top level
+import sys
+from pathlib import Path
+
+# Set Governance Version BEFORE other imports
+os.environ.setdefault('GOVERNANCE_VERSION', 'v3')
+print(f"[INFO] Governance Version: {os.environ.get('GOVERNANCE_VERSION')}")
+
 # --- CRITICAL: Eventlet Monkey-Patching ---
 # This MUST be the first piece of code to run to ensure all standard libraries
 # are patched for cooperative multitasking, preventing hangs with SocketIO.
 try:
     import eventlet
-    # SELECTIVE patching: Keep DNS working but patch threading for WebSockets
-    eventlet.monkey_patch(thread=True, time=True, socket=False, select=False)
+    # Full patching for proper async operation - fixes 2-second delay
+    eventlet.monkey_patch()
     print("[OK] Eventlet monkey-patching applied (DNS-safe mode).")
 except ImportError:
     print("[WARNING] Eventlet not found. WebSocket may hang under load.")
@@ -19,10 +27,7 @@ except ImportError:
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from typing import Dict, Any, Optional
-import sys
-import os
 import time
-from pathlib import Path
 import subprocess
 from datetime import datetime, timezone
 import re
@@ -86,6 +91,10 @@ from src_hexagonal.api_endpoints_extension import create_extended_endpoints
 from src_hexagonal.missing_endpoints import register_missing_endpoints
 from adapters.agent_adapters import get_agent_adapter
 from src_hexagonal.llm_config_routes import init_llm_config_routes
+from src_hexagonal.application.transactional_governance_engine import TransactionalGovernanceEngine
+from src_hexagonal.application.governance_monitor import probe_sqlite
+
+
 
 
 # Import infrastructure if available
@@ -162,6 +171,13 @@ class HexagonalAPI:
             self.fact_repository = SQLiteFactRepository()
             # Verwende das trainierte HRM (NativeReasoningEngine)
             self.reasoning_engine = NativeReasoningEngine()
+
+        # Initialize Governance V3
+        self.governance_engine = TransactionalGovernanceEngine()
+        print(f"[OK] Governance {os.environ.get('GOVERNANCE_VERSION')} initialized")
+        print(f"[OK] Policy enforcement: {os.environ.get('POLICY_ENFORCE', 'observe')}")
+        print(f"[OK] Bypass mode: {os.environ.get('GOVERNANCE_BYPASS', 'false')}")
+
         
         # Initialize Application Services
         self.fact_service = FactManagementService(
@@ -940,6 +956,29 @@ class HexagonalAPI:
                 })
                 
             return jsonify({'error': 'Only explain/add_fact supported'}), 405
+
+        @self.app.route('/api/governance/status', methods=['GET'])
+        def governance_status():
+            """Get current governance status and health"""
+            try:
+                db_health = probe_sqlite(self.governance_engine.db_path)
+                return jsonify({
+                    'governance': {
+                        'version': os.environ.get('GOVERNANCE_VERSION', 'unknown'),
+                        'mode': os.environ.get('POLICY_ENFORCE', 'observe'),
+                        'bypass_active': os.environ.get('GOVERNANCE_BYPASS') == 'true'
+                    },
+                    'database': {
+                        'healthy': db_health.get('ok', False),
+                        'wal_mode': db_health.get('wal_mode'),
+                        'latency_ms': db_health.get('latency_ms'),
+                        'facts_count': db_health.get('facts_count')
+                    },
+                    'status': 'operational'
+                })
+            except Exception as e:
+                return jsonify({'error': str(e)}), 500
+
 
         @self.app.route('/api/facts/count', methods=['GET'])
         def facts_count():

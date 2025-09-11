@@ -1,0 +1,114 @@
+{
+  "title": "LLM_Chain_Debug_Report_2025-09-11",
+  "description": "Technischer Report zur Diagnose und Behebung der LLM-Provider-Kette Problematik",
+  "hub_path": "D:\\MCP Mods\\HAK_GAL_HEXAGONAL\\project_hub",
+  "db_path": "D:\\MCP Mods\\HAK_GAL_HEXAGONAL\\hexagonal_kb.db",
+  "facts_count": 4234,
+  "created_at": "2025-09-11 18:39:43",
+  "kb_statistics": {
+    "recent_facts": [
+      "StudiedBy(ExplainQuantumComputing, Researchers).",
+      "TestFact(Governance, Active).",
+      "GovernanceWorks(V3, Integrated).",
+      "Application(ArtificialIntelligence, Healthcare).",
+      "HasProperty(WhatIsTheRelationshipBetweenAiAndConsciousness, Importance).",
+      "IsA(Relatestohak_gal,Neurosymbolicai, Concept).",
+      "HasProperty(Relatestohak_gal,Neurosymbolicai, Importance).",
+      "StudiedBy(Relatestohak_gal,Neurosymbolicai, Researchers).",
+      "DevelopedBy(HAK_GAL, NeurosymbolicAI).",
+      "HasProperty(HAK_GAL_System, O_612_Complexity).",
+      "HasPurpose(Redundancy, System_Insurance_Not_Waste).",
+      "HasProperty(HAK_GAL_System, Emergent_Self_Organization).",
+      "HasProperty(HAK_GAL_Knowledge_Base, Shannon_Entropy_2_8452_Bits).",
+      "HasProperty(HAK_GAL_Suite, Governance_Conformity_100_Percent).",
+      "GeneratedBy(Archimedes_Engine, DeepSeek_Hypotheses_Claude_Protocols, Multi_Agent_Collaboration).",
+      "Uses(5gNetworks, Hexagonal).",
+      "UsedFor(APIIntegration, Common).",
+      "Requires(APIIntegration, Common).",
+      "Uses(APIIntegration, Common).",
+      "Requires(ALU, CPU)."
+    ],
+    "top_entities": [
+      {
+        "entity": "SilkRoad",
+        "count": 137
+      },
+      {
+        "entity": "MachineLearning",
+        "count": 113
+      },
+      {
+        "entity": "ImmanuelKant",
+        "count": 112
+      },
+      {
+        "entity": "AncientEgypt",
+        "count": 112
+      },
+      {
+        "entity": "FrenchRevolution",
+        "count": 111
+      },
+      {
+        "entity": "GothicCathedrals",
+        "count": 104
+      },
+      {
+        "entity": "KrebsCycle",
+        "count": 102
+      },
+      {
+        "entity": "PlateTectonics",
+        "count": 96
+      },
+      {
+        "entity": "KeynesianEconomics",
+        "count": 88
+      },
+      {
+        "entity": "ByzantineEmpire",
+        "count": 75
+      },
+      {
+        "entity": "NeuralNetworks",
+        "count": 74
+      },
+      {
+        "entity": "QuantumEntanglement",
+        "count": 67
+      },
+      {
+        "entity": "ResearchTopic",
+        "count": 51
+      },
+      {
+        "entity": "AethelredEngine",
+        "count": 51
+      },
+      {
+        "entity": "Hexagonal",
+        "count": 50
+      },
+      {
+        "entity": "StellarNucleosynthesis",
+        "count": 44
+      },
+      {
+        "entity": "CategoricalImperative",
+        "count": 40
+      },
+      {
+        "entity": "ArtificialIntelligence",
+        "count": 33
+      },
+      {
+        "entity": "PlateBoundaries",
+        "count": 32
+      },
+      {
+        "entity": "DNA",
+        "count": 30
+      }
+    ]
+  }
+}

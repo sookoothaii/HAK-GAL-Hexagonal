@@ -1,0 +1,16 @@
+{
+  "test": "HAK_GAL Filesystem MCP",
+  "version": "4.1.0",
+  "status": "operational",
+  "features": {
+    "execute_code": true,
+    "file_operations": true,
+    "search": true,
+    "compression": true,
+    "encoding": true
+  },
+  "auth": {
+    "token_valid": true,
+    "write_enabled": true
+  }
+}

@@ -564,3 +564,49 @@ Improvements:
 Materials: 
 Predicted Outcomes: 
 Pitfalls: 
+---
+## MCP Server Configuration (2025-09-10)
+
+**Goal:** Configure the Gemini agent to use two separate MCP tool servers running on TCP ports 3006 and 3007.
+
+**Problem:** The agent's configuration (`mcp-superassistant.sse.config.json`) was incorrectly set to launch tools via `stdio`, ignoring the network-exposed servers the user was running.
+
+**Solution:**
+
+A two-part solution was implemented:
+
+1.  **Agent Configuration (`mcp-superassistant.sse.config.json`):**
+    *   The agent's configuration file was modified to use `"type": "tcp"` and point to the correct ports.
+    *   A backup of the original file was saved as `mcp-superassistant.sse.config.json.bak`.
+    *   The new, correct configuration is:
+        ```json
+        {
+          "mcpServers": {
+            "hak-gal": {
+              "type": "tcp",
+              "port": 3006
+            },
+            "hak-gal-filesystem": {
+              "type": "tcp",
+              "port": 3007
+            }
+          }
+        }
+        ```
+
+2.  **Server Proxy Startup:**
+    *   The user was instructed to use the centralized `combined-mcp.sse.config.json` to define the tool servers.
+    *   The following two commands are used (in separate terminals) to start the proxies that expose the `stdio` tools on the required TCP ports:
+
+    **Terminal 1 (Ultimate MCP on Port 3006):**
+    ```bash
+    npx @srbhptl39/mcp-superassistant-proxy@latest --config ./combined-mcp.sse.config.json --server-id hak-gal --outputTransport sse --port 3006
+    ```
+
+    **Terminal 2 (Filesystem MCP on Port 3007):**
+    ```bash
+    npx @srbhptl39/mcp-superassistant-proxy@latest --config ./combined-mcp.sse.config.json --server-id hak-gal-filesystem --outputTransport sse --port 3007
+    ```
+
+**Final Status:** The environment is now correctly configured. The last required action is to **restart the main Gemini CLI session** for the changes to take effect.
+---

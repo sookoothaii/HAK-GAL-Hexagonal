@@ -1,0 +1,13 @@
+{
+  "name": "filesystem_mcp",
+  "version": "1.0.0",
+  "description": "Ein dedizierter MCP Server für erweiterte Dateioperationen und Code-Ausführung, getrennt vom Haupt-KB-Server für saubere Architektur.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}
