@@ -88,7 +88,6 @@ monitoring_*.json
 .env.local
 .env.production
 
-
 # Native builds
 native/mojo_kernels/build/
 native/mojo_kernels/Release/
@@ -96,7 +95,6 @@ native/mojo_kernels/Debug/
 native/mojo_kernels/*.dll
 native/mojo_kernels/*.pyd
 native/mojo_kernels/*.so
-
 
 # Virtual Environment
 .venv_hexa/
@@ -107,6 +105,7 @@ venv/
 *.log
 mcp_server.log
 mcp_write_audit.log
+mcp_server.jsonl
 
 # Large binaries
 caddy.exe
@@ -117,3 +116,38 @@ nul
 # Python
 __pycache__/
 *.pyc
+
+# === NEUE EINTRÄGE (September 2025) ===
+
+# Reports and Analysis (should not be in repo)
+audit_report_*.json
+*_report.json
+*_report.csv
+node_catalog*.json
+node_catalog*.csv
+mcp_tools_extracted.json
+tools_diff_*.json
+tools_diff_*.csv
+
+# Debug and Monitoring
+governance_monitor.html
+governance_monitor_*.html
+
+# Emergency/Crash dumps
+emergency_dumps/
+*.dump
+*.crash
+
+# Test outputs
+test_filesystem/
+test_outputs/
+*.test.json
+
+# Snapshots (if local only)
+snapshots/
+snapshot_*/
+
+# Additional backup patterns
+*_fixed.py
+*_old.py
+*.backup_*
