@@ -1,0 +1,24 @@
+{
+  "timestamp": "2025-09-11T22:14:00.963252",
+  "live_system": {
+    "z3_functional": false,
+    "kb_facts": 4234,
+    "tools": {
+      "filesystem": 0,
+      "kb": 0,
+      "total": 0
+    }
+  },
+  "documentation": {
+    "facts_badge": 4234,
+    "version": "2.1.1"
+  },
+  "discrepancies": [
+    {
+      "field": "Total Tools",
+      "documented": 119,
+      "actual": 0,
+      "action": "Verify tool registration"
+    }
+  ]
+}

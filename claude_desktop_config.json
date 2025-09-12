@@ -1,12 +1,12 @@
 {
   "mcpServers": {
     "hak-gal": {
-      "command": "python",
-      "args": ["D:\\MCP Mods\\HAK_GAL_HEXAGONAL\\hak_gal_mcp_sqlite_full.py"],
-      "cwd": "D:\\MCP Mods\\HAK_GAL_HEXAGONAL",
-      "env": {
-        "PYTHONPATH": "D:\\MCP Mods\\HAK_GAL_HEXAGONAL"
-      }
+      "type": "tcp",
+      "port": 3006
+    },
+    "hak-gal-filesystem": {
+      "type": "tcp", 
+      "port": 3007
     }
   }
 }

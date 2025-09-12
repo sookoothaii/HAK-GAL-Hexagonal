@@ -1,0 +1,45 @@
+{
+  "llm_config": {
+    "offline_mode_settings": {
+      "force_offline": false,
+      "dns_timeout_ms": 300,
+      "max_connection_failures": 2,
+      "fallback_to_local_after_errors": true
+    },
+    
+    "provider_order": [
+      "groq",
+      "deepseek", 
+      "gemini",
+      "claude",
+      "ollama"
+    ],
+    
+    "enabled_providers": [
+      "groq",
+      "deepseek",
+      "gemini", 
+      "claude",
+      "ollama"
+    ],
+    
+    "provider_timeouts": {
+      "groq": 10,
+      "deepseek": 60,
+      "gemini": 15,
+      "claude": 30,
+      "ollama": 300
+    },
+    
+    "offline_provider": "ollama",
+    
+    "ollama_settings": {
+      "default_model": "qwen2.5:7b",
+      "alternative_models": [
+        "llama3.2:3b",
+        "phi3:mini",
+        "gemma2:2b"
+      ]
+    }
+  }
+}

@@ -10,6 +10,7 @@ import requests
 # SSL warnings are now shown for security awareness
 import subprocess
 import json
+import time
 from typing import Optional, List
 from abc import ABC, abstractmethod
 from pathlib import Path
@@ -31,7 +32,7 @@ class GroqProvider(LLMProvider):
     def __init__(self):
         self.api_key = os.environ.get('GROQ_API_KEY', '')
         self.base_url = "https://api.groq.com/openai/v1/chat/completions"
-        self.timeout = 10  # Fast timeout for LPU
+        self.timeout = 3  # Reduziert von 10s auf 3s für schnelleres Failover
         self.model = "llama-3.1-8b-instant"  # Current free tier model
     
     def is_available(self) -> bool:
@@ -142,7 +143,7 @@ class DeepSeekProvider(LLMProvider):
     def __init__(self):
         self.api_key = os.environ.get('DEEPSEEK_API_KEY', '')
         self.base_url = "https://api.deepseek.com/v1/chat/completions"
-        self.timeout = (10, 60)  # (connect timeout, read timeout) - INCREASED
+        self.timeout = (3, 10)  # Reduziert: (3s connect, 10s read) von (10s, 60s)
         self.session = requests.Session()  # Reuse connection
     
     def is_available(self) -> bool:
@@ -321,64 +322,88 @@ class OllamaProvider(LLMProvider):
     
     def __init__(self):
         self.base_url = "http://localhost:11434"
-        self.model = os.environ.get("OLLAMA_MODEL", "qwen2.5:7b")
-        self.timeout = 300
+        # FEST auf qwen2.5:7b gesetzt - keine automatische Auswahl mehr
+        self.model = "qwen2.5:7b"
+        self.timeout = 30  # Reduziert auf 30s
+        self._is_available = None  # Cache für is_available
     
     def is_available(self) -> bool:
+        if self._is_available is not None:
+            return self._is_available
+            
         try:
-            # For localhost, SSL verification might fail - handle gracefully
-            if "localhost" in self.base_url or "127.0.0.1" in self.base_url:
-                # Try with SSL first, fallback to without
-                try:
-                    return requests.get(f"{self.base_url}/api/tags", timeout=2).status_code == 200
-                except requests.exceptions.SSLError:
-                    return requests.get(f"{self.base_url}/api/tags", timeout=2, verify=False).status_code == 200
-            else:
-                return requests.get(f"{self.base_url}/api/tags", timeout=2).status_code == 200
+            # Schneller Check ob Ollama läuft
+            response = requests.get(f"{self.base_url}/api/tags", timeout=1)
+            if response.status_code == 200:
+                print(f"[Ollama] Server running, using fixed model: {self.model}")
+                self._is_available = True
+                return True
+            self._is_available = False
+            return False
         except:
+            print(f"[Ollama] Server not reachable")
+            self._is_available = False
             return False
     
     def generate_response(self, prompt: str) -> tuple[str, str]:
         provider_name = "Ollama"
         if not self.is_available():
-            return "Ollama server not running", provider_name
+            return "Ollama server not running or model not available", provider_name
         
         try:
-            print(f"[{provider_name}] Trying model {self.model} (timeout={self.timeout}s)...")
-            # For localhost, handle SSL gracefully
-            verify_ssl = True
-            if "localhost" in self.base_url or "127.0.0.1" in self.base_url:
-                verify_ssl = True  # Try with SSL first
-                
-            try:
-                response = requests.post(
-                    f"{self.base_url}/api/generate",
-                    json={"model": self.model, "prompt": prompt, "stream": False, "options": {"temperature": 0.7, "top_p": 0.95, "max_tokens": 2048}},
-                    timeout=self.timeout,
-                    verify=verify_ssl
-                )
-            except requests.exceptions.SSLError as ssl_err:
-                if "localhost" in self.base_url or "127.0.0.1" in self.base_url:
-                    print(f"[{provider_name}] SSL verification failed for localhost, retrying without...")
-                    response = requests.post(
-                        f"{self.base_url}/api/generate",
-                        json={"model": self.model, "prompt": prompt, "stream": False, "options": {"temperature": 0.7, "top_p": 0.95, "max_tokens": 2048}},
-                        timeout=self.timeout,
-                        verify=False
-                    )
-                else:
-                    raise ssl_err
+            print(f"[{provider_name}] Generating with model {self.model}")
+            print(f"[{provider_name}] Prompt length: {len(prompt)} chars")
+            
+            # Vereinfachte API-Anfrage
+            data = {
+                "model": self.model,
+                "prompt": prompt,
+                "stream": False,
+                "options": {
+                    "temperature": 0.7,
+                    "num_predict": 1000  # statt max_tokens
+                }
+            }
+            
+            start_time = time.time()
+            response = requests.post(
+                f"{self.base_url}/api/generate",
+                json=data,
+                timeout=self.timeout
+            )
+            
+            elapsed = time.time() - start_time
+            print(f"[{provider_name}] API call took {elapsed:.1f}s")
+            
             if response.status_code == 200:
-                text = response.json().get('response', '')
+                result = response.json()
+                text = result.get('response', '')
+                
+                # Debug-Info
+                if 'total_duration' in result:
+                    total_ms = result['total_duration'] / 1_000_000
+                    print(f"[{provider_name}] Ollama reported duration: {total_ms:.0f}ms")
+                
                 if text:
-                    print(f"[{provider_name}] Success with {self.model}!")
+                    print(f"[{provider_name}] Success! Generated {len(text)} chars")
                     return text, provider_name
                 else:
+                    print(f"[{provider_name}] Empty response from model")
                     return "Ollama returned empty response", provider_name
             else:
-                return f"Ollama API error: {response.status_code}", provider_name
+                error_msg = f"Ollama API error: {response.status_code}"
+                if response.text:
+                    error_detail = response.text[:200]
+                    print(f"[{provider_name}] Error details: {error_detail}")
+                    error_msg += f" - {error_detail}"
+                return error_msg, provider_name
+                
+        except requests.exceptions.Timeout:
+            print(f"[{provider_name}] Timeout after {self.timeout}s - model might be loading")
+            return f"Ollama timeout after {self.timeout}s - try again or use smaller model", provider_name
         except Exception as e:
-            return f"Ollama error: {str(e)}", provider_name
+            print(f"[{provider_name}] Exception: {type(e).__name__}: {str(e)}")
+            return f"Ollama error: {str(e)[:200]}", provider_name
 
 class MultiLLMProvider(LLMProvider):
     """Fallback provider - tries multiple LLMs in priority order."""
@@ -458,9 +483,16 @@ class MultiLLMProvider(LLMProvider):
     def generate_response(self, prompt: str) -> tuple[str, str]:
         final_error = "No LLM provider available."
         providers_to_use = self._get_enabled_providers()
+        connection_failures = 0  # Zähle Verbindungsfehler
         
         for i, provider in enumerate(providers_to_use):
             provider_name = provider.__class__.__name__.replace('Provider', '')
+            
+            # OPTIMIERUNG: Nach 2 Verbindungsfehlern nur noch Ollama probieren
+            if connection_failures >= 2 and provider_name != 'Ollama':
+                print(f"[MultiLLM] Skipping {provider_name} due to multiple connection failures")
+                continue
+                
             if provider.is_available():
                 print(f"[MultiLLM] Trying {provider_name} ({i+1}/{len(self.providers)})...")
                 try:
@@ -475,15 +507,30 @@ class MultiLLMProvider(LLMProvider):
                         'api error', 'api key', 'not configured', 
                         'error:', 'error ', 'connectionerror', 'max retries exceeded', 
                         'ssl', 'nameres', 'httpsconnectionpool', 'couldn\'t connect',
-                        'connection refused', 'no such host', 'getaddrinfo failed'
+                        'connection refused', 'no such host', 'getaddrinfo failed',
+                        'server not running', 'model not available'
+                    ]
+                    
+                    # Spezielle Verbindungsfehler-Indikatoren
+                    connection_error_indicators = [
+                        'max retries exceeded', 'httpsconnectionpool', 'connectionerror',
+                        'connection refused', 'no such host', 'getaddrinfo failed',
+                        'name or service not known', 'temporary failure in name resolution'
                     ]
                     
                     # Prüfe ob es definitiv ein Fehler ist
                     is_definitely_error = False
+                    is_connection_error = False
+                    
                     for err in error_indicators:
                         if err in response_lower:
                             is_definitely_error = True
                             print(f"[MultiLLM] Detected error indicator: '{err}'")
+                            # Prüfe ob es ein Verbindungsfehler ist
+                            if any(conn_err in response_lower for conn_err in connection_error_indicators):
+                                is_connection_error = True
+                                connection_failures += 1
+                                print(f"[MultiLLM] Detected CONNECTION error (total: {connection_failures})")
                             break
                     
                     # Zusätzliche Prüfung: Wenn Provider-Name + "error" im Text ist
@@ -492,8 +539,8 @@ class MultiLLMProvider(LLMProvider):
                         is_definitely_error = True
                         print(f"[MultiLLM] Detected provider-specific error")
                     
-                    # Mindestlänge für sinnvolle Antwort (aber nicht für Fehler)
-                    MIN_GOOD_RESPONSE = 50  # Erhöht von 10
+                    # Mindestlänge für sinnvolle Antwort
+                    MIN_GOOD_RESPONSE = 20  # Reduziert für Ollama-Kompatibilität
                     is_valid_length = len(response_text) > MIN_GOOD_RESPONSE
                     
                     # Entscheidungslogik
@@ -513,40 +560,73 @@ class MultiLLMProvider(LLMProvider):
                 except Exception as e:
                     final_error = f"{provider_name}: Exception - {str(e)[:100]}"
                     print(f"[MultiLLM] {provider_name} exception: {str(e)[:100]}")
+                    # Exceptions oft bei Verbindungsproblemen
+                    if any(indicator in str(e).lower() for indicator in ['connection', 'timeout', 'refused']):
+                        connection_failures += 1
+                        print(f"[MultiLLM] Connection exception (total failures: {connection_failures})")
+            else:
+                print(f"[MultiLLM] {provider_name} not available")
         
-        return f"All LLM providers failed. Last error: {final_error}", "None"
+        # FALLBACK: Wenn alle Provider fehlgeschlagen sind
+        print(f"[MultiLLM] All providers failed. Final error: {final_error}")
+        return final_error, "None"
 
 def get_llm_provider() -> LLMProvider:
-    """Factory function - returns working LLM provider with extended timeouts"""
-    # Check if we're in offline mode (no internet or API keys)
+    """Factory function - returns working LLM provider with FAST offline detection"""
+    import socket
+    import time
+    
     offline_mode = False
     
     # Check for offline indicators
     try:
-        # Check for manual offline mode override
+        # 1. Check for manual offline mode override
         force_offline = os.environ.get('HAK_GAL_OFFLINE_MODE', '').lower() in ['true', '1', 'yes']
         if force_offline:
-            print("[MultiLLM] Manual offline mode enabled via HAK_GAL_OFFLINE_MODE")
+            print("[get_llm_provider] Manual offline mode enabled via HAK_GAL_OFFLINE_MODE")
             offline_mode = True
         else:
-            # Try to detect if we're offline by checking if Gemini API key is missing
-            gemini_key = os.environ.get('GEMINI_API_KEY', '')
-            deepseek_key = os.environ.get('DEEPSEEK_API_KEY', '')
-            
-            if not gemini_key and not deepseek_key:
-                print("[MultiLLM] No API keys found, enabling offline mode")
+            # 2. SCHNELLER DNS-Check (300ms timeout) - zuverlässigste Methode
+            start_time = time.time()
+            try:
+                # Setze sehr kurzen Timeout für DNS-Auflösung
+                socket.setdefaulttimeout(0.3)
+                # Versuche DNS-Auflösung einer API-Domain
+                socket.gethostbyname("api.groq.com")
+                socket.setdefaulttimeout(None)  # Reset to default
+                dns_time = time.time() - start_time
+                print(f"[get_llm_provider] DNS resolution successful in {dns_time:.3f}s - ONLINE")
+            except (socket.gaierror, socket.timeout):
+                socket.setdefaulttimeout(None)  # Reset to default
+                dns_time = time.time() - start_time
+                print(f"[get_llm_provider] DNS resolution failed after {dns_time:.3f}s - OFFLINE DETECTED")
                 offline_mode = True
-            else:
-                # Test internet connectivity with a quick request
-                try:
-                    requests.get("https://www.google.com", timeout=2)
-                    print("[MultiLLM] Internet connection detected, using online mode")
-                except:
-                    print("[MultiLLM] No internet connection, enabling offline mode")
+            
+            # 3. Wenn online, prüfe noch ob API Keys vorhanden sind
+            if not offline_mode:
+                has_any_key = any([
+                    os.environ.get('GROQ_API_KEY', ''),
+                    os.environ.get('DEEPSEEK_API_KEY', ''),
+                    os.environ.get('GEMINI_API_KEY', ''),
+                    os.environ.get('ANTHROPIC_API_KEY', ''),
+                    os.environ.get('TOGETHER_API_KEY', '')
+                ])
+                
+                if not has_any_key:
+                    print("[get_llm_provider] No API keys configured - using offline mode")
                     offline_mode = True
+                else:
+                    print("[get_llm_provider] Online mode: Internet available and API keys found")
                 
     except Exception as e:
-        print(f"[MultiLLM] Error detecting connectivity: {e}, defaulting to online mode")
-        offline_mode = False
+        print(f"[get_llm_provider] Error in offline detection: {e} - assuming OFFLINE for fast response")
+        offline_mode = True  # Bei Fehler: Offline annehmen für schnellste Antwort
     
-    return MultiLLMProvider(offline_mode=offline_mode)
+    # Erstelle Provider mit entsprechendem Modus
+    if offline_mode:
+        print("[get_llm_provider] FINAL: Starting in OFFLINE mode - Ollama only")
+        # Im Offline-Modus: NUR Ollama laden, keine anderen Provider!
+        return OllamaProvider()
+    else:
+        print("[get_llm_provider] FINAL: Starting in ONLINE mode - Full provider chain")
+        return MultiLLMProvider(offline_mode=False)

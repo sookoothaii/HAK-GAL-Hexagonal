@@ -722,7 +722,6 @@ class HexagonalAPI:
                         print(f"[MultiLLM] Success with {llm_used} (length: {len(explanation)})")
                     else:
                         raise RuntimeError("MultiLLM not available")
-                        
                 except Exception as e:
                     print(f"[DeepSeek] Failed: {e}. Trying Gemini (2/3)...")
                     try:
@@ -788,19 +787,26 @@ class HexagonalAPI:
                 except Exception as e:
                     print(f"[Gemini] Unexpected error: {e}. Falling back to Ollama...")
             
-            # Fallback to Ollama if MultiLLMProvider failed (for offline capability)
+            # Fallback to Ollama if needed (for offline capability)
             if explanation is None:
                 try:
-                    print("[LLM] Trying Ollama (3/3) - Final fallback...")
+                    print("[LLM] Falling back to direct Ollama...")
                     from adapters.ollama_adapter import OllamaProvider
-                    ollama_model = os.environ.get("OLLAMA_MODEL", "qwen2.5:7b")
-                    ollama_llm = OllamaProvider(model=ollama_model, timeout=60)
+                    # Force qwen2.5:7b for reliability
+                    ollama_llm = OllamaProvider(model="qwen2.5:7b", timeout=30)
                     
                     if ollama_llm.is_available():
                         print("[LLM] Ollama is available, generating response...")
-                        explanation = ollama_llm.generate_response(prompt)
+                        ollama_response = ollama_llm.generate_response(prompt)
+                        
+                        # Handle tuple response
+                        if isinstance(ollama_response, tuple):
+                            explanation = ollama_response[0]
+                        else:
+                            explanation = ollama_response
+                            
                         llm_used = 'Ollama'
-                        print("[LLM] Success with direct Ollama fallback")
+                        print(f"[LLM] Ollama fallback successful (length: {len(explanation) if explanation else 0})")
                     else:
                         print("[LLM] Ollama not available")
                         raise RuntimeError("Ollama is not available. Please ensure 'ollama serve' is running.")
