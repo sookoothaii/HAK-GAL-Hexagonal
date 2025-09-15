@@ -1,0 +1,12 @@
+---
+title: "Hakgal Policyguard Analysis 20250909 1830"
+created: "2025-09-15T00:08:00.994662Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
+# HAK/GAL PolicyGuard Analysis Snapshot\n\n**Timestamp (UTC):** 2025-09-09T18:30:00Z  \n**Analysis_ID:** policyguard_analysis_3d7c1f\n\n## Overview\nThis document summarizes the analysis of the `policy_guard.py` implementation in the `application` layer of the HAK/GAL Suite. It verifies how the Constitution v2.2 is enforced at runtime.\n\n## Findings\n\n### 1. Core Design\n- Class: `PolicyGuard`.\n- Loads policy from `hak_gal_constitution_v2_2.json`.\n- Maintains version and SHA256 hash of policy.\n- Thresholds: `harm_prob_max=0.001`, `sustain_min=0.85`.\n- Operates in two modes via env `POLICY_ENFORCE`: `observe` (default) or `strict`.\n\n### 2. Default Rule (Ethics Check)\n- Universalizable must be True.\n- Harm probability ≤ threshold.\n- Sustain index ≥ threshold.\n\n### 3. Override Rule\n- Requires all four proofs in context:\n  - `operator_override`\n  - `peer_review`\n  - `override_doc`\n  - `risk_exception_justified`\n\n### 4. Decision Logic\n- `check()` returns a decision dict with:\n  - Allowed/Denied.\n  - Gate type: `default`, `override`, or `deny`.\n  - Metrics: harm, sustain, universalizable.\n  - Policy version and hash.\n  - Decision ID (SHA1-based).\n- `should_block()` only blocks in `strict` mode for write operations.\n\n### 5. Comparison with Constitution v2.2\n- ✅ Default ethics check matches formal spec.\n- ✅ Override requires all four conditions.\n- ✅ External legality enforced as hard gate.\n- ✅ Decisions auditable with hashes.\n- ⚠ SMT/Z3 verification not present here (optional, as described in Constitution).\n- ⚠ Hash-chained append-only audit trail not inside `policy_guard.py`, likely delegated to `audit_logger.py`.\n\n## Conclusion\n`policy_guard.py` implements the **practical enforcement layer** of the HAK/GAL Constitution v2.2:\n- Observational or strict blocking modes.\n- Override strictly regulated.\n- Default checks consistent with constitutional thresholds.\n- Provides decision objects with metrics and cryptographic IDs.\n\nThis confirms that governance rules are not only documented but actively enforced at runtime.\n

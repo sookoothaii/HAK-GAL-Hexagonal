@@ -1,0 +1,37 @@
+{
+  "training_info": {
+    "timestamp": "2025-09-13T05:32:29.566309",
+    "database_path": "hexagonal_kb.db",
+    "models_trained": 3,
+    "scalers_trained": 3
+  },
+  "data_summary": {
+    "facts_count": 10000,
+    "audit_entries": 10000,
+    "metrics_points": 1000
+  },
+  "model_performance": {
+    "performance_prediction": {
+      "status": "trained",
+      "features_used": "varies_by_model",
+      "recommended_use": "Predict CPU usage for proactive scaling"
+    },
+    "cache_optimization": {
+      "status": "trained",
+      "features_used": "varies_by_model",
+      "recommended_use": "Optimize cache hit rates for better performance"
+    },
+    "query_time_prediction": {
+      "status": "trained",
+      "features_used": "varies_by_model",
+      "recommended_use": "Predict query execution times for optimization"
+    }
+  },
+  "recommendations": [
+    "Use performance_prediction model for proactive system monitoring",
+    "Use cache_optimization model for cache size tuning",
+    "Use query_time_prediction model for query optimization",
+    "Retrain models weekly with new data for best performance",
+    "Monitor model drift and retrain when accuracy degrades"
+  ]
+}

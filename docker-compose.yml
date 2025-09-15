@@ -1,0 +1,99 @@
+version: "3.9"
+
+services:
+  # HAK/GAL Performance Optimizer Application
+  hakgal-app:
+    build: .
+    container_name: hakgal-performance-optimizer
+    ports:
+      - "5000:5000"  # Flask Dashboard
+      - "8000:8000"  # Prometheus Metrics
+    environment:
+      - FLASK_ENV=production
+      - DATABASE_PATH=/app/data/hakgal.db
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./reports:/app/reports
+    depends_on:
+      - prometheus
+      - grafana
+    restart: unless-stopped
+    networks:
+      - hakgal-network
+
+  # Prometheus Metrics Collection
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: hakgal-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    restart: unless-stopped
+    networks:
+      - hakgal-network
+
+  # Grafana Dashboard
+  grafana:
+    image: grafana/grafana:latest
+    container_name: hakgal-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=hakgal123
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+    restart: unless-stopped
+    networks:
+      - hakgal-network
+
+  # Redis Cache (for advanced caching)
+  redis:
+    image: redis:7-alpine
+    container_name: hakgal-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - hakgal-network
+
+  # PostgreSQL Database (for future migration)
+  postgres:
+    image: postgres:15-alpine
+    container_name: hakgal-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=hakgal
+      - POSTGRES_USER=hakgal
+      - POSTGRES_PASSWORD=hakgal123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - hakgal-network
+
+volumes:
+  prometheus_data:
+  grafana_data:
+  redis_data:
+  postgres_data:
+
+networks:
+  hakgal-network:
+    driver: bridge

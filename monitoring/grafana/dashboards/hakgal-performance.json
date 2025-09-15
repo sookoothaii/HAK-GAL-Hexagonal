@@ -1,0 +1,130 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "HAK/GAL Performance Optimizer",
+    "tags": ["hakgal", "performance", "monitoring"],
+    "style": "dark",
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Query Execution Time",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(query_execution_time_seconds_bucket[5m]))",
+            "legendFormat": "95th percentile"
+          },
+          {
+            "expr": "histogram_quantile(0.50, rate(query_execution_time_seconds_bucket[5m]))",
+            "legendFormat": "50th percentile"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Seconds",
+            "min": 0
+          }
+        ],
+        "xAxes": [
+          {
+            "type": "time"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "id": 2,
+        "title": "Cache Hit/Miss Ratio",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(mcp_cache_hits[5m])",
+            "legendFormat": "Cache Hits"
+          },
+          {
+            "expr": "rate(mcp_cache_misses[5m])",
+            "legendFormat": "Cache Misses"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Rate",
+            "min": 0
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 0
+        }
+      },
+      {
+        "id": 3,
+        "title": "System Resources",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "system_cpu_percent",
+            "legendFormat": "CPU Usage %"
+          },
+          {
+            "expr": "system_memory_percent",
+            "legendFormat": "Memory Usage %"
+          },
+          {
+            "expr": "system_disk_percent",
+            "legendFormat": "Disk Usage %"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Percentage",
+            "min": 0,
+            "max": 100
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 8
+        }
+      },
+      {
+        "id": 4,
+        "title": "Query Throughput",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(queries_total[5m])",
+            "legendFormat": "Queries per second"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "QPS",
+            "min": 0
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 16
+        }
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "refresh": "5s"
+  }
+}

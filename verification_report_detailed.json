@@ -1,0 +1,70 @@
+{
+  "timestamp": "2025-09-13T06:18:17.297476",
+  "tests_performed": [
+    "Flask Dashboard Verification",
+    "ML Models Verification",
+    "Thread Safety Verification",
+    "Database Facts Verification",
+    "Test Reports Verification",
+    "Performance Monitoring Verification"
+  ],
+  "verified_claims": {
+    "flask_port_5000": {
+      "status": true,
+      "details": {
+        "port_5000_in_code": true,
+        "flask_import": true,
+        "run_method": true
+      }
+    },
+    "ml_models": {
+      "status": true,
+      "models_count": 3,
+      "training_data_total": 21000,
+      "training_timestamp": "2025-09-13T05:32:29.566309",
+      "details": {
+        "facts": 10000,
+        "audit": 10000,
+        "metrics": 1000
+      }
+    },
+    "thread_safety": {
+      "status": false,
+      "has_thread_tests": false,
+      "has_concurrent_tests": false,
+      "mentions_success_rate": true,
+      "specific_90_9_rate": false
+    },
+    "database_facts": {
+      "status": true,
+      "fact_count": 4242,
+      "audit_count": 0,
+      "tables": [
+        "facts",
+        "sqlite_stat1",
+        "facts_v2",
+        "sqlite_sequence",
+        "fact_arguments",
+        "fact_dependencies",
+        "formulas",
+        "verified_queries",
+        "facts_extended",
+        "fact_relations",
+        "discovered_topics",
+        "tool_performance",
+        "tool_stats",
+        "tool_combinations"
+      ],
+      "claim_6304_facts": false
+    },
+    "test_reports": {
+      "status": false,
+      "found_reports": [],
+      "total_expected": 5,
+      "tests_executed": false
+    }
+  },
+  "unverified_claims": {
+    "performance_metrics": "No performance database"
+  }
+}

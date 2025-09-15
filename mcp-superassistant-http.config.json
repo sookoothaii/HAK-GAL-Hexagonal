@@ -1,0 +1,26 @@
+{
+  "mcpServers": {
+    "hak-gal-http": {
+      "type": "sse",
+      "url": "http://127.0.0.1:5001/mcp/sse",
+      "headers": {
+        "Authorization": "Bearer 515f57956e7bd15ddc3817573598f190",
+        "Content-Type": "application/json"
+      }
+    },
+    "hak-gal-filesystem-http": {
+      "type": "sse", 
+      "url": "http://127.0.0.1:5002/mcp/sse",
+      "headers": {
+        "Authorization": "Bearer 515f57956e7bd15ddc3817573598f190",
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  "transport": {
+    "type": "http",
+    "protocol": "sse",
+    "timeout": 30000,
+    "keepalive": true
+  }
+}

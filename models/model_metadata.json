@@ -1,0 +1,18 @@
+{
+  "timestamp": "2025-09-13T05:32:29.566309",
+  "models": [
+    "performance_prediction",
+    "cache_optimization",
+    "query_time_prediction"
+  ],
+  "scalers": [
+    "performance_prediction",
+    "cache_optimization",
+    "query_time_prediction"
+  ],
+  "training_data_size": {
+    "facts": 10000,
+    "audit": 10000,
+    "metrics": 1000
+  }
+}
