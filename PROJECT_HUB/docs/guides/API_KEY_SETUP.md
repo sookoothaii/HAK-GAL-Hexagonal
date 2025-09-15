@@ -1,3 +1,14 @@
+---
+title: "Api Key Setup"
+created: "2025-09-15T00:08:00.994662Z"
+author: "system-cleanup"
+topics: ["guides"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # 🔑 API-Key Setup & Multi-Agent Test
 
 ## ✅ API-Key wurde konfiguriert!
@@ -6,7 +17,7 @@ Der HAK/GAL API-Key wurde in beiden .env Dateien gespeichert:
 - `D:\MCP Mods\HAK_GAL_SUITE\.env`
 - `D:\MCP Mods\HAK_GAL_HEXAGONAL\.env`
 
-**API-Key:** `hg_sk_4f9a8e1b7d2c5f6a8b3d9e0c1a7b4f9d`
+**API-Key:** `hg_sk_${HAKGAL_AUTH_TOKEN}`
 
 ## 🚀 Server neu starten (WICHTIG!)
 

@@ -1,3 +1,14 @@
+---
+title: "Mojo Integration Impact 20250814 1340"
+created: "2025-09-15T00:08:01.057313Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # 🔥 HAK-GAL + MOJO: Performance Revolution Impact Analysis
 
 **Document ID:** MOJO-INTEGRATION-IMPACT-20250814-1340  

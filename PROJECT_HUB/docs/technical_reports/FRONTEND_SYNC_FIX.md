@@ -1,3 +1,14 @@
+---
+title: "Frontend Sync Fix"
+created: "2025-09-15T00:08:01.103665Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # FRONTEND SYNCHRONISATION FIX - HAK-GAL
 
 **Stand:** 18. August 2025, 09:00 UTC  

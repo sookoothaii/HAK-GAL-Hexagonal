@@ -1,3 +1,14 @@
+---
+title: "Technical Transformation Plan Claude 20250118"
+created: "2025-09-15T00:08:01.034600Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # Technischer Transformationsplan HAK-GAL HEXAGONAL
 ## Streng nach HAK/GAL Verfassung
 

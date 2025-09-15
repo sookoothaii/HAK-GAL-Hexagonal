@@ -1,3 +1,14 @@
+---
+title: "Mcp Toolbox"
+created: "2025-09-15T00:08:01.040609Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # HAK-GAL MCP Toolbox – Bedienung, Setup, Troubleshooting
 
 Dieses Dokument beschreibt die komplette MCP-Integration der HAK‑GAL Hexagonal Suite, inkl. Installation, Konfiguration, verfügbaren Tools, Sicherheit, Tests und Fehlersuche.

@@ -1,3 +1,14 @@
+---
+title: "Hybrid Migration Results 20250817"
+created: "2025-09-15T00:08:01.041612Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # HYBRID MIGRATION RESULTS - MASSIVE SUCCESS! 🎉
 **Document ID:** HYBRID_MIGRATION_RESULTS_20250817  
 **Time:** 2025-08-17 11:00  

@@ -1,3 +1,14 @@
+---
+title: "Hak Gal Technical Compliance Report 2025-08-28"
+created: "2025-09-15T00:08:01.103665Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # HAK/GAL Suite - Technischer System-Compliance Report
 
 **Dokument-ID:** HAK-GAL-COMPLIANCE-REPORT-20250828-V1.0  
@@ -217,11 +228,11 @@ class GeminiAdapter:
 grep -c '"name":' hak_gal_mcp_sqlite_full.py  # Result: 46
 
 # Verfassungs-Fakten prüfen
-hak-gal:search_by_predicate("ConstitutionArticle")  # Result: 8
-hak-gal:search_by_predicate("ConstitutionRule")     # Result: 7
+hak-gal.search_by_predicate("ConstitutionArticle")  # Result: 8
+hak-gal.search_by_predicate("ConstitutionRule")     # Result: 7
 
 # System-Status
-hak-gal:get_system_status()  # Operational, 5,928 Fakten
+hak-gal.get_system_status()  # Operational, 5,928 Fakten
 ```
 
 ### 9.2 Quantitative Metriken

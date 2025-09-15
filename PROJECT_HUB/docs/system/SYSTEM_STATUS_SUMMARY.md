@@ -1,3 +1,14 @@
+---
+title: "System Status Summary"
+created: "2025-09-15T00:08:01.088012Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # HAK-GAL System Status Summary
 **Date:** August 21, 2025  
 **Time:** 09:45 UTC  
@@ -60,7 +71,7 @@ python disable_auth.py
 
 ### Database 403 Error - Chain of Failure
 ```
-1. Frontend sets header: X-API-Key: hg_sk_4f9a8e1b7d2c5f6a8b3d9e0c1a7b4f9d
+1. Frontend sets header: X-API-Key: hg_sk_${HAKGAL_AUTH_TOKEN}
 2. Caddy proxy receives request
 3. ❌ Proxy doesn't forward X-API-Key header
 4. Backend receives request WITHOUT API key
@@ -84,7 +95,7 @@ python disable_auth.py
 # These settings work when used together:
 set GEMINI_API_KEY=AIzaSyBTLyMNGxQ5TlIvfm2bWYqImrZ1PBVthFk
 set DEEPSEEK_API_KEY=sk-2b7891364a504f91b2fe85e28710d466
-set HAKGAL_API_KEY=hg_sk_4f9a8e1b7d2c5f6a8b3d9e0c1a7b4f9d
+set HAKGAL_API_KEY=hg_sk_${HAKGAL_AUTH_TOKEN}
 set HAKGAL_WRITE_ENABLED=true
 
 # Start directly (bypass problematic launcher):

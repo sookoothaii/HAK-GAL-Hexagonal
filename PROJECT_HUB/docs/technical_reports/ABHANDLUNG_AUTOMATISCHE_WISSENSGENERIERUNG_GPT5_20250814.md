@@ -1,3 +1,14 @@
+---
+title: "Abhandlung Automatische Wissensgenerierung Gpt5 20250814"
+created: "2025-09-15T00:08:01.088012Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # Abhandlung: HAK‑GAL HEXAGONAL – Eine verlässliche Suite zur automatischen Wissensgenerierung
 
 Datum: 2025‑08‑14

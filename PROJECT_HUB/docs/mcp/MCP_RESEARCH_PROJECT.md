@@ -1,3 +1,14 @@
+---
+title: "Mcp Research Project"
+created: "2025-09-15T00:08:01.038616Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # HAK_GAL MCP Integration - Forschungsprojekt
 
 ## Problem Statement

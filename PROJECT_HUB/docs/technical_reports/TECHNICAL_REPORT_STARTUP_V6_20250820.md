@@ -1,3 +1,14 @@
+---
+title: "Technical Report Startup V6 20250820"
+created: "2025-09-15T00:08:01.131151Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # Technischer Start-Report: HAK‑GAL Hexagonal + HRM + V6 (2025‑08‑20)
 
 ## Ziel

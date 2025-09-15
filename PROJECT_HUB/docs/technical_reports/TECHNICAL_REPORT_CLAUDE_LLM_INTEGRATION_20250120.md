@@ -1,3 +1,14 @@
+---
+title: "Technical Report Claude Llm Integration 20250120"
+created: "2025-09-15T00:08:01.123156Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # TECHNICAL REPORT: LLM INTEGRATION & SYSTEM REPAIR
 # ==================================================
 # CLAUDE (ANTHROPIC) - IMPLEMENTATION DOCUMENTATION

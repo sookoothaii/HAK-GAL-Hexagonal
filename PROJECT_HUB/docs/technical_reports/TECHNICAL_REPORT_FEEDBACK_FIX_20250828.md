@@ -1,3 +1,14 @@
+---
+title: "Technical Report Feedback Fix 20250828"
+created: "2025-09-15T00:08:01.125141Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # HAK-GAL System: Technischer Report - HRM Feedback-System Reparatur
 
 **Report-ID:** HAK-GAL-FEEDBACK-FIX-20250828  

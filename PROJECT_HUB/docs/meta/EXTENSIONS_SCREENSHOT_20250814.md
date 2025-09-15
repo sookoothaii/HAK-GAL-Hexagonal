@@ -1,3 +1,14 @@
+---
+title: "Extensions Screenshot 20250814"
+created: "2025-09-15T00:08:01.041612Z"
+author: "system-cleanup"
+topics: ["meta"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 ### Erweiterungen (Executable Stubs) – 2025-08-14
 
 Speicherort: `scripts/extensions/`

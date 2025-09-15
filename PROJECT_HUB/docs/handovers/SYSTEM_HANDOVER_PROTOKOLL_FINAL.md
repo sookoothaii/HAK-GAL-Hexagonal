@@ -1,3 +1,14 @@
+---
+title: "System Handover Protokoll Final"
+created: "2025-09-15T00:08:01.024800Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # HAK/GAL Suite - Finaler System-Handover & MCP-Konformitäts-Protokoll
 
 **Dokument-ID:** HAKGAL-HANDOVER-FINAL-20250823

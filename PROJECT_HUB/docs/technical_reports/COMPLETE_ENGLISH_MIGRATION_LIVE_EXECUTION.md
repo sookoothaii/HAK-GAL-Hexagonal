@@ -1,3 +1,14 @@
+---
+title: "Complete English Migration Live Execution"
+created: "2025-09-15T00:08:01.103665Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 OK: changed 3771 over 3781 checked lines
 Per-predicate changes:
 - HatTeil: 755

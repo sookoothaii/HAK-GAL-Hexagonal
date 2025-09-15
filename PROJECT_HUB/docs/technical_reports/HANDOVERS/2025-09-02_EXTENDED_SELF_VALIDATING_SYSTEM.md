@@ -1,3 +1,14 @@
+---
+title: "2025-09-02 Extended Self Validating System"
+created: "2025-09-15T00:08:01.135651Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # HAK-GAL System - Extended Technical Handover v2.0
 **Date:** 2025-09-02  
 **Author:** Claude (Anthropic)  
@@ -121,7 +132,7 @@ System(MCP_Request_Flow, Client, Server, Tool_Selection, Execution, Response).
 ```prolog
 Endpoint(HAK_GAL_API, POST, /api/facts/add, Add_New_Fact).
 RequiresHeader(HAK_GAL_API, X-API-Key, hg_sk_4f9a8e1b7d2c5f6a8b3d9e0c1a7b4f9d).
-RequiresToken(Write_Operations, 515f57956e7bd15ddc3817573598f190).
+RequiresToken(Write_Operations, <YOUR_TOKEN_HERE>).
 ```
 
 #### 5. Knowledge Processing (11 Fakten)
@@ -141,7 +152,7 @@ Performance(Intelligent_Engine, 95_percent_efficiency, 5_percent_duplicates).
 #### 7. System Metadata (11 Fakten)
 ```prolog
 Version(HAK_GAL_System, v6_0, 2025_09_02).
-AuthToken(HAK_GAL_System, 515f57956e7bd15ddc3817573598f190).
+AuthToken(HAK_GAL_System, <YOUR_TOKEN_HERE>).
 Location(HAK_GAL_System, D_MCP_Mods_HAK_GAL_HEXAGONAL).
 ```
 

@@ -1,3 +1,14 @@
+---
+title: "Technical Handover Gpt5 20250814"
+created: "2025-09-15T00:08:01.029079Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 ## Technical Handover – HEXAGONAL Migration (GPT-5) – 2025-08-14
 
 ### Ziel und Umfang

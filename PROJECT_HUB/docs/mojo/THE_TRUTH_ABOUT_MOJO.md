@@ -1,3 +1,14 @@
+---
+title: "The Truth About Mojo"
+created: "2025-09-15T00:08:01.057313Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # DIE WAHRHEIT ÜBER "MOJO" - Es ist C++ mit pybind11!
 
 ## 🔍 WAS WIR GEFUNDEN HABEN:

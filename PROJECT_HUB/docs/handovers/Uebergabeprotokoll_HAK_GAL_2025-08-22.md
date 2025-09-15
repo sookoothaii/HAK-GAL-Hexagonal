@@ -1,3 +1,14 @@
+---
+title: "Uebergabeprotokoll Hak Gal 2025-08-22"
+created: "2025-09-15T00:08:01.035611Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # HAK/GAL Übergabeprotokoll - 22. August 2025
 
 **Erstellt von:** Claude AI Assistant  

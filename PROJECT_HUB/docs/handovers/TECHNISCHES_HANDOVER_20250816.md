@@ -1,3 +1,14 @@
+---
+title: "Technisches Handover 20250816"
+created: "2025-09-15T00:08:01.034600Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # TECHNISCHES HANDOVER DOKUMENT - HAK-GAL HEXAGONAL
 **Dokument-ID:** HAK-GAL-HEXAGONAL-HANDOVER-20250816-V1.0  
 **Datum:** 16. August 2025  

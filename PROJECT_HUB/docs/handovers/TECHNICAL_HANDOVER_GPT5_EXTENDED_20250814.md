@@ -1,3 +1,14 @@
+---
+title: "Technical Handover Gpt5 Extended 20250814"
+created: "2025-09-15T00:08:01.030085Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # Technischer Handover — HAK_GAL_HEXAGONAL (GPT‑5, Extended)
 
 Datum: 2025‑08‑14

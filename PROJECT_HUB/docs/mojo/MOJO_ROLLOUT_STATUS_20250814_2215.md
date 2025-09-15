@@ -1,3 +1,14 @@
+---
+title: "Mojo Rollout Status 20250814 2215"
+created: "2025-09-15T00:08:01.057313Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # MOJO Rollout Status – Readiness & Fakten (2025-08-14 22:15)
 
 Diese Notiz konsolidiert alle relevanten Informationen zum Mojo‑Vorhaben. Sie ist read‑only und ändert keinerlei Laufzeitverhalten.

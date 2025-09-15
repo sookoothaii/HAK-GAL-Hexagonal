@@ -1,3 +1,14 @@
+---
+title: "Technical Report Llm Fix Success 20250820"
+created: "2025-09-15T00:08:01.128141Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # TECHNICAL REPORT: LLM Integration Restored & Operational
 # ========================================================
 # HAK-GAL HEXAGONAL SUITE - FULL SYSTEM RECOVERY
@@ -153,7 +164,7 @@ Trust Score Components:
 ```bash
 # HAK_GAL_SUITE/.env (Working)
 GEMINI_API_KEY=AIzaSyBTLyMNGxQ5TlIvfm2bWYqImrZ1PBVthFk
-DEEPSEEK_API_KEY=sk-2b7891364a504f91b2fe85e28710d466
+DEEPSEEK_API_KEY=sk-${HAKGAL_AUTH_TOKEN}
 MISTRAL_API_KEY=ZS6yataJWZbJ6l5NFQtIKSMCmulJ3qJp  # Invalid but non-blocking
 
 # HAK_GAL_HEXAGONAL/.env (API Key for write operations)

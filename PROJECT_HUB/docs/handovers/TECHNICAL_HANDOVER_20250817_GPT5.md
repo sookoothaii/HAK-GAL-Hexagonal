@@ -1,3 +1,14 @@
+---
+title: "Technical Handover 20250817 Gpt5"
+created: "2025-09-15T00:08:01.026810Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 ## Technischer Handover – Lokale Umgebung (Proxy 8088) – Stand 2025-08-17
 
 ### Executive Summary

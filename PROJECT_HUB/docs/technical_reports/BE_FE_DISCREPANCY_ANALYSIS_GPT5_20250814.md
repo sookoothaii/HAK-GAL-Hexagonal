@@ -1,3 +1,14 @@
+---
+title: "Be Fe Discrepancy Analysis Gpt5 20250814"
+created: "2025-09-15T00:08:01.088012Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # Backend–Frontend Discrepancy Analysis (GPT‑5) – Hexagonal auf Port 5001
 
 Datum: 2025‑08‑14

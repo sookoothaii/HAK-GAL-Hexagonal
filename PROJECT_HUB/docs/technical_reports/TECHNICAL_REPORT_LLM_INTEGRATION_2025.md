@@ -1,3 +1,14 @@
+---
+title: "Technical Report Llm Integration 2025"
+created: "2025-09-15T00:08:01.129147Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # HAK_GAL LLM Integration Technical Report
 ## Ollama 32B 3bit & Knowledge Base Enhancement
 
@@ -91,7 +102,7 @@ FOR_OTHER_LLMS(HAK_GAL_System, "Complete hexagonal architecture...").
 UsesDatabase(HAK_GAL_System, hexagonal_kb_db).
 Contains(hexagonal_kb_db, facts_table).         % Atomic Facts
 Contains(hexagonal_kb_db, fact_groups_table).   % Potentiated Facts  
-HasAuthToken(HAK_GAL_System, "515f57956e7bd15ddc3817573598f190").
+HasAuthToken(HAK_GAL_System, "<YOUR_TOKEN_HERE>").
 RunsOn(REST_API, Port_5002).
 Provides(HAK_GAL_System, 43_MCP_Tools).
 ```

@@ -1,3 +1,14 @@
+---
+title: "Mojo Hybrid Realistic Approach 20250814 1345"
+created: "2025-09-15T00:08:01.057313Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 ### Mojo Hybrid – Realistic Approach für HAK‑GAL HEXAGONAL
 
 Datum: 2025‑08‑14 • Autor: GPT‑5

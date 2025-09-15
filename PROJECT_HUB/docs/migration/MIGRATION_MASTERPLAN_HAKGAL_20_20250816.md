@@ -1,3 +1,14 @@
+---
+title: "Migration Masterplan Hakgal 20 20250816"
+created: "2025-09-15T00:08:01.041612Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # HAK-GAL 2.0 MIGRATION MASTERPLAN - Der harte Weg zur Production-Ready Suite
 **Document ID:** MIGRATION_MASTERPLAN_HAKGAL_20_20250816  
 **Author:** Claude (Anthropic)  

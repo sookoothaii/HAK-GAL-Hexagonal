@@ -1,3 +1,14 @@
+---
+title: "Technical Handover Hrm Fix Claude 20250118"
+created: "2025-09-15T00:08:01.030085Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # Technisches Handover-Dokument: HRM Neural Confidence Fix
 ## HAK-GAL HEXAGONAL System - Erfolgreiche Frontend-Integration
 

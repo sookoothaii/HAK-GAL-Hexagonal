@@ -1,3 +1,14 @@
+---
+title: "Readme"
+created: "2025-09-15T00:08:00.947080Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # PROJECT HUB - HAK/GAL GOVERNANCE SYSTEM
 
 ## Status: GOVERNANCE V3 SUCCESSFULLY DEPLOYED

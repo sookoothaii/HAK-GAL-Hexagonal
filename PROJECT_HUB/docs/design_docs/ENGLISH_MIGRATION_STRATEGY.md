@@ -1,3 +1,14 @@
+---
+title: "English Migration Strategy"
+created: "2025-09-15T00:08:00.978851Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # HAK_GAL Knowledge Base - Complete English Migration Strategy
 
 ## Executive Summary
@@ -66,7 +77,7 @@
 
 ## Rollback Strategy
 - **Backup Available:** kb_20250814005106_PRE_ENGLISH_MIGRATION_COMPLETE_BACKUP
-- **Restore Command:** hak-gal:restore_kb with backup_id
+- **Restore Command:** hak-gal.restore_kb with backup_id
 - **Recovery Time:** < 5 minutes
 
 ## Expected Outcomes

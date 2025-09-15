@@ -1,3 +1,14 @@
+---
+title: "Architecture Overview"
+created: "2025-09-15T00:08:00.978851Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # HAK‑GAL Hexagonal Suite – Architekturüberblick (Initialinfo)
 
 Dieser Leitfaden bündelt den Kernkontext zur HAK‑GAL Hexagonal Suite. Er dient als Startpunkt für neue Sessions und als Anker für den Project‑Hub. Aktualisiere diesen Text bei wesentlichen Architekturänderungen.

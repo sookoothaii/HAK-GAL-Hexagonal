@@ -1,3 +1,14 @@
+---
+title: "Technical Report 2025 08 25"
+created: "2025-09-15T00:08:01.121136Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # 🔬 HAK-GAL HEXAGONAL SYSTEM - TECHNISCHER REPORT
 ## Datum: 25. August 2025, 01:21 UTC
 

@@ -1,3 +1,14 @@
+---
+title: "Cpp Vs Mojo Analysis"
+created: "2025-09-15T00:08:01.103665Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # C++ vs MOJO - Objektiver Vergleich 2025
 
 Nach HAK/GAL Verfassung Artikel 6: Nur empirisch validierte Fakten

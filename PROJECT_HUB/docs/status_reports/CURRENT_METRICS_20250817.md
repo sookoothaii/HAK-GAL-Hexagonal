@@ -1,3 +1,14 @@
+---
+title: "Current Metrics 20250817"
+created: "2025-09-15T00:08:01.083292Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # 📊 HAK-GAL SYSTEM - AKTUELLE METRIKEN
 
 **Stand:** 17. August 2025  

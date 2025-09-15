@@ -1,3 +1,14 @@
+---
+title: "Contributing"
+created: "2025-09-15T00:08:00.947080Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # Contributing to HAK-GAL Hexagonal
 
 Thank you for your interest in contributing to HAK-GAL Hexagonal! This document provides guidelines for contributing to the project.

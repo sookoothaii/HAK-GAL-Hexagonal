@@ -1,3 +1,14 @@
+---
+title: "System Improvement Plan 2025-09-11"
+created: "2025-09-15T00:08:00.978851Z"
+author: "system-cleanup"
+topics: ["analysis"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # HAK_GAL SYSTEM ANALYSE & VERBESSERUNGSPLAN
 ============================================
 

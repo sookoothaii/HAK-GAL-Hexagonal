@@ -1,3 +1,14 @@
+---
+title: "Technical Report 2025 08 21"
+created: "2025-09-15T00:08:01.121136Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # Technical Report: HAK-GAL System Discrepancies & Solutions
 **Date:** August 21, 2025  
 **Author:** Claude (AI Systems Analyst)  
@@ -24,7 +35,7 @@ The HAK-GAL Hexagonal Architecture system exhibits multiple interconnected issue
 ```javascript
 // Frontend sends:
 headers: {
-  'X-API-Key': 'hg_sk_4f9a8e1b7d2c5f6a8b3d9e0c1a7b4f9d'
+  'X-API-Key': 'hg_sk_${HAKGAL_AUTH_TOKEN}'
 }
 
 // Backend expects:
@@ -201,7 +212,7 @@ python src_hexagonal\hexagonal_api_enhanced_clean.py
 # test_db_write.py
 response = requests.post(
     'http://localhost:5002/api/facts',
-    headers={'X-API-Key': 'hg_sk_4f9a8e1b7d2c5f6a8b3d9e0c1a7b4f9d'},
+    headers={'X-API-Key': 'hg_sk_${HAKGAL_AUTH_TOKEN}'},
     json={'statement': 'Test(Database, Working).'}
 )
 assert response.status_code in [200, 201]
@@ -278,7 +289,7 @@ D:\MCP Mods\HAK_GAL_HEXAGONAL\
 # Environment variables that work:
 set GEMINI_API_KEY=AIzaSyBTLyMNGxQ5TlIvfm2bWYqImrZ1PBVthFk
 set DEEPSEEK_API_KEY=sk-2b7891364a504f91b2fe85e28710d466
-set HAKGAL_API_KEY=hg_sk_4f9a8e1b7d2c5f6a8b3d9e0c1a7b4f9d
+set HAKGAL_API_KEY=hg_sk_${HAKGAL_AUTH_TOKEN}
 set HAKGAL_WRITE_ENABLED=true
 
 # Start directly (bypass launch_5002_WRITE.py):

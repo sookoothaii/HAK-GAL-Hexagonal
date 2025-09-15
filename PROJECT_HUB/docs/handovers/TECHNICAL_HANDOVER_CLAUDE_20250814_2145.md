@@ -1,3 +1,14 @@
+---
+title: "Technical Handover Claude 20250814 2145"
+created: "2025-09-15T00:08:01.026810Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # TECHNICAL HANDOVER - HAK-GAL HEXAGONAL SYSTEM
 
 **Document ID:** TECHNICAL-HANDOVER-CLAUDE-20250814-2145  
@@ -207,9 +218,9 @@ Alle Snapshots enthalten "Claude" im Namen zur eindeutigen Identifikation.
 ### 1. System-Status prüfen
 ```bash
 # MCP Tools verwenden
-hak-gal:health_check
-hak-gal:kb_stats
-hak-gal:get_system_status
+hak-gal.health_check
+hak-gal.kb_stats
+hak-gal.get_system_status
 ```
 
 ### 2. Frontend starten (falls nicht läuft)
@@ -280,7 +291,7 @@ DOKUMENTIERT: Jeden Schritt nachvollziehbar machen
 - **Backend API:** http://localhost:5001
 - **Frontend:** http://localhost:5173  
 - **MCP Tools:** 30 Tools verfügbar (siehe MCP_TOOLS_COMPLETE_V2.md)
-- **Write Token:** 515f57956e7bd15ddc3817573598f190
+- **Write Token:** <YOUR_TOKEN_HERE>
 
 ---
 

@@ -1,3 +1,14 @@
+---
+title: "Complete Architecture Documentation 20250830"
+created: "2025-09-15T00:08:01.137685Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # HAK-GAL Suite - Vollständige Technische Architektur-Dokumentation
 ## Comprehensive Technical Architecture Report
 
@@ -219,7 +230,7 @@ socket.emit('system_metrics', {cpu, memory, disk})
 - **Method:** API Key
 - **Header:** `X-API-Key`
 - **Key:** `hg_sk_4f9a8e1b7d2c5f6a8b3d9e0c1a7b4f9d` (Development)
-- **Write Token:** `515f57956e7bd15ddc3817573598f190`
+- **Write Token:** `<YOUR_TOKEN_HERE>`
 
 ---
 
@@ -490,7 +501,7 @@ SYSTEM_CONFIG = {
 ### 12.2 Environment Variables
 ```bash
 HAKGAL_API_KEY=hg_sk_4f9a8e1b7d2c5f6a8b3d9e0c1a7b4f9d
-HAKGAL_WRITE_TOKEN=515f57956e7bd15ddc3817573598f190
+HAKGAL_WRITE_TOKEN=<YOUR_TOKEN_HERE>
 HAKGAL_PORT=5002
 GEMINI_API_KEY=[configured]
 ANTHROPIC_API_KEY=[configured]

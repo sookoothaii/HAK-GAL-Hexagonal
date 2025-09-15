@@ -1,3 +1,14 @@
+---
+title: "Cursor Extension Requirements"
+created: "2025-09-15T00:08:00.978851Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # Cursor IDE Extension für HAK/GAL Multi-Agent System
 
 ## Was benötigt wird:

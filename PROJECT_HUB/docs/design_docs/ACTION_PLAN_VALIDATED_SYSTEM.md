@@ -1,3 +1,14 @@
+---
+title: "Action Plan Validated System"
+created: "2025-09-15T00:08:00.978851Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # ACTION PLAN - HAK-GAL System mit Validierter Datenbank
 
 **Stand:** 18. August 2025, 08:25 UTC  

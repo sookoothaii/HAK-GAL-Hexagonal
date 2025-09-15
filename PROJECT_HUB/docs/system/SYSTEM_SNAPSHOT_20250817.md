@@ -1,3 +1,14 @@
+---
+title: "System Snapshot 20250817"
+created: "2025-09-15T00:08:01.088012Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # 📸 HAK-GAL HEXAGONAL SYSTEM - VOLLSTÄNDIGER SNAPSHOT
 
 **Dokument-ID:** SNAPSHOT-HAK-GAL-HEXAGONAL-20250817-COMPLETE  
@@ -100,7 +111,7 @@ GET /api/stats           # Öffentliche Statistiken
 
 ```env
 # .env Datei
-API_KEY=hg_sk_4f9a8e1b7d2c5f6a8b3d9e0c1a7b4f9d
+API_KEY=hg_sk_${HAKGAL_AUTH_TOKEN}
 REQUIRE_AUTH_FOR_READ=false  # Optional: auch GET schützen
 BACKUP_ENABLED=true
 BACKUP_INTERVAL=3600  # Stündliche Backups
@@ -234,7 +245,7 @@ const socket = io(API_BASE_URL, {
 ```env
 # frontend/.env.local
 VITE_API_BASE_URL=http://localhost:8088
-VITE_API_KEY=hg_sk_4f9a8e1b7d2c5f6a8b3d9e0c1a7b4f9d
+VITE_API_KEY=hg_sk_${HAKGAL_AUTH_TOKEN}
 VITE_WS_PATH=/socket.io
 VITE_WS_ENABLED=true
 ```

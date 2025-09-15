@@ -1,3 +1,14 @@
+---
+title: "Constitutional Compliance Correction"
+created: "2025-09-15T00:08:01.041612Z"
+author: "system-cleanup"
+topics: ["meta"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # HAK-GAL Constitutional Compliance Correction
 
 **Document ID:** HAK-GAL-CONSTITUTIONAL-CORRECTION-20250813  

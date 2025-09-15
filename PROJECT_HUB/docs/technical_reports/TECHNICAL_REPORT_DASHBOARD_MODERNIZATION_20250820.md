@@ -1,3 +1,14 @@
+---
+title: "Technical Report Dashboard Modernization 20250820"
+created: "2025-09-15T00:08:01.124142Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # Technical Report: HAK-GAL Dashboard Modernization
 
 **Document ID:** HAK-GAL-DASHBOARD-MODERNIZATION-20250820  

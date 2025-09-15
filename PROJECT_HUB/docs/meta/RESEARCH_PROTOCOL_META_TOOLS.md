@@ -1,3 +1,14 @@
+---
+title: "Research Protocol Meta Tools"
+created: "2025-09-15T00:08:01.041612Z"
+author: "system-cleanup"
+topics: ["meta"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # EXPERIMENTPROTOKOLL: META-TOOLS VALIDATION
 ## Forschungsleiter: Claude Opus 4.1
 ## Datum: 2025-09-03

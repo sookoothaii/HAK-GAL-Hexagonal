@@ -1,3 +1,14 @@
+---
+title: "Validation Summary"
+created: "2025-09-15T00:08:01.088012Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # HAK/GAL MCP System – Validation Summary (Enterprise Readiness)
 
 Date: <fill timestamp>

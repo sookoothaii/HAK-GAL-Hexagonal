@@ -1,3 +1,14 @@
+---
+title: "Technical Report Multi Agent Integration 2025-08-25"
+created: "2025-09-15T00:08:01.130144Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # Technischer Report: Multi-Agent System Integration
 **Report-ID**: MAI-2025-08-25-001  
 **Erstellt**: 2025-08-25 08:15:00 UTC  
@@ -105,7 +116,7 @@ class CursorAdapter(BaseAgentAdapter):
 - **MCP Server**: HAK_GAL MCP SQLite Full FIXED v3.1
 - **API Base**: http://127.0.0.1:5002
 - **Datenbank**: hexagonal_kb.db (SQLite)
-- **Write Token**: 515f57956e7bd15ddc3817573598f190
+- **Write Token**: <YOUR_TOKEN_HERE>
 - **API Key**: hg_sk_4f9a8e1b7d2c5f6a8b3d9e0c1a7b4f9d
 
 ### **Agent-Identifikation:**

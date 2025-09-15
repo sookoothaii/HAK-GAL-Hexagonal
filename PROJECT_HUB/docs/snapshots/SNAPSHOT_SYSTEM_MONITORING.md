@@ -1,3 +1,14 @@
+---
+title: "Snapshot System Monitoring"
+created: "2025-09-15T00:08:01.077169Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # SNAPSHOT – System Monitoring Implementation (2025-08-15 14:30:00)
 
 ## Summary

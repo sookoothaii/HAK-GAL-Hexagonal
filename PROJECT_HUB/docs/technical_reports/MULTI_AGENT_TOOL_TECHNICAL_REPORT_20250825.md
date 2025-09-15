@@ -1,3 +1,14 @@
+---
+title: "Multi Agent Tool Technical Report 20250825"
+created: "2025-09-15T00:08:01.103665Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # Multi-Agent Tool Technical Report
 ## HAK-GAL Hexagonal Architecture - Multi-Agent Collaboration System
 
@@ -258,7 +269,7 @@ GEMINI_API_KEY=AIzaSyBTLyMNGxQ5TlIvfm2bWYqImrZ1PBVthFk
 # Server-Konfiguration
 HAKGAL_API_BASE_URL=http://127.0.0.1:5002
 HAKGAL_WRITE_ENABLED=true
-HAKGAL_WRITE_TOKEN=515f57956e7bd15ddc3817573598f190
+HAKGAL_WRITE_TOKEN=<YOUR_TOKEN_HERE>
 
 # Datenbank
 HAKGAL_SQLITE_DB_PATH=D:\MCP Mods\HAK_GAL_HEXAGONAL\hexagonal_kb.db

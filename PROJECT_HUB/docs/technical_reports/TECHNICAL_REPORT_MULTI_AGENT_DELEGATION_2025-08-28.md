@@ -1,3 +1,14 @@
+---
+title: "Technical Report Multi Agent Delegation 2025-08-28"
+created: "2025-09-15T00:08:01.129147Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # 🔬 **TECHNICAL REPORT: MULTI-AGENT DELEGATION SYSTEM**
 ## 📋 **Projekt-Identifikation**
 - **Report-ID**: `TECHNICAL_REPORT_MULTI_AGENT_DELEGATION_2025-08-28`

@@ -1,3 +1,14 @@
+---
+title: "Technical Handover Mcp Cursor Gpt5 20250814"
+created: "2025-09-15T00:08:01.031085Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 ### Technisches Handover: Cursor ↔ HAK‑GAL MCP Integration (gelöst)
 
 Autor: GPT‑5 • Datum: 2025‑08‑14

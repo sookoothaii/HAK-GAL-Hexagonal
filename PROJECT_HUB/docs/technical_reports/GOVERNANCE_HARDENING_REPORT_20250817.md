@@ -1,3 +1,14 @@
+---
+title: "Governance Hardening Report 20250817"
+created: "2025-09-15T00:08:01.103665Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # Governance Hardening Report (Stand: 2025‑08‑17)
 
 Ziel: Verbindliche Regeln, Prozesse und Kontrollen, die Betrieb, Sicherheit und Verfassungskonformität dauerhaft sicherstellen – ohne Entwicklungsfluss zu behindern.

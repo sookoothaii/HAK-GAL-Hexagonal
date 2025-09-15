@@ -1,3 +1,14 @@
+---
+title: "Technical Handover"
+created: "2025-09-15T00:08:01.025810Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # Technical Handover: HAK-GAL HEXAGONAL Clean Architecture
 **Document ID:** HAK-GAL-HEXAGONAL-HANDOVER-20250813  
 **Status:** Production Ready - Clean Version Without Mocks  

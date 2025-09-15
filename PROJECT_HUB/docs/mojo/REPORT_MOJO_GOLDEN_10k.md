@@ -1,3 +1,14 @@
+---
+title: "Report Mojo Golden 10K"
+created: "2025-09-15T00:08:01.057313Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # MOJO Golden Test – Python vs Mojo (Read-Only)
 
 Zeitpunkt: 2025-08-14 22:21:25

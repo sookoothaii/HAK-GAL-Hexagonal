@@ -1,3 +1,14 @@
+---
+title: "Snapshot 20250822 Performance Optimization"
+created: "2025-09-15T00:08:01.057313Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # HAK/GAL System Performance-Optimierung - Projektbericht
 
 **Datum**: 22. August 2025  

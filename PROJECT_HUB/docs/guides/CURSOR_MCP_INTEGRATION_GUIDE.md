@@ -1,3 +1,14 @@
+---
+title: "Cursor Mcp Integration Guide"
+created: "2025-09-15T00:08:01.011292Z"
+author: "system-cleanup"
+topics: ["guides"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # Cursor + HAK-GAL MCP Integration Guide (Port 5001)
 
 Status: Ready • Server läuft lokal via `.venv_hexa` • Pure Hexagonal Backend

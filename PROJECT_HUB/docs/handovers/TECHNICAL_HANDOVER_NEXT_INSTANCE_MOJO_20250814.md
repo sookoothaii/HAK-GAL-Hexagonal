@@ -1,3 +1,14 @@
+---
+title: "Technical Handover Next Instance Mojo 20250814"
+created: "2025-09-15T00:08:01.033084Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # Technisches Übergabeprotokoll – Mojo Rollout (Stand: 2025-08-14)
 
 Dieses Dokument befähigt die nächste Instanz, nahtlos am Mojo‑Projekt weiterzuarbeiten. Alle Schritte sind standardmäßig sicher (read‑only oder flag‑gesteuert) und verändern das laufende System nicht, außer wenn explizit aktiviert.

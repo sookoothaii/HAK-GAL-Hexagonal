@@ -21,7 +21,7 @@ Das HAK/GAL Multi-Agent-System wurde erfolgreich implementiert und getestet. Die
 - **CursorAdapter**: ✅ Bereit für Extension
 
 ### 3. API-Key-System aktiviert
-- HAK/GAL API-Key: `hg_sk_4f9a8e1b7d2c5f6a8b3d9e0c1a7b4f9d`
+- HAK/GAL API-Key: `hg_sk_${HAKGAL_AUTH_TOKEN}`
 - Authentifizierung funktioniert
 - Sichere API-Endpunkte
 
@@ -43,7 +43,7 @@ Wisdom takes its form.
 ### API-Endpunkt
 ```
 POST /api/agent-bus/delegate
-Headers: X-API-Key: hg_sk_4f9a8e1b7d2c5f6a8b3d9e0c1a7b4f9d
+Headers: X-API-Key: hg_sk_${HAKGAL_AUTH_TOKEN}
 ```
 
 ### Payload-Format
@@ -83,7 +83,7 @@ delegate_task(
 ### HTTP API
 ```bash
 curl -X POST http://localhost:5002/api/agent-bus/delegate \
-  -H "X-API-Key: hg_sk_4f9a8e1b7d2c5f6a8b3d9e0c1a7b4f9d" \
+  -H "X-API-Key: hg_sk_${HAKGAL_AUTH_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
     "target_agent": "gemini",

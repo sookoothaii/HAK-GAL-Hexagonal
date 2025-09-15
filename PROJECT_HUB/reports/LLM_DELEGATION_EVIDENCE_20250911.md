@@ -1,3 +1,14 @@
+---
+title: "Llm Delegation Evidence 20250911"
+created: "2025-09-15T00:08:01.138692Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # LLM Delegation Evidence (DeepSeek & Claude)
 Date: 2025-09-11
 Source: mcp_server.jsonl

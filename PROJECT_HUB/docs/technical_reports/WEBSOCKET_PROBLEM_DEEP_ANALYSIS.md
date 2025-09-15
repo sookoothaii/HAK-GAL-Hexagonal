@@ -1,3 +1,14 @@
+---
+title: "Websocket Problem Deep Analysis"
+created: "2025-09-15T00:08:01.134647Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # WEBSOCKET 2-SEKUNDEN-PROBLEM - URSACHEN & LÖSUNGEN
 
 **Dokument-ID:** WEBSOCKET_PROBLEM_DEEP_ANALYSIS_20250816  

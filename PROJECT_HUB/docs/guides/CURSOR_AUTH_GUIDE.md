@@ -1,8 +1,19 @@
+---
+title: "Cursor Auth Guide"
+created: "2025-09-15T00:08:01.011292Z"
+author: "system-cleanup"
+topics: ["guides"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # Multi-Agent Authentication Guide für Cursor
 
 ## API-Key für HAK/GAL Multi-Agent System:
 ```
-HAKGAL_API_KEY=hg_sk_4f9a8e1b7d2c5f6a8b3d9e0c1a7b4f9d
+HAKGAL_API_KEY=hg_sk_${HAKGAL_AUTH_TOKEN}
 ```
 
 ## Verwendung in Cursor:
@@ -13,13 +24,13 @@ delegate_task(
     target_agent='claude_cli',
     task_description='Deine Aufgabe hier...',
     context={'key': 'value'},
-    headers={'X-API-Key': 'hg_sk_4f9a8e1b7d2c5f6a8b3d9e0c1a7b4f9d'}
+    headers={'X-API-Key': 'hg_sk_${HAKGAL_AUTH_TOKEN}'}
 )
 ```
 
 ### Option 2: Als Environment Variable
 ```bash
-export HAKGAL_API_KEY=hg_sk_4f9a8e1b7d2c5f6a8b3d9e0c1a7b4f9d
+export HAKGAL_API_KEY=hg_sk_${HAKGAL_AUTH_TOKEN}
 ```
 
 ### Option 3: In der Tool-Konfiguration

@@ -1,3 +1,14 @@
+---
+title: "Auto Add Readme"
+created: "2025-09-15T00:08:00.994662Z"
+author: "system-cleanup"
+topics: ["guides"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # 🚀 Auto-Add Facts Feature
 **Automatically add LLM-generated facts to your Knowledge Base**
 

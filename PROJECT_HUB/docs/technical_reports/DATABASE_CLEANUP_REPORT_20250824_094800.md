@@ -1,3 +1,14 @@
+---
+title: "Database Cleanup Report 20250824 094800"
+created: "2025-09-15T00:08:01.103665Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # HAK/GAL Database Cleanup Report
 **Date:** August 24, 2025  
 **Time:** 09:47:35 UTC+1  

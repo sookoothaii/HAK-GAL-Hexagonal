@@ -1,3 +1,14 @@
+---
+title: "Auto Health Report 5001 Latest"
+created: "2025-09-15T00:08:01.078169Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # AUTO HEALTH REPORT — 5001 (Standard/Python) — LATEST
 
 Quelle: Live-Checks aus aktiver `.venv_hexa` (PowerShell HTTP Requests)

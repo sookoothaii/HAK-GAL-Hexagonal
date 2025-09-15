@@ -1,3 +1,14 @@
+---
+title: "Definitive Tool List"
+created: "2025-09-15T00:08:01.041612Z"
+author: "system-cleanup"
+topics: ["meta"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # HAK-GAL MCP Server - Definitive Tool List v3.1
 **Stand:** 2025-08-29  
 **Total Tools:** 47 (HAK-GAL namespace)

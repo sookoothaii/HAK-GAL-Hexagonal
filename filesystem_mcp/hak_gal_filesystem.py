@@ -887,6 +887,7 @@ class FileSystemMCPServer:
             elif name == "get_file_info":
                 path = arguments.get("path", "")
                 try:
+                    import json as json_module
                     stat = os.stat(path)
                     info = {
                         "path": path,
@@ -896,7 +897,7 @@ class FileSystemMCPServer:
                         "is_file": os.path.isfile(path),
                         "is_dir": os.path.isdir(path)
                     }
-                    result = {"content": [{"type": "text", "text": json.dumps(info, indent=2)}]}
+                    result = {"content": [{"type": "text", "text": json_module.dumps(info, indent=2)}]}
                 except Exception as e:
                     result = {"content": [{"type": "text", "text": f"Error: {e}"}]}
             

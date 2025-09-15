@@ -1,3 +1,14 @@
+---
+title: "Mcp Tools Fullscan 20250814 1250"
+created: "2025-09-15T00:08:01.041612Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # 🔧 HAK-GAL MCP Tools: Comprehensive System Screenshot
 
 **Timestamp:** 14. August 2025, 12:50 Uhr  

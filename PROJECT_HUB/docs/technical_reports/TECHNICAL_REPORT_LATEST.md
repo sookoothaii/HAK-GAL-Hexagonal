@@ -1,3 +1,14 @@
+---
+title: "Technical Report Latest"
+created: "2025-09-15T00:08:01.128141Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # Technical Report — HAK_GAL_HEXAGONAL (LATEST)
 
 ## Summary

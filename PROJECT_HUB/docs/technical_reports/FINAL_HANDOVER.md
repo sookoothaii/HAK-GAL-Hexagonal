@@ -1,3 +1,14 @@
+---
+title: "Final Handover"
+created: "2025-09-15T00:08:01.103665Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 ﻿# HAK-GAL Hexagonal Suite - Final Handover (Autonomous, Scientific, Safe)
 
 This document summarizes the current working state of the Hex Suite (Port 5001): autonomy from the legacy backend, constitution (v2.2) integration, kill switch, direct LLM integration, frontend alignment, MCP read-only MVP, and reproducible test commands.

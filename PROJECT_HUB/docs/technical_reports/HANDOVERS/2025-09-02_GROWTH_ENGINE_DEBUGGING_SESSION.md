@@ -1,3 +1,14 @@
+---
+title: "2025-09-02 Growth Engine Debugging Session"
+created: "2025-09-15T00:08:01.136651Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # HAK-GAL System Technical Handover - Growth Engine Debugging Session
 **Date:** 2025-09-02  
 **Author:** Claude (Anthropic)  
@@ -39,7 +50,7 @@ D:\MCP Mods\HAK_GAL_HEXAGONAL\
 
 ### 1.3 Authentifizierung
 - **API Key:** `hg_sk_4f9a8e1b7d2c5f6a8b3d9e0c1a7b4f9d`
-- **Write Token:** `515f57956e7bd15ddc3817573598f190`
+- **Write Token:** `<YOUR_TOKEN_HERE>`
 - **Header:** `X-API-Key` für alle API-Calls
 
 ---

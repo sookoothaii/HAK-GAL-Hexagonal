@@ -1,3 +1,14 @@
+---
+title: "Migration Playbook Bulk Translate"
+created: "2025-09-15T00:08:01.041612Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # Bulk Translate Predicates – Controlled Migration Playbook
 
 This playbook describes a safe, reproducible procedure to migrate predicate names in the knowledge base using the MCP tool `bulk_translate_predicates`. It adheres to HAK/GAL principles: strictly empirical, auditable, and reversible.

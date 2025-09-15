@@ -1,3 +1,14 @@
+---
+title: "Technical Handover Frontend"
+created: "2025-09-15T00:08:01.028809Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # Technisches Handover: HAK-GAL Frontend Dashboard Modernisierung
 
 **Dokument-ID:** HAK-GAL-FRONTEND-HANDOVER-20250819  

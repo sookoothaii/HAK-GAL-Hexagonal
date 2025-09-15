@@ -45,7 +45,7 @@ Dies ist der ultimative kombinierte MCP Server, der alle 47 Tools aus den drei b
       "args": ["D:\\MCP Mods\\HAK_GAL_HEXAGONAL\\ultimate_mcp\\hakgal_mcp_ultimate.py"],
       "env": {
         "HAKGAL_WRITE_ENABLED": "true",
-        "HAKGAL_WRITE_TOKEN": "515f57956e7bd15ddc3817573598f190"
+        "HAKGAL_WRITE_TOKEN": "${HAKGAL_AUTH_TOKEN}"
       }
     }
   }

@@ -1,3 +1,14 @@
+---
+title: "Technical Handover Next Instance Gpt5 20250814 2359"
+created: "2025-09-15T00:08:01.033084Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # Technisches Übergabeprotokoll – Nächste Instanz (Stand: 2025-08-14)
 
 Dieses Dokument befähigt die nächste Instanz, die HAK‑GAL Hexagonal Suite sicher und reproduzierbar fortzuführen. Es deckt Architektur, aktuelle Änderungen, Betriebsabläufe, Validierungsergebnisse, Risiken und Roadmap ab. Alle hier dokumentierten Schritte sind standardmäßig read‑only bzw. flag‑gesteuert und gefährden den laufenden Betrieb nicht, solange Schreibpfade nicht explizit aktiviert werden.

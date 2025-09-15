@@ -1,3 +1,14 @@
+---
+title: "Build Guide Mojo Native 20250814"
+created: "2025-09-15T00:08:00.994662Z"
+author: "system-cleanup"
+topics: ["guides"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # Build Guide – Native mojo_kernels (pybind11)
 
 Ziel: Vorbereiten des nativen Moduls ohne Systemeinbindung. Aktiv wird es erst mit Flag+Install.

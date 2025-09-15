@@ -1,3 +1,14 @@
+---
+title: "2025-09-02 Extended Knowledge Architecture"
+created: "2025-09-15T00:08:01.135651Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # HAK-GAL System Technical Handover - Extended Knowledge Architecture
 **Date:** 2025-09-02  
 **Author:** Claude (Anthropic)  

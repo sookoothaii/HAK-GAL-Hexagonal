@@ -1,3 +1,14 @@
+---
+title: "Frontend Analysis And Refactor Plan 20250817"
+created: "2025-09-15T00:08:00.994662Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # Chirurgischer Analysebericht: Frontend HAK-GAL Suite
 
 **Dokument-ID:** FRONTEND_ANALYSIS_AND_REFACTOR_PLAN_20250817

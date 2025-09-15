@@ -1,3 +1,14 @@
+---
+title: "2025-09-02 Intelligent Growth Engine"
+created: "2025-09-15T00:08:01.136651Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # HAK-GAL Intelligent Growth Engine - Technical Handover
 **Date:** 2025-09-02  
 **Author:** Claude (Anthropic)  
@@ -154,7 +165,7 @@ HasProperty(X, Importance)
 
 ### Bulk-Delete Tool verwendet
 ```python
-hak-gal:bulk_delete
+hak-gal.bulk_delete
 # Resultat: 21 Fakten auf einmal gelöscht
 # Vorher: 6,071 → Nachher: 6,047 Fakten
 ```

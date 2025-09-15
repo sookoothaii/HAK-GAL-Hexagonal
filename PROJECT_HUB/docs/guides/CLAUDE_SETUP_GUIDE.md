@@ -1,3 +1,14 @@
+---
+title: "Claude Setup Guide"
+created: "2025-09-15T00:08:00.994662Z"
+author: "system-cleanup"
+topics: ["guides"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # Claude Integration Setup Guide
 
 ## Problem Diagnose
@@ -69,7 +80,7 @@ python scripts/claude_api_watcher.py
 ### 2. Über HAK/GAL API:
 ```bash
 curl -X POST "http://127.0.0.1:5002/api/agent-bus/delegate" \
-  -H "X-API-Key: hg_sk_4f9a8e1b7d2c5f6a8b3d9e0c1a7b4f9d" \
+  -H "X-API-Key: hg_sk_${HAKGAL_AUTH_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"target_agent": "claude_cli", "task_description": "Hello Claude", "context": {}}'
 ```

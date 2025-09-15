@@ -1,3 +1,14 @@
+---
+title: "Snapshot Ppjoin Plan 20250815"
+created: "2025-09-15T00:08:01.075169Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # SNAPSHOT – PPJoin(+) Plan und Mojo‑Ausbau (2025‑08‑15)
 
 Dieser Snapshot dokumentiert die Erweiterungen zur maximalen Mojo‑Nutzung im read‑only Backend (5002):

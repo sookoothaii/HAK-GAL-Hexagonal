@@ -1,3 +1,14 @@
+---
+title: "Technical Report Hrm Training 20250818"
+created: "2025-09-15T00:08:01.126142Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # Technischer Report: HRM Neu-Training und Integration (2025-08-18)
 
 ## Zusammenfassung

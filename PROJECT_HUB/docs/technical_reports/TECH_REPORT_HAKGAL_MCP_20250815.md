@@ -1,3 +1,14 @@
+---
+title: "Tech Report Hakgal Mcp 20250815"
+created: "2025-09-15T00:08:01.133143Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # Technical Report - HAK-GAL MCP Server (2025-08-15)
 
 ## Überblick

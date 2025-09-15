@@ -1,3 +1,14 @@
+---
+title: "Mojo Benchmark Plan 20250814"
+created: "2025-09-15T00:08:01.057313Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # Mojo Benchmark Plan (Read-Only, Safe)
 
 Ziel: Messbare, gefahrlose Evaluation des Mojo-Adapters ohne Änderungen an Produktionspfaden.

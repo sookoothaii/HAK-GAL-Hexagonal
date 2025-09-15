@@ -2001,12 +2001,16 @@ class HAKGALMCPServer:
                                 return "gemini"
                             if vendor_hint in ("claude", "anthropic", "a"):
                                 return "claude"
+                            if vendor_hint in ("openai", "gpt", "o"):
+                                return "openai"
                         if "deepseek" in nm:
                             return "deepseek"
                         if "gemini" in nm:
                             return "gemini"
                         if "claude" in nm or "anthropic" in nm:
                             return "claude"
+                        if "gpt" in nm or "openai" in nm:
+                            return "openai"
                         return ""
 
                     if target_agent:
@@ -2195,6 +2199,65 @@ class HAKGALMCPServer:
                                         result = {"content": [{"type": "text", "text": text}]}
                                     except Exception as e:
                                         result = {"content": [{"type": "text", "text": f"Claude request failed: {e}"}]}
+                        # OpenAI/GPT integration
+                        elif vendor == "openai":
+                            if requests is None:
+                                result = {"content": [{"type": "text", "text": "Error: requests library not available"}]}
+                            else:
+                                # Erst aus context/args prüfen, dann Environment
+                                api_key = (
+                                    context.get("openai_api_key") or 
+                                    context.get("api_key") or
+                                    tool_args.get("openai_api_key") or
+                                    tool_args.get("api_key") or
+                                    os.environ.get("OPENAI_API_KEY") or 
+                                    os.environ.get("GPT_API_KEY")
+                                )
+                                if not api_key:
+                                    result = {"content": [{"type": "text", "text": "Error: OPENAI_API_KEY not set. Pass it via context.api_key or set environment variable"}]}
+                                else:
+                                    endpoint = os.environ.get("OPENAI_API_BASE", "https://api.openai.com/v1/chat/completions")
+                                    # Modellwahl: Präfix > ENV > Default
+                                    if model_hint:
+                                        mh = model_hint.lower()
+                                        if mh in ("gpt-4", "4", "gpt4"):
+                                            model = "gpt-4"
+                                        elif mh in ("gpt-3.5-turbo", "3.5", "turbo"):
+                                            model = "gpt-3.5-turbo"
+                                        elif mh in ("gpt-4-turbo", "4-turbo"):
+                                            model = "gpt-4-turbo"
+                                        else:
+                                            model = model_hint
+                                    else:
+                                        model = os.environ.get("OPENAI_MODEL") or os.environ.get("GPT_MODEL") or "gpt-3.5-turbo"
+                                    temperature = float(os.environ.get("OPENAI_TEMPERATURE", os.environ.get("DELEGATE_TEMPERATURE", "0.2")))
+                                    max_tokens = int(os.environ.get("OPENAI_MAX_TOKENS", os.environ.get("DELEGATE_MAX_TOKENS", "4096")))
+                                    sys_prompt = "You are a concise assistant executing a delegated task. Return only the answer, no extra chatter."
+                                    ctx_str = "" if not context else json.dumps(context, ensure_ascii=True)
+                                    user_text = f"Task: {task_description}\nContext: {ctx_str}"
+                                    headers = {
+                                        "Authorization": f"Bearer {api_key}",
+                                        "content-type": "application/json"
+                                    }
+                                    payload = {
+                                        "model": model,
+                                        "max_tokens": max_tokens,
+                                        "temperature": temperature,
+                                        "messages": [
+                                            {"role": "system", "content": sys_prompt},
+                                            {"role": "user", "content": user_text}
+                                        ]
+                                    }
+                                    try:
+                                        resp = requests.post(endpoint, headers=headers, json=payload, timeout=30)
+                                        resp.raise_for_status()
+                                        data = resp.json()
+                                        content = data.get("choices", [{}])[0].get("message", {}).get("content", "")
+                                        text = content or "<empty response>"
+                                        self._append_audit("delegate_task", {"to": target_agent, "task": task_description, "ok": True})
+                                        result = {"content": [{"type": "text", "text": text}]}
+                                    except Exception as e:
+                                        result = {"content": [{"type": "text", "text": f"OpenAI request failed: {e}"}]}
                         # Ollama integration für lokale LLMs
                         elif any(name in target_agent.lower() for name in ["ollama", "qwen"]):
                             if requests is None:
@@ -2203,22 +2266,61 @@ class HAKGALMCPServer:
                                 # Ollama-spezifische Konfiguration
                                 ollama_host = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
                                 
-                                # Model-Mapping für die 3 verfügbaren Modelle
+                                # Model-Mapping für die verfügbaren Modelle
                                 model_map = {
                                     "qwen7b": "qwen2.5:7b",
                                     "qwen14b": "qwen2.5:14b", 
                                     "qwen14b-instruct": "qwen2.5:14b-instruct-q4_K_M",
+                                    "qwen32b": "qwen2.5:32b-instruct-q3_K_M",
+                                    "qwen32b-instruct": "qwen2.5:32b-instruct-q3_K_M",
                                     # Direkte Modellnamen auch unterstützen
                                     "qwen2.5:7b": "qwen2.5:7b",
                                     "qwen2.5:14b": "qwen2.5:14b",
-                                    "qwen2.5:14b-instruct-q4_K_M": "qwen2.5:14b-instruct-q4_K_M"
+                                    "qwen2.5:14b-instruct-q4_K_M": "qwen2.5:14b-instruct-q4_K_M",
+                                    "qwen2.5:32b": "qwen2.5:32b",
+                                    "qwen2.5:32b-instruct-q3_K_M": "qwen2.5:32b-instruct-q3_K_M",
+                                    # Vollständige Modellnamen
+                                    "14b-instruct-q4_K_M": "qwen2.5:14b-instruct-q4_K_M",
+                                    "32b-instruct-q3_K_M": "qwen2.5:32b-instruct-q3_K_M",
+                                    # Zusätzliche Varianten für bessere Erkennung
+                                    "qwen2.5:14b-instruct": "qwen2.5:14b-instruct-q4_K_M",
+                                    "qwen2.5:14b-instruct-q4": "qwen2.5:14b-instruct-q4_K_M",
+                                    "qwen2.5:14b-instruct-q4_K": "qwen2.5:14b-instruct-q4_K_M",
+                                    "qwen2.5:32b-instruct": "qwen2.5:32b-instruct-q3_K_M",
+                                    "qwen2.5:32b-instruct-q3": "qwen2.5:32b-instruct-q3_K_M",
+                                    "qwen2.5:32b-instruct-q3_K": "qwen2.5:32b-instruct-q3_K_M"
                                 }
                                 
                                 # Extrahiere Modellname aus target_agent
                                 model = "qwen2.5:7b"  # Default
-                                if ":" in target_agent:
+                                
+                                # Für Ollama: Verwende target_agent direkt wenn es ein vollständiger Modellname ist
+                                if "qwen2.5:" in target_agent:
+                                    model = target_agent
+                                    logger.info(f"[Ollama] Direct qwen2.5 model: {model}")
+                                elif "14b-instruct-q4_K_M" in target_agent:
+                                    # Spezielle Behandlung für das 14B Modell
+                                    model = "qwen2.5:14b-instruct-q4_K_M"
+                                    logger.info(f"[Ollama] Special 14B model mapping: {model}")
+                                elif "32b-instruct-q3_K_M" in target_agent:
+                                    # Spezielle Behandlung für das 32B Modell
+                                    model = "qwen2.5:32b-instruct-q3_K_M"
+                                    logger.info(f"[Ollama] Special 32B model mapping: {model}")
+                                elif ":" in target_agent:
+                                    # Fallback: Verwende das Modell-Mapping
                                     _, model_hint = target_agent.split(":", 1)
-                                    model = model_map.get(model_hint, model_hint)
+                                    model = model_map.get(model_hint, f"qwen2.5:{model_hint}")
+                                    logger.info(f"[Ollama] Mapped model: {model}")
+                                else:
+                                    # Fallback: verwende target_agent direkt
+                                    model = model_map.get(target_agent, target_agent)
+                                    logger.info(f"[Ollama] Fallback model: {model}")
+                                    logger.info(f"[Ollama] Model map lookup for '{target_agent}': {model_map.get(target_agent, 'NOT_FOUND')}")
+                                
+                                # Debug: Logge den finalen Modellnamen
+                                logger.info(f"[Ollama] Input target_agent: '{target_agent}'")
+                                logger.info(f"[Ollama] Final model: '{model}'")
+                                logger.info(f"[Ollama] Model map contains '{target_agent}': {target_agent in model_map}")
                                 
                                 # Füge Kontext zur Task hinzu wenn vorhanden
                                 full_prompt = task_description

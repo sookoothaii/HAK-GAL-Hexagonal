@@ -1,3 +1,14 @@
+---
+title: "Future Development Plan 2025H2"
+created: "2025-09-15T00:08:00.994662Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # Future Development Plan (2025 H2 → 2026 H1)
 
 Ziel: Von stabiler, gehärteter Dev/Pre‑Prod zu production‑grade, skalierbarer und beobachtbarer Plattform – ohne Brüche mit der bestehenden Hex‑Architektur.

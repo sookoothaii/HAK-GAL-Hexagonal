@@ -1,3 +1,14 @@
+---
+title: "Phase1 Graphdb Migration 20250816"
+created: "2025-09-15T00:08:01.041612Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # PHASE 1 IMPLEMENTATION - GraphDB Migration Script
 **Document ID:** PHASE1_GRAPHDB_MIGRATION_20250816  
 **Purpose:** Konkrete Implementierung für Neo4j Migration  

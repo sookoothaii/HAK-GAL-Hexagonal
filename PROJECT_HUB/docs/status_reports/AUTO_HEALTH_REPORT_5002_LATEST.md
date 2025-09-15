@@ -1,3 +1,14 @@
+---
+title: "Auto Health Report 5002 Latest"
+created: "2025-09-15T00:08:01.078169Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # AUTO HEALTH REPORT — 5002 (Mojo) — LATEST
 
 Quelle: Live-Checks aus aktiver `.venv_hexa` (PowerShell HTTP Requests)

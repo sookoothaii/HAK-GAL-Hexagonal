@@ -1,3 +1,14 @@
+---
+title: "Mcp Tools Complete"
+created: "2025-09-15T00:08:01.040609Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # HAK-GAL MCP Tools - Vollständige Dokumentation (29 Tools)
 
 **Status:** ✅ Empirisch verifiziert am 2025-08-13  
@@ -46,7 +57,7 @@ Die HAK-GAL Hexagonal Suite stellt genau 29 MCP-Tools über den Model Context Pr
 
 **Beispiel:**
 ```
-"Use hak-gal add_fact with statement='IstArtVon(Sokrates,Mensch)' and auth_token='515f57956e7bd15ddc3817573598f190'"
+"Use hak-gal add_fact with statement='IstArtVon(Sokrates,Mensch)' and auth_token='<YOUR_TOKEN_HERE>'"
 ```
 
 ### 1.5 delete_fact
@@ -196,7 +207,7 @@ Die HAK-GAL Hexagonal Suite stellt genau 29 MCP-Tools über den Model Context Pr
 
 **Beispiel:**
 ```
-"Use hak-gal project_snapshot with title='Session Ende' and hub_path='D:\\MCP Mods\\HAK_GAL_HEXAGONAL\\PROJECT_HUB' and auth_token='515f57956e7bd15ddc3817573598f190'"
+"Use hak-gal project_snapshot with title='Session Ende' and hub_path='D:\\MCP Mods\\HAK_GAL_HEXAGONAL\\PROJECT_HUB' and auth_token='<YOUR_TOKEN_HERE>'"
 ```
 
 ### 5.2 project_list_snapshots
@@ -216,7 +227,7 @@ Die HAK-GAL Hexagonal Suite stellt genau 29 MCP-Tools über den Model Context Pr
 
 ### Write-Access Kontrolle
 - Alle schreibenden Operationen erfordern `auth_token`
-- Token: `515f57956e7bd15ddc3817573598f190`
+- Token: `<YOUR_TOKEN_HERE>`
 - Umgebungsvariable: `HAKGAL_WRITE_ENABLED=true`
 
 ### Audit-Logging
@@ -230,7 +241,7 @@ Die HAK-GAL Hexagonal Suite stellt genau 29 MCP-Tools über den Model Context Pr
 
 1. **Session-Ende (Snapshot erstellen):**
 ```
-"Use hak-gal project_snapshot with title='Handover 13.08' and description='29 MCP Tools verifiziert, KB mit 3881 Fakten' and hub_path='D:\\MCP Mods\\HAK_GAL_HEXAGONAL\\PROJECT_HUB' and auth_token='515f57956e7bd15ddc3817573598f190'"
+"Use hak-gal project_snapshot with title='Handover 13.08' and description='29 MCP Tools verifiziert, KB mit 3881 Fakten' and hub_path='D:\\MCP Mods\\HAK_GAL_HEXAGONAL\\PROJECT_HUB' and auth_token='<YOUR_TOKEN_HERE>'"
 ```
 
 2. **Neue Session (Kontext laden):**
@@ -248,7 +259,7 @@ Die HAK-GAL Hexagonal Suite stellt genau 29 MCP-Tools über den Model Context Pr
 ### Wartung und Backup
 ```
 "Use hak-gal health_check"
-"Use hak-gal backup_kb with description='Vor großer Änderung' and auth_token='515f57956e7bd15ddc3817573598f190'"
+"Use hak-gal backup_kb with description='Vor großer Änderung' and auth_token='<YOUR_TOKEN_HERE>'"
 ```
 
 ## Performance-Metriken
@@ -276,7 +287,7 @@ Alle Tools folgen den HAK/GAL Verfassungsartikeln:
    - Prüfen: `%APPDATA%\Claude\logs\mcp.log`
 
 2. **Token-Fehler bei Schreiboperationen**
-   - Lösung: Token korrekt angeben: `auth_token='515f57956e7bd15ddc3817573598f190'`
+   - Lösung: Token korrekt angeben: `auth_token='<YOUR_TOKEN_HERE>'`
 
 3. **Keine Tools verfügbar**
    - Lösung: Config prüfen in `%APPDATA%\Claude\claude_desktop_config.json`

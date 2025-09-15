@@ -1,3 +1,14 @@
+---
+title: "Technical Handover Mcp Integration"
+created: "2025-09-15T00:08:01.031085Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # HAK-GAL HEXAGONAL MCP Integration - Complete Technical Handover
 
 **Document ID:** HAK-GAL-MCP-INTEGRATION-HANDOVER-20250813  

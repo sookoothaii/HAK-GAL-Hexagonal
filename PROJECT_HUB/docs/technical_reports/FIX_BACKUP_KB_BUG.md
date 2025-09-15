@@ -1,3 +1,14 @@
+---
+title: "Fix Backup Kb Bug"
+created: "2025-09-15T00:08:01.103665Z"
+author: "system-cleanup"
+topics: ["technical_reports"]
+tags: ["auto-generated"]
+privacy: "internal"
+summary_200: |-
+  Auto-generated frontmatter. Document requires review.
+---
+
 # Fix für backup_kb Bug
 ## Problem
 Die backup_kb Funktion in hak_gal_mcp_sqlite_full.py wirft einen Fehler:
@@ -30,6 +41,6 @@ elif tool_name == "backup_kb":
 ## Workaround (ohne Neustart)
 Nutze backup_kb OHNE description Parameter:
 ```python
-backup_kb(auth_token="515f57956e7bd15ddc3817573598f190")
+backup_kb(auth_token="<YOUR_TOKEN_HERE>")
 # Statt: backup_kb(description="test", auth_token="...")
 ```
