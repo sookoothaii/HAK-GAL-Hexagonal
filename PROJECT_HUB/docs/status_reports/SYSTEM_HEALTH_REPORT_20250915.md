@@ -30,7 +30,7 @@ System is **OPERATIONAL** with minor security remediations completed. Database h
   - HasProperty: 655 facts
   - HasPurpose: 630 facts
   - Causes: 558 facts
-- **Last Update**: 2025-01-16 (empirical validation reports)
+- **Last Update**: 2025-09-16 (empirical validation reports)
 
 ### Performance
 - Query time: <2ms (verified)
@@ -114,7 +114,7 @@ agent_hub/
 
 ### High Priority
 1. **Frontmatter Migration**: Only 17/372 documents (4.5%) have proper frontmatter
-2. **Knowledge Base Age**: Latest facts from January 2025 (8 months old)
+2. **Knowledge Base Age**: Latest facts from September 2025 (8 months old)
 3. **Agent Participation**: Only 1 active agent report in hub
 
 ### Medium Priority

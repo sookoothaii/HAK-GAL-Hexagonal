@@ -10,7 +10,7 @@ summary_200: |-
 ---
 
 # META-TOOLS INTEGRATION - EXECUTIVE SUMMARY
-**Datum: 2025-01-11**
+**Datum: 2025-09-11**
 
 ---
 

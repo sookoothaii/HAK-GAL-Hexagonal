@@ -41,11 +41,11 @@ Complete technical documentation of the successful V3 redesign and implementatio
 Technical report documenting the complete V3 redesign, implementation, and testing.
 
 ### KB Cleanup Report
-**[KB_CLEANUP_REPORT_2025-01-27.md](KB_CLEANUP_REPORT_2025-01-27.md)**  
+**[KB_CLEANUP_REPORT_2025-09-27.md](KB_CLEANUP_REPORT_2025-09-27.md)**  
 Documentation of knowledge base cleanup: 6,713 -> 4,225 facts
 
 ### Governance Corrected Plan
-**[HAK_GAL_ENGINES_GOVERNANCE_CORRECTED_PLAN_2025-01-27.md](HAK_GAL_ENGINES_GOVERNANCE_CORRECTED_PLAN_2025-01-27.md)**  
+**[HAK_GAL_ENGINES_GOVERNANCE_CORRECTED_PLAN_2025-09-27.md](HAK_GAL_ENGINES_GOVERNANCE_CORRECTED_PLAN_2025-09-27.md)**  
 Original correction plan that identified V2 issues
 
 ### Initial Reports (Historical)

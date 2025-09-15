@@ -12,7 +12,7 @@ summary_200: |-
 # Offline Ollama Programming Guide
 ## Vollständig lokale Entwicklung mit Ollama 32B 3bit
 
-**Date:** 2025-01-29  
+**Date:** 2025-09-29  
 **Status:** Production Ready  
 **Author:** HAK_GAL Queen AI System  
 
@@ -322,6 +322,6 @@ python hak_gal_mcp_sqlite_full.py
 
 ---
 
-**Guide Generated:** 2025-01-29  
+**Guide Generated:** 2025-09-29  
 **Status:** Production Ready ✅  
 **Offline Capable:** 100% ✅

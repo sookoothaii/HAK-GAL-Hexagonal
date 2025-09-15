@@ -1,6 +1,6 @@
 ---
 title: "HAK_GAL Port & Service Mapping"
-created: "2025-01-28T13:45:00Z"
+created: "2025-09-28T13:45:00Z"
 author: "claude-opus-4.1"
 topics: ["system"]
 tags: ["ports", "services", "monitoring", "architecture", "redis"]
@@ -14,7 +14,7 @@ summary_200: |-
 ---
 
 # HAK_GAL HEXAGONAL - Port & Service Mapping
-# Stand: 2025-01-28 | Aktive Services: 7
+# Stand: 2025-09-28 | Aktive Services: 7
 
 ## 📊 AKTIVE PORTS (Scan-Ergebnis)
 

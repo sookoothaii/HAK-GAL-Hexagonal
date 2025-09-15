@@ -12,7 +12,7 @@ summary_200: |-
 # HAK_GAL Search Syntax Guide
 ## Empirische Validierung - Such-Syntax Problem
 
-**Date:** 2025-01-29  
+**Date:** 2025-09-29  
 **Status:** Validated by Claude AI  
 **Issue:** Search syntax sensitivity in `search_knowledge` tool  
 
@@ -135,5 +135,5 @@ search_knowledge(query="UsesOllama", limit=20)
 ---
 
 **Validated by:** Claude AI  
-**Date:** 2025-01-29  
+**Date:** 2025-09-29  
 **Status:** Production Ready ✅

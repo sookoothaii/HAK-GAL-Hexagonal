@@ -11,7 +11,7 @@ summary_200: |-
 
 # HAK_GAL COHERENCE PROTOCOL v2.0 - CORRECTED
 # Deterministisch, ohne input(), mit automatischer Konfliktauflösung
-# Stand: 2025-01-28
+# Stand: 2025-09-28
 
 ## KRITISCHE FIXES GEGENÜBER v1.0
 

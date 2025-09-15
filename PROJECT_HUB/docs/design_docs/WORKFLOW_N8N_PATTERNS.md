@@ -10,7 +10,7 @@ summary_200: |-
 ---
 
 # Workflow Patterns: n8n Best Practices für HAK-GAL
-**Date**: 2025-01-16  
+**Date**: 2025-09-16  
 **Purpose**: Mapping n8n workflow patterns to HAK-GAL WorkflowPro capabilities
 
 ## Overview
@@ -319,7 +319,7 @@ Periodic State Backup:
     window: '1h',
     retry_after: 3600
   },
-  timestamp: '2025-01-16T15:30:00Z',
+  timestamp: '2025-09-16T15:30:00Z',
   workflow_id: 'wf-123',
   node_id: 'http-request-1'
 }
