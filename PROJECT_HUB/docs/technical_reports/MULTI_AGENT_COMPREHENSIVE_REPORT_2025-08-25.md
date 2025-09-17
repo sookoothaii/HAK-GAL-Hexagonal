@@ -254,7 +254,7 @@ socket.emit('cursor_identify', identifyData);
 ```bash
 # .env Datei
 HAKGAL_API_KEY=hg_sk_${HAKGAL_AUTH_TOKEN}
-GEMINI_API_KEY=AIzaSyBTLyMNGxQ5TlIvfm2bWYqImrZ1PBVthFk
+GEMINI_API_KEY=<YOUR_GOOGLE_API_KEY_HERE>
 ```
 
 #### Implementierung

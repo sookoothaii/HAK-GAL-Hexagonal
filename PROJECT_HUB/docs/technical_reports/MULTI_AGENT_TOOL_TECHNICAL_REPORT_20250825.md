@@ -210,7 +210,7 @@ Der Code `def test_function(): return "Hello World"` ist an sich funktional korr
 **Datei:** `.env`
 ```
 HAKGAL_API_KEY=hg_sk_4f9a8e1b7d2c5f6a8b3d9e0c1a7b4f9d
-GEMINI_API_KEY=AIzaSyBTLyMNGxQ5TlIvfm2bWYqImrZ1PBVthFk
+GEMINI_API_KEY=<YOUR_GOOGLE_API_KEY_HERE>
 DEEPSEEK_API_KEY=sk-2b7891364a504f91b2fe85e28710d466
 ```
 
@@ -264,7 +264,7 @@ Task-ID generiert → Status verfolgen → Ergebnis abrufen
 ```bash
 # API-Keys
 HAKGAL_API_KEY=hg_sk_4f9a8e1b7d2c5f6a8b3d9e0c1a7b4f9d
-GEMINI_API_KEY=AIzaSyBTLyMNGxQ5TlIvfm2bWYqImrZ1PBVthFk
+GEMINI_API_KEY=<YOUR_GOOGLE_API_KEY_HERE>
 
 # Server-Konfiguration
 HAKGAL_API_BASE_URL=http://127.0.0.1:5002

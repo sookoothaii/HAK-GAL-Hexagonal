@@ -100,7 +100,7 @@ npm run dev
 
 ## 🔑 API KEYS
 
-- **Gemini:** AIzaSyBTLyMNGxQ5TlIvfm2bWYqImrZ1PBVthFk
+- **Gemini:** <YOUR_GOOGLE_API_KEY_HERE>
 - **DeepSeek:** sk-${HAKGAL_AUTH_TOKEN}  
 - **HAK-GAL:** hg_sk_4f9a8e1b7d2c5f6a8b3d9e0c1a7b4f9d
 

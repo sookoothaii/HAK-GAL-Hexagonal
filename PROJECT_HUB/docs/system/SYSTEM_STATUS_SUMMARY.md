@@ -93,7 +93,7 @@ python disable_auth.py
 
 ```batch
 # These settings work when used together:
-set GEMINI_API_KEY=AIzaSyBTLyMNGxQ5TlIvfm2bWYqImrZ1PBVthFk
+set GEMINI_API_KEY=<YOUR_GOOGLE_API_KEY_HERE>
 set DEEPSEEK_API_KEY=sk-2b7891364a504f91b2fe85e28710d466
 set HAKGAL_API_KEY=hg_sk_${HAKGAL_AUTH_TOKEN}
 set HAKGAL_WRITE_ENABLED=true

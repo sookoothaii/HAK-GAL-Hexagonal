@@ -163,7 +163,7 @@ Trust Score Components:
 ### Environment Configuration
 ```bash
 # HAK_GAL_SUITE/.env (Working)
-GEMINI_API_KEY=AIzaSyBTLyMNGxQ5TlIvfm2bWYqImrZ1PBVthFk
+GEMINI_API_KEY=<YOUR_GOOGLE_API_KEY_HERE>
 DEEPSEEK_API_KEY=sk-${HAKGAL_AUTH_TOKEN}
 MISTRAL_API_KEY=ZS6yataJWZbJ6l5NFQtIKSMCmulJ3qJp  # Invalid but non-blocking
 

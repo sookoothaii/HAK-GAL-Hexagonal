@@ -117,7 +117,7 @@ This causes a cascade failure:
 ```python
 # Replace deletion with preservation
 if 'GEMINI_API_KEY' not in os.environ:
-    os.environ['GEMINI_API_KEY'] = 'AIzaSyBTLyMNGxQ5TlIvfm2bWYqImrZ1PBVthFk'
+    os.environ['GEMINI_API_KEY'] = '<YOUR_GOOGLE_API_KEY_HERE>'
 ```
 
 #### Solution B: Standardize All Launchers
@@ -287,7 +287,7 @@ D:\MCP Mods\HAK_GAL_HEXAGONAL\
 
 ```batch
 # Environment variables that work:
-set GEMINI_API_KEY=AIzaSyBTLyMNGxQ5TlIvfm2bWYqImrZ1PBVthFk
+set GEMINI_API_KEY=<YOUR_GOOGLE_API_KEY_HERE>
 set DEEPSEEK_API_KEY=sk-2b7891364a504f91b2fe85e28710d466
 set HAKGAL_API_KEY=hg_sk_${HAKGAL_AUTH_TOKEN}
 set HAKGAL_WRITE_ENABLED=true

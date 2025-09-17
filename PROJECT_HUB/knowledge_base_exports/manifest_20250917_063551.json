@@ -1,0 +1,58 @@
+{
+  "export_date": "2025-09-17T06:35:52.079751",
+  "total_facts": 18160,
+  "files": {
+    "json": "kb_export_20250917_063551.json",
+    "text": "kb_statements_20250917_063551.txt",
+    "by_predicate": "by_predicate_20250917_063551"
+  },
+  "statistics": {
+    "total_predicates": 37,
+    "top_predicates": [
+      {
+        "predicate": "HasPart",
+        "count": 692
+      },
+      {
+        "predicate": "HasPurpose",
+        "count": 630
+      },
+      {
+        "predicate": "Causes",
+        "count": 558
+      },
+      {
+        "predicate": "HasProperty",
+        "count": 555
+      },
+      {
+        "predicate": "IsDefinedAs",
+        "count": 350
+      },
+      {
+        "predicate": "IsSimilarTo",
+        "count": 180
+      },
+      {
+        "predicate": "IsTypeOf",
+        "count": 173
+      },
+      {
+        "predicate": "HasLocation",
+        "count": 89
+      },
+      {
+        "predicate": "IsA",
+        "count": 87
+      },
+      {
+        "predicate": "ConsistsOf",
+        "count": 68
+      }
+    ]
+  },
+  "file_sizes": {
+    "json_mb": 5.350698471069336,
+    "text_mb": 0.7429494857788086
+  }
+}

@@ -106,7 +106,7 @@
     
     "environment_variables": {
       "required": {
-        "GEMINI_API_KEY": "AIzaSyBTLyMNGxQ5TlIvfm2bWYqImrZ1PBVthFk",
+        "GEMINI_API_KEY": "<YOUR_GOOGLE_API_KEY_HERE>",
         "DEEPSEEK_API_KEY": "sk-2b7891364a504f91b2fe85e28710d466",
         "HAKGAL_API_KEY": "hg_sk_4f9a8e1b7d2c5f6a8b3d9e0c1a7b4f9d",
         "HAKGAL_WRITE_ENABLED": "true",

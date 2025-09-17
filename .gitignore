@@ -151,3 +151,44 @@ snapshot_*/
 *_fixed.py
 *_old.py
 *.backup_*
+
+# === KRITISCHE ERGÄNZUNGEN (17.09.2025) ===
+
+# Database files - NIEMALS committen!
+hexagonal_kb.db
+hexagonal_kb.db-*
+*.db.backup*
+*.db-journal
+*.db-shm
+*.db-wal
+
+# Logs - enthalten sensible Daten
+*.log
+*.jsonl
+logs/
+mcp_server.log
+mcp_server.jsonl
+mcp_write_audit.log
+
+# Executables 
+*.exe
+caddy.exe
+
+# PROJECT_HUB temporäre Dateien
+PROJECT_HUB/file_inventory.json
+PROJECT_HUB/files_to_update.json
+PROJECT_HUB/validation_report_latest.json
+
+# Models (große Dateien)
+models/*.joblib
+models/*.pkl
+models/*.h5
+models/*.pth
+
+# Temporäre JSON Dateien
+*_fixed.json
+*_extracted.json
+*_analysis.json
+*_debug.json
+*_catalog.json
+*_catalog.csv
