@@ -2537,6 +2537,16 @@ class FileSystemMCPServer:
                     await self.handle_tool_call(request)
                 elif method == "notifications/cancelled":
                     logger.info("Received cancellation notification")
+                elif method in ["notifications/initialized", "prompts/list", "resources/list"]:
+                    # These are standard MCP protocol methods - handle silently
+                    logger.debug(f"Handling standard MCP method: {method}")
+                    # Send empty result for these methods
+                    response = {
+                        "jsonrpc": "2.0",
+                        "id": request.get("id"),
+                        "result": {}
+                    }
+                    await self.send_response(response)
                 else:
                     logger.warning(f"Unknown method: {method}")
                     error_response = {

@@ -188,8 +188,8 @@ const ProDashboardEnhanced: React.FC = () => {
               <Badge variant={backendStatus.hrm?.status === 'operational' ? 'default' : 'secondary'} className="text-xs mb-1">
                 SimplifiedHRM
               </Badge>
-              <div className="text-2xl font-bold">3.5M</div>
-              <p className="text-xs text-muted-foreground">Parameters</p>
+              <div className="text-2xl font-bold">1.6M</div>
+              <p className="text-xs text-muted-foreground">Parameters (Trained)</p>
             </div>
             <div>
               <div className="text-xs mb-1">Inference</div>

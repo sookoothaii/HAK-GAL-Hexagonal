@@ -129,8 +129,8 @@ const ProDashboardUltraCompact: React.FC = () => {
                   <Badge variant="outline" className="text-xs py-0 h-5">SimplifiedHRM</Badge>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold">3.5M</div>
-                  <p className="text-xs text-muted-foreground">Parameters</p>
+                  <div className="text-2xl font-bold">1.6M</div>
+                  <p className="text-xs text-muted-foreground">Parameters (Trained)</p>
                 </div>
                 <div className="space-y-1">
                   <div className="flex justify-between text-xs">

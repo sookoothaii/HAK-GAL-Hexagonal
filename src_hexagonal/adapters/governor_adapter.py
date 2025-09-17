@@ -15,6 +15,7 @@ from typing import Dict, Any, Optional, List
 import json
 import random
 import logging
+from .llm_governor_decision_engine import LLMGovernorDecisionEngine
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -33,9 +34,13 @@ class GovernorAdapter:
         # Get current port from environment or default
         self.port = int(os.environ.get('HAKGAL_PORT', '5001'))
         logger.info(f"Governor using port: {self.port}")
+        
+        # Define hex_root FIRST (before using it)
+        self.hex_root = Path(__file__).parent.parent.parent
+        
         self.current_state = {
             'running': False,
-            'mode': 'hexagonal',
+            'mode': 'llm_governor',
             'alpha': 1.0,
             'beta': 1.0,
             'decisions_made': 0,
@@ -53,15 +58,28 @@ class GovernorAdapter:
                     'last_start': None,
                     'runs': 0,
                     'pid': None
+                },
+                'generator': {
+                    'enabled': True,
+                    'process': None,
+                    'last_start': None,
+                    'runs': 0,
+                    'pid': None
                 }
             }
         }
         
+        # Initialize LLM Decision Engine (AFTER hex_root is defined)
+        self.llm_decision_engine = LLMGovernorDecisionEngine(
+            db_path=str(self.hex_root / 'hexagonal_kb.db')
+        )
+        self.use_llm_governor = True  # Enable LLM-based decisions by default
+        
         # Engine paths in HEXAGONAL system
-        self.hex_root = Path(__file__).parent.parent.parent
         self.engine_paths = {
-            'aethelred': self.hex_root / 'src_hexagonal' / 'infrastructure' / 'engines' / 'aethelred_fast.py',
-            'thesis': self.hex_root / 'src_hexagonal' / 'infrastructure' / 'engines' / 'thesis_fast.py'
+            'aethelred': self.hex_root / 'src_hexagonal' / 'infrastructure' / 'engines' / 'aethelred_extended_fixed.py',
+            'thesis': self.hex_root / 'src_hexagonal' / 'infrastructure' / 'engines' / 'thesis_enhanced.py',
+            'generator': self.hex_root / 'src_hexagonal' / 'infrastructure' / 'engines' / 'simple_fact_generator.py'
         }
         
         # Verify engine files exist
@@ -122,14 +140,16 @@ class GovernorAdapter:
             log_file_handle = open(log_file_path, 'w', encoding='utf-8')
 
             # Start engine subprocess
+            # Use different port for engine to avoid conflict with backend
+            engine_port = self.port + 1  # Use backend_port + 1
             cmd = [
                 sys.executable,  # Python executable
                 str(engine_path),
                 '-d', str(duration_minutes / 60),  # Convert to hours
-                '-p', str(self.port)  # Use current backend port
+                '-p', str(engine_port)  # Use different port to avoid conflict
             ]
             
-            logger.info(f"Starting {engine_name} engine for {duration_minutes} minutes on port {self.port}")
+            logger.info(f"Starting {engine_name} engine for {duration_minutes} minutes on port {engine_port}")
             logger.info(f"Command: {' '.join(cmd)}")
             
             print(f"\n🔥 EXECUTING COMMAND:")
@@ -228,20 +248,54 @@ class GovernorAdapter:
     
     def _make_decision(self) -> Dict[str, Any]:
         """
-        Make strategic decision using Thompson Sampling
+        Make strategic decision using LLM Governor or Thompson Sampling fallback
         
         Returns:
             Decision dictionary
         """
-        # Thompson Sampling for engine selection
+        # Use LLM Governor as primary decision maker
+        if self.use_llm_governor:
+            try:
+                # Prepare engine status for LLM
+                engine_status = {
+                    'aethelred_running': (
+                        self.current_state['engines']['aethelred']['process'] and
+                        self.current_state['engines']['aethelred']['process'].poll() is None
+                    ),
+                    'thesis_running': (
+                        self.current_state['engines']['thesis']['process'] and
+                        self.current_state['engines']['thesis']['process'].poll() is None
+                    ),
+                    'aethelred_runs': self.current_state['engines']['aethelred']['runs'],
+                    'thesis_runs': self.current_state['engines']['thesis']['runs']
+                }
+                
+                # Get LLM decision
+                llm_decision = self.llm_decision_engine.make_decision(engine_status)
+                if llm_decision:
+                    logger.info(f"🤖 LLM Governor decided: {llm_decision['engine']} "
+                               f"(confidence: {llm_decision['confidence']:.2f})")
+                    return llm_decision
+                else:
+                    logger.warning("LLM Governor failed, falling back to Thompson Sampling")
+            except Exception as e:
+                logger.error(f"LLM Governor error: {e}, falling back to Thompson Sampling")
+        
+        # Thompson Sampling fallback
+        logger.info("📊 Using Thompson Sampling fallback")
         aethelred_score = random.betavariate(
-            self.current_state['alpha'] + 1,
-            self.current_state['beta'] + 1
+            self.current_state['alpha'] + 3,  # Slightly favor Aethelred for fact generation
+            self.current_state['beta'] + 1    # Low beta = high success rate
         )
         
         thesis_score = random.betavariate(
-            self.current_state['alpha'] + 0.5,
-            self.current_state['beta'] + 1.5
+            self.current_state['alpha'] + 2,  # Give Thesis a fair chance
+            self.current_state['beta'] + 2    # Moderate beta for thesis analysis
+        )
+        
+        generator_score = random.betavariate(
+            self.current_state['alpha'] + 5,  # Favor generator for consistent fact generation
+            self.current_state['beta'] + 1    # Low beta = high success rate
         )
         
         # Check which engines are available to start
@@ -255,6 +309,11 @@ class GovernorAdapter:
             self.current_state['engines']['thesis']['process'].poll() is None
         )
         
+        generator_running = (
+            self.current_state['engines']['generator']['process'] and
+            self.current_state['engines']['generator']['process'].poll() is None
+        )
+        
         decision = {
             'timestamp': time.time(),
             'action': 'wait',
@@ -263,39 +322,46 @@ class GovernorAdapter:
             'reasoning': []
         }
         
-        # Decide which engine to start
-        if not aethelred_running and not thesis_running:
-            # No engines running - start one
+        # Decide which engine to start - PRIORITIZE GENERATOR
+        if not generator_running:
+            # ALWAYS start generator first for consistent fact generation
+            decision['action'] = 'start_engine'
+            decision['engine'] = 'generator'
+            decision['duration'] = random.uniform(10, 20)  # 10-20 minutes
+            decision['confidence'] = generator_score
+            decision['reasoning'] = ['Generator not running', 'Prioritizing fact generation']
+        elif not aethelred_running and not thesis_running:
+            # No other engines running - start one
             if aethelred_score > thesis_score:
                 decision['action'] = 'start_engine'
                 decision['engine'] = 'aethelred'
                 decision['duration'] = random.uniform(3, 10)  # 3-10 minutes
                 decision['confidence'] = aethelred_score
-                decision['reasoning'] = ['No engines running', 'Aethelred scored higher']
+                decision['reasoning'] = ['Generator running', 'No other engines', 'Aethelred scored higher']
             else:
                 decision['action'] = 'start_engine'
                 decision['engine'] = 'thesis'
                 decision['duration'] = random.uniform(5, 15)  # 5-15 minutes
                 decision['confidence'] = thesis_score
-                decision['reasoning'] = ['No engines running', 'Thesis scored higher']
+                decision['reasoning'] = ['Generator running', 'No other engines', 'Thesis scored higher']
         
         elif not aethelred_running and thesis_running:
-            # Only thesis running - maybe start aethelred
+            # Generator + thesis running - maybe start aethelred
             if aethelred_score > 0.7:
                 decision['action'] = 'start_engine'
                 decision['engine'] = 'aethelred'
                 decision['duration'] = random.uniform(3, 8)
                 decision['confidence'] = aethelred_score
-                decision['reasoning'] = ['Thesis already running', 'High score for Aethelred']
+                decision['reasoning'] = ['Generator + Thesis running', 'High score for Aethelred']
         
         elif aethelred_running and not thesis_running:
-            # Only aethelred running - maybe start thesis
+            # Generator + aethelred running - maybe start thesis
             if thesis_score > 0.6:
                 decision['action'] = 'start_engine'
                 decision['engine'] = 'thesis'
                 decision['duration'] = random.uniform(5, 10)
                 decision['confidence'] = thesis_score
-                decision['reasoning'] = ['Aethelred already running', 'Good score for Thesis']
+                decision['reasoning'] = ['Generator + Aethelred running', 'Good score for Thesis']
         
         else:
             # Both running - wait
@@ -441,7 +507,7 @@ class GovernorAdapter:
     
     def set_mode(self, mode: str) -> bool:
         """Set Governor mode"""
-        valid_modes = ['hexagonal', 'thompson_sampling', 'epsilon_greedy', 'random', 'disabled']
+        valid_modes = ['llm_governor', 'hexagonal', 'thompson_sampling', 'epsilon_greedy', 'random', 'disabled']
         
         if mode not in valid_modes:
             logger.error(f"Invalid mode: {mode}")

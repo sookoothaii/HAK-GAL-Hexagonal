@@ -121,29 +121,33 @@ class FactDataset(Dataset):
             conn.close()
             
     def _parse_fact(self, statement: str) -> Optional[Dict]:
-        """Parse fact into predicate and entities"""
-        # Pattern: Predicate(Entity1, Entity2).
-        pattern = r'^([A-Z][A-Za-z0-9_]*)\(([^,]+),\s*([^\)]+)\)\.$'
+        """Parse fact into predicate and entities (supports multi-argument facts)"""
+        # Pattern: Predicate(Entity1, Entity2, ...).
+        pattern = r'^([A-Z][A-Za-z0-9_]*)\((.*?)\)\.$'
         match = re.match(pattern, statement)
         
         if match:
             predicate = match.group(1)
-            entity1 = match.group(2).strip()
-            entity2 = match.group(3).strip()
+            entities_str = match.group(2)
+            
+            # Split entities (handle multi-argument facts)
+            entities = [e.strip() for e in entities_str.split(',')]
             
             # Add to vocabularies
             if predicate not in self.predicate_vocab:
                 self.predicate_vocab[predicate] = len(self.predicate_vocab)
                 
-            for entity in [entity1, entity2]:
+            for entity in entities:
                 if entity not in self.vocab:
                     self.vocab[entity] = len(self.vocab)
                     
-            return {
-                'statement': statement,
-                'predicate': predicate,
-                'entities': [entity1, entity2]
-            }
+            # For now, take first 2 entities for binary relation (can be extended)
+            if len(entities) >= 2:
+                return {
+                    'statement': statement,
+                    'predicate': predicate,
+                    'entities': entities[:2]  # Use first 2 for compatibility
+                }
         return None
         
     def _generate_training_data(self):
@@ -331,10 +335,10 @@ def main():
     
     # Configuration
     config = {
-        'db_path': 'D:/MCP Mods/HAK_GAL_HEXAGONAL/k_assistant.db',
-        'model_save_path': 'D:/MCP Mods/HAK_GAL_HEXAGONAL/models/hrm_model_v2.pth',
-        'max_facts': 5000,
-        'batch_size': 32,
+        'db_path': 'D:/MCP Mods/HAK_GAL_HEXAGONAL/hexagonal_kb.db',  # CORRECT DATABASE!
+        'model_save_path': 'D:/MCP Mods/HAK_GAL_HEXAGONAL/models/hrm_model_v3_trained.pth',
+        'max_facts': 15000,  # Use all 15k facts!
+        'batch_size': 64,    # Larger batch for RTX 3080 Ti
         'num_epochs': 100,
         'learning_rate': 0.001,
         'validation_split': 0.2

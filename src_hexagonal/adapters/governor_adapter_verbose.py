@@ -289,15 +289,15 @@ class GovernorAdapter:
         Returns:
             Decision dictionary
         """
-        # Thompson Sampling for engine selection
+        # Thompson Sampling for engine selection - BALANCED for both engines
         aethelred_score = random.betavariate(
-            self.current_state['alpha'] + 1,
-            self.current_state['beta'] + 1
+            self.current_state['alpha'] + 3,  # Slightly favor Aethelred for fact generation
+            self.current_state['beta'] + 1    # Low beta = high success rate
         )
         
         thesis_score = random.betavariate(
-            self.current_state['alpha'] + 0.5,
-            self.current_state['beta'] + 1.5
+            self.current_state['alpha'] + 2,  # Give Thesis a fair chance
+            self.current_state['beta'] + 2    # Moderate beta for thesis analysis
         )
         
         print(f"   Thompson Sampling Scores:")

@@ -121,7 +121,7 @@ COMPLEX_FACT_SCHEMA = {
     "max_metadata_properties": 10
 }
 
-# Valid predicates whitelist
+# Valid predicates whitelist - EXTENDED for Multi-Argument Facts
 VALID_PREDICATES = {
     'IsA', 'IsType', 'IsTypeOf', 'TypeOf',
     'HasPart', 'HasProperty', 'HasLocation', 'HasPurpose',
@@ -138,7 +138,55 @@ VALID_PREDICATES = {
     'Contains', 'Produces', 'Enables', 'Provides', 'Supports', 'Includes',
     'Creates', 'Generates', 'Transforms', 'Affects', 'Influences',
     'Determines', 'Controls', 'Regulates', 'Prevents', 'Enhances',
-    'RelatesTo', 'ConnectsTo', 'Application', 'UsedIn', 'Challenges', 'DevelopedBy'
+    'RelatesTo', 'ConnectsTo', 'Application', 'UsedIn', 'Challenges', 'DevelopedBy',
+    # EXTENDED PREDICATES for Multi-Argument Facts
+    'Treatment', 'Located', 'Photosynthesis', 'Reaction', 'Protocol', 'Force',
+    'CellDivision', 'Transcription', 'Translation', 'Metabolism', 'Synthesis',
+    'ChemicalReaction', 'BiologicalProcess', 'PhysicalProcess', 'MathematicalOperation',
+    'Transaction', 'Transfer', 'Communication', 'Interaction', 'Relationship',
+    'Measurement', 'Calculation', 'Analysis', 'Observation', 'Experiment',
+    'Hypothesis', 'Theory', 'Law', 'Principle', 'Concept', 'Model',
+    'System', 'Process', 'Function', 'Operation', 'Procedure', 'Method',
+    'Algorithm', 'Formula', 'Equation', 'Expression', 'Statement', 'Proposition',
+    # NEUE PRÄDIKATE für mehr Themenvarianz
+    'Orbit', 'Gravity', 'Planet', 'Star', 'Galaxy', 'Constellation', 'Telescope',
+    'Earthquake', 'Volcano', 'Fossil', 'Mineral', 'Rock', 'Crystal', 'Erosion',
+    'Memory', 'Learning', 'Behavior', 'Emotion', 'Cognition', 'Perception',
+    'Society', 'Culture', 'Community', 'Institution', 'Organization', 'Group',
+    'Event', 'Period', 'Era', 'Civilization', 'War', 'Revolution', 'Discovery',
+    'Language', 'Grammar', 'Syntax', 'Semantics', 'Phonetics', 'Morphology',
+    'Logic', 'Reasoning', 'Argument', 'Theory', 'Concept', 'Principle', 'Ethics',
+    'Painting', 'Sculpture', 'Design', 'Style', 'Technique', 'Medium', 'Color',
+    'Composition', 'Melody', 'Harmony', 'Rhythm', 'Instrument', 'Genre', 'Performance',
+    'Novel', 'Poetry', 'Drama', 'Character', 'Plot', 'Theme', 'Symbolism',
+    'Building', 'Structure', 'Material', 'Foundation', 'Roof', 'Wall', 'Window',
+    'Machine', 'Device', 'Component', 'System', 'Process', 'Automation', 'Control',
+    'Robot', 'Sensor', 'Actuator', 'Programming', 'Navigation', 'Manipulation',
+    'Intelligence', 'Learning', 'Neural', 'Pattern', 'Classification', 'Prediction',
+    'Security', 'Privacy', 'Authentication', 'Authorization', 'Blockchain', 'Hash',
+    'Climate', 'Weather', 'Temperature', 'Precipitation', 'Wind', 'Pressure',
+    'Ecosystem', 'Species', 'Habitat', 'Biodiversity', 'Conservation', 'Pollution',
+    'Gene', 'DNA', 'RNA', 'Protein', 'Chromosome', 'Allele', 'Genotype',
+    'Brain', 'Neuron', 'Synapse', 'Neurotransmitter', 'Cortex', 'Memory', 'Attention',
+    'Immune', 'Antibody', 'Antigen', 'Pathogen', 'Infection', 'Inflammation',
+    'Medicine', 'Therapy', 'Dosage', 'SideEffect', 'Contraindication', 'Efficacy',
+    'Operation', 'Procedure', 'Anesthesia', 'Recovery', 'Complication', 'Success',
+    'Money', 'Bank', 'Credit', 'Loan', 'Interest', 'Profit', 'Loss', 'Revenue',
+    'Customer', 'Product', 'Service', 'Brand', 'Advertising', 'Promotion', 'Sale',
+    'Leadership', 'Strategy', 'Planning', 'Execution', 'Team', 'Goal', 'Objective',
+    'Startup', 'Innovation', 'Venture', 'Funding', 'Growth', 'Scale', 'Exit',
+    'Government', 'Policy', 'Law', 'Regulation', 'Democracy', 'Election', 'Vote',
+    'Justice', 'Court', 'Judge', 'Jury', 'Verdict', 'Sentence', 'Appeal',
+    'Morality', 'Virtue', 'Duty', 'Rights', 'Responsibility', 'Freedom', 'Equality',
+    'Human', 'Evolution', 'Culture', 'Tradition', 'Custom', 'Ritual', 'Belief',
+    'Artifact', 'Excavation', 'Site', 'Dating', 'Analysis', 'Interpretation',
+    'Dinosaur', 'Extinction', 'Fossil', 'Evolution', 'Adaptation', 'Survival',
+    'Storm', 'Hurricane', 'Tornado', 'Blizzard', 'Drought', 'Flood', 'Forecast',
+    'Ocean', 'Sea', 'Current', 'Tide', 'Wave', 'Depth', 'Marine', 'Aquatic',
+    # BATCH 1-2 DOMAIN PREDICATES (Sonnet 3.5 Implementation)
+    'CelestialBody', 'Exoplanet', 'Tectonic', 'Personality', 'Development', 'Disorder',
+    'BrainRegion', 'Plasticity', 'Imaging', 'Mobility', 'Phoneme', 'Argument',
+    'Movement', 'Roof', 'Foundation'
 }
 
 # ============================================================================

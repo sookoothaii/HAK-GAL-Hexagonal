@@ -12,6 +12,7 @@ import wsService from '@/services/websocket';
 import { toast } from 'sonner';
 import { safeApiCall } from '@/utils/api-helpers';
 import { httpClient } from '@/services/api';
+import AdvancedGovernorControl from '@/components/AdvancedGovernorControl';
 
 const ProGovernorControl: React.FC = () => {
   const store = useGovernorStore();
@@ -19,6 +20,7 @@ const ProGovernorControl: React.FC = () => {
   const [autoMode, setAutoMode] = useState(true);
   const [loopInterval, setLoopInterval] = useState(10);
   const [bootstrapThreshold, setBootstrapThreshold] = useState(100);
+  const [useLLMGovernor, setUseLLMGovernor] = useState(false);
   
   // Get governor state from store
   const governorRunning = store.governor?.running || false;
@@ -34,10 +36,13 @@ const ProGovernorControl: React.FC = () => {
     try {
       const endpoint = governorRunning ? '/api/governor/stop' : '/api/governor/start';
       
+      // Prepare request body for start command
+      const requestBody = governorRunning ? {} : { use_llm: useLLMGovernor };
+      
       // Try API call with robust error handling
       const response = await safeApiCall(
         async () => {
-          const res = await httpClient.post(endpoint);
+          const res = await httpClient.post(endpoint, requestBody);
           return res.data;
         },
         { 
@@ -50,15 +55,18 @@ const ProGovernorControl: React.FC = () => {
       );
       
       if (response && response.success) {
-        toast.success(governorRunning ? 'Governor stopped' : 'Governor started');
+        const governorType = useLLMGovernor ? 'LLM' : 'Thompson';
+        toast.success(governorRunning ? 'Governor stopped' : `${governorType} Governor started`);
         // Also emit WebSocket event for real-time update
         wsService.emit('governor_control', { 
-          action: governorRunning ? 'stop' : 'start' 
+          action: governorRunning ? 'stop' : 'start',
+          use_llm: useLLMGovernor
         });
       } else {
         // Fallback: Try WebSocket-only control
         wsService.emit('governor_control', { 
-          action: governorRunning ? 'stop' : 'start' 
+          action: governorRunning ? 'stop' : 'start',
+          use_llm: useLLMGovernor
         });
         toast.info(governorRunning ? 'Stop command sent' : 'Start command sent');
       }
@@ -66,7 +74,8 @@ const ProGovernorControl: React.FC = () => {
       console.error('Error controlling governor:', error);
       // Last resort: Try WebSocket
       wsService.emit('governor_control', { 
-        action: governorRunning ? 'stop' : 'start' 
+        action: governorRunning ? 'stop' : 'start',
+        use_llm: useLLMGovernor
       });
       toast.warning('Command sent via WebSocket fallback');
     } finally {
@@ -200,6 +209,37 @@ const ProGovernorControl: React.FC = () => {
             />
           </div>
           
+          {/* Governor Type Selection */}
+          {!governorRunning && (
+            <div className="mb-4 p-4 border rounded-lg bg-muted/30">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label htmlFor="llm-governor" className="text-sm font-medium">
+                    Governor Type
+                  </Label>
+                  <p className="text-xs text-muted-foreground">
+                    Choose between Thompson Sampling or LLM-powered evaluation
+                  </p>
+                </div>
+                <Switch
+                  id="llm-governor"
+                  checked={useLLMGovernor}
+                  onCheckedChange={setUseLLMGovernor}
+                />
+              </div>
+              <div className="mt-2 flex items-center gap-2">
+                <Badge variant={useLLMGovernor ? 'default' : 'outline'}>
+                  {useLLMGovernor ? 'LLM Governor (Groq)' : 'Thompson Sampling'}
+                </Badge>
+                {useLLMGovernor && (
+                  <Badge variant="secondary" className="text-xs">
+                    Hybrid Strategy (ε=0.2)
+                  </Badge>
+                )}
+              </div>
+            </div>
+          )}
+
           <Button
             onClick={handleToggleGovernor}
             disabled={isStarting}
@@ -219,7 +259,7 @@ const ProGovernorControl: React.FC = () => {
             ) : (
               <>
                 <Play className="w-4 h-4 mr-2" />
-                Start Governor
+                Start {useLLMGovernor ? 'LLM' : 'Thompson'} Governor
               </>
             )}
           </Button>
@@ -333,6 +373,75 @@ const ProGovernorControl: React.FC = () => {
         </Card>
       )}
       
+      {/* Governor Type Info */}
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Sparkles className="w-5 h-5" />
+            Governor Types
+          </CardTitle>
+          <CardDescription>
+            Choose the right governor for your needs
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid md:grid-cols-2 gap-4">
+            {/* Thompson Governor */}
+            <div className="p-4 border rounded-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <Cpu className="w-4 h-4 text-blue-500" />
+                <h4 className="font-medium">Thompson Sampling</h4>
+              </div>
+              <p className="text-sm text-muted-foreground mb-3">
+                Fast, cost-effective algorithm-based decisions
+              </p>
+              <div className="space-y-1 text-xs">
+                <div className="flex justify-between">
+                  <span>Speed:</span>
+                  <Badge variant="outline" className="text-green-600">⚡ Very Fast</Badge>
+                </div>
+                <div className="flex justify-between">
+                  <span>Cost:</span>
+                  <Badge variant="outline" className="text-green-600">💰 Free</Badge>
+                </div>
+                <div className="flex justify-between">
+                  <span>Accuracy:</span>
+                  <Badge variant="outline" className="text-blue-600">📊 Good</Badge>
+                </div>
+              </div>
+            </div>
+
+            {/* LLM Governor */}
+            <div className="p-4 border rounded-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <Brain className="w-4 h-4 text-purple-500" />
+                <h4 className="font-medium">LLM Governor</h4>
+              </div>
+              <p className="text-sm text-muted-foreground mb-3">
+                AI-powered evaluation with Groq Cloud integration
+              </p>
+              <div className="space-y-1 text-xs">
+                <div className="flex justify-between">
+                  <span>Speed:</span>
+                  <Badge variant="outline" className="text-yellow-600">🐌 Slower</Badge>
+                </div>
+                <div className="flex justify-between">
+                  <span>Cost:</span>
+                  <Badge variant="outline" className="text-orange-600">💵 $0.006/1k</Badge>
+                </div>
+                <div className="flex justify-between">
+                  <span>Accuracy:</span>
+                  <Badge variant="outline" className="text-purple-600">🎯 Excellent</Badge>
+                </div>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Advanced Generator Control */}
+      <AdvancedGovernorControl />
+
       {/* Info Alert */}
       <Alert className="mt-6">
         <Brain className="w-4 h-4" />

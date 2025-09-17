@@ -1,0 +1,185 @@
+{
+  "table": "facts",
+  "samples": [
+    {
+      "predicate": "IsTypeOf",
+      "statement": "IsTypeOf(NewKeynesianism, ModernAdaptations)."
+    },
+    {
+      "predicate": "IsTypeOf",
+      "statement": "IsTypeOf(framework, security)."
+    },
+    {
+      "predicate": "IsTypeOf",
+      "statement": "IsTypeOf(NitrogenousBase, Cytosine)."
+    },
+    {
+      "predicate": "IsTypeOf",
+      "statement": "IsTypeOf(H2O, nitrogen)."
+    },
+    {
+      "predicate": "IsTypeOf",
+      "statement": "IsTypeOf(integral, calculus)."
+    },
+    {
+      "predicate": "IsTypeOf",
+      "statement": "IsTypeOf(O2, carbon)."
+    },
+    {
+      "predicate": "IsTypeOf",
+      "statement": "IsTypeOf(prime, vector)."
+    },
+    {
+      "predicate": "IsTypeOf",
+      "statement": "IsTypeOf(TCP/IP, client)."
+    },
+    {
+      "predicate": "HasPart",
+      "statement": "HasPart(CounterCyclicalPolicies, DeficitsInDownturns)."
+    },
+    {
+      "predicate": "HasPart",
+      "statement": "HasPart(CH4, nitrogen)."
+    },
+    {
+      "predicate": "HasPart",
+      "statement": "HasPart(chromosome, enzyme)."
+    },
+    {
+      "predicate": "HasPart",
+      "statement": "HasPart(equation, derivative)."
+    },
+    {
+      "predicate": "HasPart",
+      "statement": "HasPart(Pyramids, GizaGreatPyramid)."
+    },
+    {
+      "predicate": "HasPart",
+      "statement": "HasPart(proton, gravity)."
+    },
+    {
+      "predicate": "HasPart",
+      "statement": "HasPart(Evidence, MagneticStriping)."
+    },
+    {
+      "predicate": "HasPart",
+      "statement": "HasPart(topology, algebra)."
+    },
+    {
+      "predicate": "HasProperty",
+      "statement": "HasProperty(Women, DivorceRights)."
+    },
+    {
+      "predicate": "HasProperty",
+      "statement": "HasProperty(Socrates, Philosopher)."
+    },
+    {
+      "predicate": "HasProperty",
+      "statement": "HasProperty(chromosome, essential)."
+    },
+    {
+      "predicate": "HasProperty",
+      "statement": "HasProperty(Algorithm, Output)."
+    },
+    {
+      "predicate": "HasProperty",
+      "statement": "HasProperty(protocol, fundamental)."
+    },
+    {
+      "predicate": "HasProperty",
+      "statement": "HasProperty(CategoriesOfUnderstanding,Relation)."
+    },
+    {
+      "predicate": "HasProperty",
+      "statement": "HasProperty(prime, complex)."
+    },
+    {
+      "predicate": "HasProperty",
+      "statement": "HasProperty(QuantumEntanglement, NoClassicalAnalog)."
+    },
+    {
+      "predicate": "DependsOn",
+      "statement": "DependsOn(calculus, function)."
+    },
+    {
+      "predicate": "DependsOn",
+      "statement": "DependsOn(chromosome, RNA)."
+    },
+    {
+      "predicate": "DependsOn",
+      "statement": "DependsOn(matrix, equation)."
+    },
+    {
+      "predicate": "DependsOn",
+      "statement": "DependsOn(graph, theorem)."
+    },
+    {
+      "predicate": "DependsOn",
+      "statement": "DependsOn(axiom, matrix)."
+    },
+    {
+      "predicate": "DependsOn",
+      "statement": "DependsOn(matrix, proof)."
+    },
+    {
+      "predicate": "DependsOn",
+      "statement": "DependsOn(NH3, catalyst)."
+    },
+    {
+      "predicate": "DependsOn",
+      "statement": "DependsOn(NH3, O2)."
+    },
+    {
+      "predicate": "Causes",
+      "statement": "Causes(quantum, photon)."
+    },
+    {
+      "predicate": "Causes",
+      "statement": "Causes(ion, molecule)."
+    },
+    {
+      "predicate": "Causes",
+      "statement": "Causes(OttomanExpansion, Decline)."
+    },
+    {
+      "predicate": "Causes",
+      "statement": "Causes(neutron, wave)."
+    },
+    {
+      "predicate": "Causes",
+      "statement": "Causes(NeuralNetworks, BrainFunctions)."
+    },
+    {
+      "predicate": "Causes",
+      "statement": "Causes(H2O, CO2)."
+    },
+    {
+      "predicate": "Causes",
+      "statement": "Causes(HTTP, SQL)."
+    },
+    {
+      "predicate": "Causes",
+      "statement": "Causes(organism, chromosome)."
+    },
+    {
+      "predicate": "LocatedAt",
+      "statement": "LocatedAt(KnowledgeBase, HexagonalSystem)."
+    },
+    {
+      "predicate": "LocatedAt",
+      "statement": "LocatedAt(CPU, Computer)."
+    },
+    {
+      "predicate": "LocatedAt",
+      "statement": "LocatedAt(SupermassiveBlackHole, GalacticCenter)."
+    },
+    {
+      "predicate": "DetectedBy",
+      "statement": "DetectedBy(GravitationalWaves, LIGO)."
+    },
+    {
+      "predicate": "DetectedBy",
+      "statement": "DetectedBy(GravitationalWaves, BlackHoleMerger)."
+    }
+  ]
+}

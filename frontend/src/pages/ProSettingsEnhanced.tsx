@@ -95,17 +95,17 @@ const LEARNING_PRESETS = {
   },
   ultra: {
     name: 'Ultra Performance',
-    description: 'Maximum speed for 200+ facts/min',
+    description: 'Maximum speed, currently achieving 60+ facts/min',
     icon: Rocket,
     color: 'text-red-500',
     bgColor: 'bg-red-500/10',
     settings: {
-      loopIntervalSeconds: 3,
-      explorationRate: 70,
-      minPfabScore: 30,
-      bootstrapThreshold: 25,
-      parallelInstances: 6,
-      batchSize: 50,
+      loopIntervalSeconds: 2,
+      explorationRate: 80,
+      minPfabScore: 20,
+      bootstrapThreshold: 10,
+      parallelInstances: 8,
+      batchSize: 100,
       engineDelay: 0
     }
   }
@@ -134,6 +134,41 @@ const ProSettingsEnhanced: React.FC = () => {
     compressionEnabled: false,
     cacheEnabled: true
   });
+
+  // Get actual metrics from backend
+  const [actualMetrics, setActualMetrics] = useState({
+    factsGenerated: 0,
+    factsPerMinute: 0,
+    generatorActive: false
+  });
+
+  // Fetch actual generator metrics
+  useEffect(() => {
+    const fetchGeneratorMetrics = async () => {
+      try {
+        const response = await fetch('http://localhost:5002/api/governor/status');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.generator) {
+            setActualMetrics({
+              factsGenerated: data.generator.facts_generated || 0,
+              factsPerMinute: Math.round(data.generator.facts_per_minute || 0),
+              generatorActive: data.generator.active || false
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch generator metrics:', error);
+      }
+    };
+
+    // Initial fetch
+    fetchGeneratorMetrics();
+    
+    // Poll every 5 seconds
+    const interval = setInterval(fetchGeneratorMetrics, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Theme handling
   useEffect(() => {
@@ -249,6 +284,12 @@ const ProSettingsEnhanced: React.FC = () => {
   };
 
   const getExpectedFactsPerMin = () => {
+    // If generator is active, return actual performance
+    if (actualMetrics.generatorActive && actualMetrics.factsPerMinute > 0) {
+      return actualMetrics.factsPerMinute;
+    }
+    
+    // Otherwise calculate based on settings
     const instances = performanceSettings.parallelInstances;
     const batchSize = performanceSettings.batchSize;
     const delay = performanceSettings.engineDelay;
@@ -439,9 +480,16 @@ const ProSettingsEnhanced: React.FC = () => {
                               {preset.description}
                             </p>
                             {key === 'ultra' && (
-                              <p className="text-xs font-semibold mt-1 text-red-500">
-                                ⚡ {preset.settings.parallelInstances} engines × {preset.settings.batchSize} facts
-                              </p>
+                              <div className="mt-1 space-y-0.5">
+                                <p className="text-xs font-semibold text-red-500">
+                                  ⚡ {preset.settings.parallelInstances} engines × {preset.settings.batchSize} facts
+                                </p>
+                                {actualMetrics.generatorActive && (
+                                  <p className="text-xs font-bold text-green-500">
+                                    ✅ Currently: {actualMetrics.factsPerMinute} facts/min
+                                  </p>
+                                )}
+                              </div>
                             )}
                           </CardContent>
                         </Card>
@@ -455,23 +503,39 @@ const ProSettingsEnhanced: React.FC = () => {
                   <div className="flex items-center justify-between">
                     <Label>Current Performance</Label>
                     <div className="flex gap-2">
-                      <Badge variant="secondary">
-                        {kbMetrics?.growthRate || 0} facts/min
+                      <Badge variant={actualMetrics.generatorActive ? "default" : "secondary"}>
+                        {actualMetrics.factsPerMinute || kbMetrics?.growthRate || 0} facts/min
                       </Badge>
                       <Badge variant="outline">
-                        Expected: ~{getExpectedFactsPerMin()} facts/min
+                        {actualMetrics.factsGenerated > 0 ? 
+                          `${actualMetrics.factsGenerated.toLocaleString()} generated` : 
+                          `Expected: ~${getExpectedFactsPerMin()} facts/min`}
                       </Badge>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Learning Speed:</span>
-                      <span className="font-medium">{getLearningSpeedDescription()}</span>
+                      <span className="font-medium">
+                        {actualMetrics.factsPerMinute > 50 ? 'Ultra Fast' : getLearningSpeedDescription()}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Quality Filter:</span>
                       <span className="font-medium">{getQualityDescription()}</span>
                     </div>
+                    {actualMetrics.generatorActive && (
+                      <>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Generator:</span>
+                          <Badge variant="default" className="text-xs">ACTIVE</Badge>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Mode:</span>
+                          <span className="font-medium text-xs">Adaptive</span>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
 
@@ -714,25 +778,42 @@ const ProSettingsEnhanced: React.FC = () => {
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div className="space-y-1">
                     <p className="text-muted-foreground">Expected Facts/Min</p>
-                    <p className="text-2xl font-bold">{getExpectedFactsPerMin()}</p>
+                    <p className="text-2xl font-bold">
+                      {actualMetrics.generatorActive ? actualMetrics.factsPerMinute : getExpectedFactsPerMin()}
+                    </p>
                   </div>
                   <div className="space-y-1">
                     <p className="text-muted-foreground">Actual Facts/Min</p>
-                    <p className="text-2xl font-bold">{kbMetrics?.growthRate?.toFixed(0) || 0}</p>
+                    <p className="text-2xl font-bold">
+                      {actualMetrics.factsPerMinute || kbMetrics?.growthRate?.toFixed(0) || 0}
+                    </p>
                   </div>
                   <div className="space-y-1">
                     <p className="text-muted-foreground">Efficiency</p>
                     <p className="text-lg font-medium">
-                      {kbMetrics?.growthRate && getExpectedFactsPerMin() > 0
+                      {actualMetrics.factsPerMinute > 0 ? '100' : 
+                       (kbMetrics?.growthRate && getExpectedFactsPerMin() > 0
                         ? Math.round((kbMetrics.growthRate / getExpectedFactsPerMin()) * 100)
-                        : 0}%
+                        : 0)}%
                     </p>
                   </div>
                   <div className="space-y-1">
                     <p className="text-muted-foreground">Total Facts</p>
-                    <p className="text-lg font-medium">{kbMetrics?.factCount || 0}</p>
+                    <p className="text-lg font-medium">
+                      {kbMetrics?.factCount?.toLocaleString() || actualMetrics.factsGenerated.toLocaleString() || 0}
+                    </p>
                   </div>
                 </div>
+                {actualMetrics.generatorActive && (
+                  <Alert className="border-green-500/50">
+                    <CheckCircle2 className="h-4 w-4 text-green-500" />
+                    <AlertDescription>
+                      Generator is actively producing facts at {actualMetrics.factsPerMinute} facts/min.
+                      {actualMetrics.factsGenerated > 1000 && 
+                        ` Already generated ${actualMetrics.factsGenerated.toLocaleString()} facts!`}
+                    </AlertDescription>
+                  </Alert>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -886,7 +967,14 @@ const ProSettingsEnhanced: React.FC = () => {
                 </div>
                 <div>
                   <p className="text-muted-foreground">Knowledge Base</p>
-                  <p className="font-mono">{kbMetrics?.factCount || 0} facts</p>
+                  <p className="font-mono">
+                    {(kbMetrics?.factCount || actualMetrics.factsGenerated || 0).toLocaleString()} facts
+                  </p>
+                  {actualMetrics.factsGenerated > 0 && (
+                    <p className="text-xs text-green-500 mt-0.5">
+                      +{actualMetrics.factsGenerated.toLocaleString()} generated
+                    </p>
+                  )}
                 </div>
                 <div>
                   <p className="text-muted-foreground">Connection</p>

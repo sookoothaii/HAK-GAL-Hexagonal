@@ -22,7 +22,7 @@ def run_engine_async(task_id, engine_type, params):
         if engine_type == 'thesis':
             engine_path = Path("D:/MCP Mods/HAK_GAL_HEXAGONAL/src_hexagonal/infrastructure/engines/thesis_fast.py")
         elif engine_type == 'aethelred':
-            engine_path = Path("D:/MCP Mods/HAK_GAL_HEXAGONAL/src_hexagonal/infrastructure/engines/aethelred_fast.py")
+            engine_path = Path("D:/MCP Mods/HAK_GAL_HEXAGONAL/src_hexagonal/infrastructure/engines/aethelred_extended.py")
         else:
             raise ValueError(f"Unknown engine: {engine_type}")
         

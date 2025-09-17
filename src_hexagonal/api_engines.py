@@ -50,7 +50,7 @@ class EngineRunner:
     def run_aethelred(self, topic="knowledge systems", duration_minutes=1):
         """Run Aethelred engine for fact generation"""
         try:
-            engine_path = Path("D:/MCP Mods/HAK_GAL_HEXAGONAL/src_hexagonal/infrastructure/engines/aethelred_fast.py")
+            engine_path = Path("D:/MCP Mods/HAK_GAL_HEXAGONAL/src_hexagonal/infrastructure/engines/aethelred_extended_fixed.py")
             if not engine_path.exists():
                 return {"error": "Aethelred engine not found", "success": False}
             

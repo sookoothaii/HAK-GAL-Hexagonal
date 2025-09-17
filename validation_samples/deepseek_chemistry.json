@@ -1,0 +1,109 @@
+{
+  "table": "facts",
+  "samples": [
+    {
+      "predicate": "Bond",
+      "statement": "Bond(O2, CO2, CH4, carbon, chlorine)."
+    },
+    {
+      "predicate": "Bond",
+      "statement": "Bond(hydrogen, nitrogen, carbon, O2, chlorine)."
+    },
+    {
+      "predicate": "Bond",
+      "statement": "Bond(CH4, CO2, sodium, carbon)."
+    },
+    {
+      "predicate": "Bond",
+      "statement": "Bond(oxygen, O2, hydrogen, nitrogen)."
+    },
+    {
+      "predicate": "Bond",
+      "statement": "Bond(CO2, oxygen, O2)."
+    },
+    {
+      "predicate": "Bond",
+      "statement": "Bond(H2O, sodium, CO2, NH3)."
+    },
+    {
+      "predicate": "Bond",
+      "statement": "Bond(hydrogen, NaCl, CH4, H2O)."
+    },
+    {
+      "predicate": "Bond",
+      "statement": "Bond(H2O, CH4, O2)."
+    },
+    {
+      "predicate": "Bond",
+      "statement": "Bond(NH3, chlorine, carbon)."
+    },
+    {
+      "predicate": "Bond",
+      "statement": "Bond(sodium, O2, oxygen)."
+    },
+    {
+      "predicate": "ConsistsOf",
+      "statement": "ConsistsOf(vector, Gauss, equation)."
+    },
+    {
+      "predicate": "ConsistsOf",
+      "statement": "ConsistsOf(TCP/IP, algorithm, API)."
+    },
+    {
+      "predicate": "ConsistsOf",
+      "statement": "ConsistsOf(reaction, ion, CH4)."
+    },
+    {
+      "predicate": "ConsistsOf",
+      "statement": "ConsistsOf(mass, proton, electron)."
+    },
+    {
+      "predicate": "ConsistsOf",
+      "statement": "ConsistsOf(H2O, ion, CH4)."
+    },
+    {
+      "predicate": "ConsistsOf",
+      "statement": "ConsistsOf(chlorine, sodium, CH4)."
+    },
+    {
+      "predicate": "ConsistsOf",
+      "statement": "ConsistsOf(protein, enzyme, ribosome)."
+    },
+    {
+      "predicate": "ConsistsOf",
+      "statement": "ConsistsOf(chlorine, CO2, atom)."
+    },
+    {
+      "predicate": "ConsistsOf",
+      "statement": "ConsistsOf(equation, calculus, limit)."
+    },
+    {
+      "predicate": "ConsistsOf",
+      "statement": "ConsistsOf(prime, topology, Gauss)."
+    },
+    {
+      "predicate": "CombinesWith",
+      "statement": "CombinesWith(NeuralReasoning, SymbolicReasoning)."
+    },
+    {
+      "predicate": "Emits",
+      "statement": "Emits(HawkingRadiation, BlackHole)."
+    },
+    {
+      "predicate": "Emits",
+      "statement": "Emits(Deforestation, GreenhouseGases)."
+    },
+    {
+      "predicate": "Emits",
+      "statement": "Emits(AccretionDisk, XRayRadiation)."
+    },
+    {
+      "predicate": "FormsFrom",
+      "statement": "FormsFrom(BlackHole, CollapsedStar)."
+    },
+    {
+      "predicate": "FormsFrom",
+      "statement": "FormsFrom(BlackHole, CollapsingMassiveStar)."
+    }
+  ]
+}

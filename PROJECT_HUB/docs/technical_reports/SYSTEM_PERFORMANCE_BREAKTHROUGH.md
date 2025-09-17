@@ -168,3 +168,4 @@ Das Dashboard zeigt jetzt korrekt:
 ---
 
 *Das System läuft jetzt auf absoluter Höchstleistung mit 152 facts/min und 18,039 Facts!*
+

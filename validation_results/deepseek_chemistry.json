@@ -1,0 +1,51 @@
+{
+  "items": [
+    {
+      "statement": "Bond: H2O has covalent bonds",
+      "verdict": "correct",
+      "reasons": "Water molecules form polar covalent bonds between oxygen and hydrogen atoms",
+      "suggested_fix": null,
+      "domain": "chemistry",
+      "confidence": 0.95
+    },
+    {
+      "statement": "ConsistsOf: NaCl consists of sodium and chlorine",
+      "verdict": "correct",
+      "reasons": "Sodium chloride is composed of sodium and chlorine ions in ionic lattice",
+      "suggested_fix": null,
+      "domain": "chemistry",
+      "confidence": 0.98
+    },
+    {
+      "statement": "CombinesWith: CH4 combines with O2 to form CO2 and H2O",
+      "verdict": "correct",
+      "reasons": "Methane combustion reaction: CH4 + 2O2 → CO2 + 2H2O",
+      "suggested_fix": null,
+      "domain": "chemistry",
+      "confidence": 0.97
+    },
+    {
+      "statement": "Emits: NH3 emits blue light when burned",
+      "verdict": "incorrect",
+      "reasons": "Ammonia combustion produces nitrogen and water, not characteristic blue light emission",
+      "suggested_fix": "NH3 burns with pale yellow-green flame to form nitrogen and water vapor",
+      "domain": "chemistry",
+      "confidence": 0.90
+    },
+    {
+      "statement": "FormsFrom: CO2 forms from combustion of carbon compounds",
+      "verdict": "correct",
+      "reasons": "Carbon dioxide is a common product of complete combustion of organic compounds",
+      "suggested_fix": null,
+      "domain": "chemistry",
+      "confidence": 0.96
+    }
+  ],
+  "summary": {
+    "count": 5,
+    "correct": 4,
+    "incorrect": 1,
+    "uncertain": 0,
+    "acceptance_rate": 0.8
+  }
+}

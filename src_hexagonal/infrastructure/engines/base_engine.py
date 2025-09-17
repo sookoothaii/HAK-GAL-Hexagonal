@@ -25,11 +25,12 @@ class BaseHexagonalEngine(ABC):
         
         Args:
             name: Engine name for logging
-            port: API port (IGNORED - always uses 5002 where API runs)
+            port: Engine's own port (defaults to 5002, but API always connects to 5002)
         """
         self.name = name
-        # CRITICAL FIX: Always use 5002 for API, ignore port parameter
-        self.api_port = 5002  # Where the API actually runs
+        # Always connect to backend on port 5002, ignore engine port parameter
+        self.api_port = 5002  # Backend always runs on 5002
+        self.engine_port = port if port is not None else 5002  # Engine's own port
         self.base_url = f"http://localhost:{self.api_port}"
         
         # Configure logging
@@ -40,10 +41,7 @@ class BaseHexagonalEngine(ABC):
         self.logger = logging.getLogger(self.name)
         
         # Log what we're doing
-        if port and port != self.api_port:
-            self.logger.warning(f"Port {port} passed but using API port {self.api_port}")
-        
-        self.logger.info(f"Initialized {self.name} for HEXAGONAL on port {self.api_port}")
+        self.logger.info(f"Initialized {self.name} for HEXAGONAL - API: {self.api_port}, Engine: {self.engine_port}")
         
         # API Endpoints
         self.COMMAND_URL = f"{self.base_url}/api/command"

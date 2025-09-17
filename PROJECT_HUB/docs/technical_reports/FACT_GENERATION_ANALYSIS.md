@@ -152,3 +152,4 @@ Das HAK/GAL System **explodiert** mit Fakten-Generierung durch die optimierte Ae
 ---
 
 *Für technische Details siehe `src_hexagonal/infrastructure/engines/aethelred_extended_fixed.py`*
+

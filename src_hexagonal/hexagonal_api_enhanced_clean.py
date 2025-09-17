@@ -91,6 +91,7 @@ from src_hexagonal.api_endpoints_extension import create_extended_endpoints
 from src_hexagonal.missing_endpoints import register_missing_endpoints
 from adapters.agent_adapters import get_agent_adapter
 from src_hexagonal.llm_config_routes import init_llm_config_routes
+from src_hexagonal.llm_governor_integration_fixed import integrate_llm_governor
 from src_hexagonal.application.transactional_governance_engine import TransactionalGovernanceEngine
 from src_hexagonal.application.governance_monitor import probe_sqlite
 
@@ -212,6 +213,16 @@ class HexagonalAPI:
         if enable_governor:
             self.governor = get_governor_adapter()
             print("[OK] Governor initialized (not started - use Frontend to control)")
+
+        # Initialize LLM Governor
+        self.llm_governor_integration = None
+        if enable_governor:
+            try:
+                self.llm_governor_integration = integrate_llm_governor(self.app)
+                print("[OK] LLM Governor Integration enabled")
+            except Exception as e:
+                print(f"[WARNING] LLM Governor Integration failed: {e}")
+        
         
         # Initialize Sentry Monitoring
         self.monitoring = None
@@ -237,7 +248,7 @@ class HexagonalAPI:
         self._register_governor_routes()
         self._register_websocket_routes()
         self._register_auto_add_routes()
-        self._register_hrm_routes()
+        # self._register_hrm_routes()  # HRM routes not implemented yet
         self._register_missing_endpoints()
         self._register_agent_bus_routes() # Register the new agent bus routes
         self._register_engine_routes() # Register engine API routes
@@ -453,8 +464,28 @@ class HexagonalAPI:
             """System Status"""
             base_status = self.fact_service.get_system_status()
             
+            # Add CUDA status
+            import torch
+            base_status['cuda'] = {
+                'available': torch.cuda.is_available(),
+                'active': torch.cuda.is_available(),
+                'device_count': torch.cuda.device_count() if torch.cuda.is_available() else 0,
+                'device_name': torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'N/A',
+                'memory_allocated': f"{torch.cuda.memory_allocated(0) / 1024**3:.2f} GB" if torch.cuda.is_available() else "0 GB",
+                'memory_reserved': f"{torch.cuda.memory_reserved(0) / 1024**3:.2f} GB" if torch.cuda.is_available() else "0 GB"
+            }
+            
             if self.governor:
                 base_status['governor'] = self.governor.get_status()
+            
+            if self.llm_governor_integration:
+                base_status['llm_governor'] = {
+                    'available': True,
+                    'enabled': self.llm_governor_integration.enabled,
+                    'provider': self.llm_governor_integration.config['provider'],
+                    'epsilon': self.llm_governor_integration.config['epsilon'],
+                    'metrics': self.llm_governor_integration.get_metrics()
+                }
             
             if self.websocket_adapter:
                 base_status['websocket'] = {
@@ -1041,28 +1072,98 @@ class HexagonalAPI:
         
         @self.app.route('/api/governor/status', methods=['GET'])
         def governor_status():
-            return jsonify(self.governor.get_status())
+            status = self.governor.get_status() if self.governor else {}
+            
+            # Add generator metrics if available
+            if hasattr(self, '_llm_gov_generator'):
+                try:
+                    generator_metrics = self._llm_gov_generator.get_metrics()
+                    status['generator'] = {
+                        'active': self._llm_gov_generator.generating,
+                        'facts_generated': generator_metrics['facts_generated'],
+                        'facts_per_minute': generator_metrics['facts_per_minute'],
+                        'mode': 'integrated_generator'
+                    }
+                    # Add self-learning specific metrics
+                    status['self_learning'] = {
+                        'active': self._llm_gov_generator.generating,
+                        'facts_generated': generator_metrics['facts_generated'],
+                        'learning_rate': generator_metrics['facts_per_minute'],
+                        'learning_progress': generator_metrics.get('learning_progress', 0),
+                        'adaptive': True
+                    }
+                except:
+                    pass
+            
+            return jsonify(status)
         
         @self.app.route('/api/governor/start', methods=['POST'])
         # # # # # @require_api_key
         def governor_start():
-            success = self.governor.start()
-            return jsonify({'success': success})
+            data = request.get_json(silent=True) or {}
+            use_llm = data.get('use_llm', False)
+            
+            # Check if LLM Governor requested
+            if use_llm:
+                # Try the new integrated generator first
+                try:
+                    import sys
+                    sys.path.insert(0, r"D:\MCP Mods\HAK_GAL_HEXAGONAL\src_hexagonal")
+                    # USE THE PARALLEL VERSION THAT BYPASSES THESIS!
+                    from llm_governor_generator_parallel import LLMGovernorWithGenerator
+                    
+                    # Create or get singleton instance
+                    if not hasattr(self, '_llm_gov_generator'):
+                        self._llm_gov_generator = LLMGovernorWithGenerator()
+                    
+                    # Start the integrated generator
+                    success = self._llm_gov_generator.start()
+                    if success:
+                        print("[API] Started LLM Governor with integrated fact generation")
+                        # Also start standard governor if available
+                        if self.governor:
+                            self.governor.start()
+                        return jsonify({
+                            'success': True,
+                            'mode': 'llm_governor_generator',
+                            'provider': 'groq',
+                            'generating': True,
+                            'message': 'LLM Governor started with automatic fact generation'
+                        })
+                except Exception as e:
+                    print(f"[API] Failed to start integrated generator: {e}")
+                
+                # Fallback to standard LLM Governor
+                if self.llm_governor_integration:
+                    self.llm_governor_integration.enabled = True
+                    # Also start the standard governor for engines
+                    if self.governor:
+                        self.governor.start()
+                    return jsonify({
+                        'success': True, 
+                        'mode': 'llm_governor',
+                        'provider': self.llm_governor_integration.config['provider']
+                    })
+            else:
+                # Use standard Thompson governor
+                success = self.governor.start() if self.governor else False
+                return jsonify({'success': success, 'mode': 'thompson'})
         
         @self.app.route('/api/governor/stop', methods=['POST'])
         # # # # # @require_api_key
         def governor_stop():
-            success = self.governor.stop()
+            # Stop integrated generator if running
+            if hasattr(self, '_llm_gov_generator'):
+                try:
+                    self._llm_gov_generator.stop()
+                    print("[API] Stopped LLM Governor Generator")
+                except:
+                    pass
+            
+            # Stop standard governor
+            success = self.governor.stop() if self.governor else False
             return jsonify({'success': success})
-    
-    def _register_hrm_routes(self):
-        """Register HRM-specific routes for model management."""
-        if not isinstance(self.reasoning_engine, NativeReasoningEngine):
-            print("[INFO] HRM routes not registered: Not using NativeReasoningEngine.")
-            return
-
-        @self.app.route('/api/hrm/retrain', methods=['POST'])
-        # # # # # @require_api_key
+        
         def hrm_retrain():
             """Triggers a retraining of the HRM model."""
             try:

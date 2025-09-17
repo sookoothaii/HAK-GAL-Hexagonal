@@ -156,3 +156,4 @@ force_extended_every = 1
 ---
 
 *Für technische Details siehe `src_hexagonal/adapters/governor_adapter.py`*
+
