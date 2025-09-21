@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-HAK_GAL MCP Server - ULTIMATE VERSION mit ALLEN 47 Tools
+HAK_GAL MCP Server - ULTIMATE VERSION mit ALLEN 72 Tools
 Kombiniert die besten Features aus allen drei Servern
 FIXED: execute_code mit verbesserter Python-Ausgabe
 """
@@ -147,7 +147,7 @@ except Exception as e:
     logger.warning(f"Niche-Tools not available: {e}")
 
 class HAKGALMCPServer:
-    """MCP Server für HAK_GAL mit ALLEN 47 Tools - ULTIMATE VERSION"""
+    """MCP Server für HAK_GAL mit ALLEN 72 Tools - ULTIMATE VERSION"""
     
     def __init__(self):
         # DIE EINZIGE DATENBANK!
@@ -196,8 +196,12 @@ class HAKGALMCPServer:
             "powershell": _env_int("MCP_EXEC_TIMEOUT_PS", 30),
         }
         
+        # Tools list initialization
+        self.tools = self._get_tool_list()
+        
         logger.info(f"MCP Server initialized with DB: {self.db_path}")
         logger.info(f"Execute code temp dir: {self.temp_dir}")
+        logger.info(f"Total tools available: {len(self.tools)}")
         self._check_database()
     
     def _check_database(self):
@@ -1237,7 +1241,7 @@ class HAKGALMCPServer:
         await self.send_response(response)
     
     async def handle_tool_call(self, request):
-        """Handle ALL 47 tool executions - ULTIMATE IMPLEMENTATION"""
+        """Handle ALL 72 tool executions - ULTIMATE IMPLEMENTATION"""
         params = request.get("params", {})
         tool_name = params.get("name", "")
         tool_args = params.get("arguments", {})
@@ -1429,7 +1433,7 @@ class HAKGALMCPServer:
                         "db_exists": True,
                         "facts": count,
                         "write_enabled": self.write_enabled,
-                        "tools_total": 66,
+                        "tools_total": len(self.tools),
                         "exec_ready": True,
                         "temp_dir": str(self.temp_dir),
                         "max_output_bytes": self.max_output_size,

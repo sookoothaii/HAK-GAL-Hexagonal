@@ -1,0 +1,36 @@
+You are a senior Python engineer. Write a single file named `algorithms_solutions.py` with ONLY Python code.
+Implement EXACTLY these functions with type hints and docstrings. No prints, no I/O, no main-guard.
+
+1) Dijkstra on non-negative weighted directed graph
+Function signature:
+   def dijkstra(n: int, edges: list[tuple[int,int,int]], src: int) -> tuple[list[float], list[int|None]]:
+       """
+       n nodes labeled [0..n-1], edges as (u,v,w) with w >= 0.
+       Return (dist, parent), where dist[i] is shortest distance from src to i (inf if unreachable),
+       parent[i] is predecessor on a shortest path (or None for src/unreachable).
+       Break ties by lexicographic path (smaller predecessor first).
+       """
+
+2) N-Queens
+Function signature:
+   def n_queens(n: int) -> list[int] | None:
+       """
+       Return one solution as a list `cols` where cols[r] = column of queen in row r,
+       or None if no solution. Use backtracking with safety checks. Prefer lexicographically smallest solution.
+       """
+
+3) Edit distance with path reconstruction
+Function signature:
+   def edit_distance_path(a: str, b: str) -> tuple[int, list[tuple[str, str, str]]]:
+       """
+       Compute Levenshtein distance with ops path. Return (distance, ops).
+       Each op is one of:
+         ("keep", a_char, b_char), ("sub", a_char, b_char), ("del", a_char, ""),
+         ("ins", "", b_char)
+       Prefer a path with minimal substitutions when multiple minimal edits exist.
+       """
+
+Constraints:
+- Python 3.10+, standard library only.
+- Efficient implementations required (Dijkstra: O((n+m) log n)).
+- Keep code in one file named `algorithms_solutions.py`.

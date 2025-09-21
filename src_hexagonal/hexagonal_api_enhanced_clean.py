@@ -1296,16 +1296,24 @@ class HexagonalAPI:
                 if not data:
                     return jsonify({'error': 'Missing request data'}), 400
                 
-                # Support both formats: fact_ids array and facts array
-                if 'fact_ids' in data:
-                    # Original format: fact_ids array
+                # Check if fact_ids contains numeric IDs or strings
+                if 'fact_ids' in data and isinstance(data['fact_ids'], list) and len(data['fact_ids']) > 0:
                     fact_ids = data['fact_ids']
                     validation_level = data.get('validation_level', 'comprehensive')
-                    result = self.hallucination_adapter.batch_validate_facts(fact_ids, validation_level)
+                    
+                    # Check if we have numeric IDs (database rowids)
+                    if all(isinstance(id, (int, str)) and (isinstance(id, int) or str(id).isdigit()) for id in fact_ids):
+                        # Convert to integers and use the proper batch_validate_facts method
+                        numeric_ids = [int(id) for id in fact_ids]
+                        result = self.hallucination_adapter.batch_validate_facts(numeric_ids, validation_level)
+                    else:
+                        # String facts - convert to proper format for batch_validate_facts_from_statements
+                        facts = [{'fact': fact} for fact in fact_ids if isinstance(fact, str)]
+                        result = self.hallucination_adapter.batch_validate_facts_from_statements(facts, validation_level)
                 elif isinstance(data, list):
-                    # New format: array of fact objects
+                    # Array of fact objects
                     facts = data
-                    validation_level = 'comprehensive'  # Default level
+                    validation_level = 'comprehensive'
                     result = self.hallucination_adapter.batch_validate_facts_from_statements(facts, validation_level)
                 elif 'facts' in data:
                     # Alternative format: facts array in object
@@ -1325,7 +1333,7 @@ class HexagonalAPI:
         def hallucination_get_statistics():
             """Hole Validierungsstatistiken"""
             try:
-                result = self.hallucination_adapter.get_statistics()
+                result = self.hallucination_adapter.get_validation_statistics()
                 return jsonify(result)
                 
             except Exception as e:
@@ -1352,7 +1360,7 @@ class HexagonalAPI:
                     return jsonify({'error': 'Missing fact parameter'}), 400
                 
                 fact = data['fact']
-                result = self.hallucination_adapter.check_governance_compliance(fact)
+                result = self.hallucination_adapter.validate_governance_compliance(fact)
                 return jsonify(result)
                 
             except Exception as e:
@@ -1405,7 +1413,32 @@ class HexagonalAPI:
             """Aktualisiere Konfiguration"""
             try:
                 data = request.get_json()
-                result = self.hallucination_adapter.update_config(data)
+                
+                # Update adapter configuration
+                if 'enabled' in data:
+                    self.hallucination_adapter.enable_validation(data['enabled'])
+                
+                if 'auto_validation_enabled' in data:
+                    threshold = data.get('validation_threshold', 0.8)
+                    self.hallucination_adapter.enable_auto_validation(
+                        data['auto_validation_enabled'], 
+                        threshold
+                    )
+                
+                if data.get('clear_cache', False):
+                    self.hallucination_adapter.clear_validation_cache()
+                
+                # Return current configuration
+                result = {
+                    'success': True,
+                    'config': {
+                        'enabled': self.hallucination_adapter.is_enabled,
+                        'auto_validation_enabled': self.hallucination_adapter.auto_validation_enabled,
+                        'validation_threshold': self.hallucination_adapter.validation_threshold
+                    },
+                    'message': 'Configuration updated'
+                }
+                
                 return jsonify(result)
                 
             except Exception as e:

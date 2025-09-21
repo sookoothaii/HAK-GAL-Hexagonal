@@ -203,6 +203,9 @@ class HallucinationPreventionService:
             valid = False
             confidence = 0.0
         
+        # Determine predicate type early
+        predicate_type = self._determine_predicate_type(fact)
+        
         # HAK_GAL n-äre Syntax: Predicate(arg1, arg2, ...).
         # Prüfe auf korrekte Struktur
         if not fact.endswith('.'):
@@ -239,6 +242,12 @@ class HallucinationPreventionService:
                 if args_part.strip():
                     # Args sind durch Kommas getrennt
                     args = [arg.strip() for arg in args_part.split(',')]
+                    
+                    # Spezielle Prüfung für HasProperty (muss genau 2 Args haben)
+                    if predicate_type == "HasProperty" and len(args) != 2:
+                        issues.append(f"HasProperty requires exactly 2 arguments, found {len(args)}")
+                        confidence *= 0.5
+                    
                     if len(args) > 7:  # Max 7 Args für HAK_GAL
                         issues.append(f"{len(args)} Argumente (max. 7 erlaubt)")
                         confidence *= 0.7
@@ -254,7 +263,7 @@ class HallucinationPreventionService:
             confidence=confidence,
             validation_level=ValidationLevel.STRUCTURAL,
             issues=issues,
-            category="structural"
+            category=predicate_type  # Use predicate type as category
         )
 
     def _validate_scientific(self, fact: str, fact_id: int) -> ValidationResult:
@@ -358,13 +367,30 @@ class HallucinationPreventionService:
         valid = True
         confidence = 0.8
         
-        # Check for vague terms
+        # Determine predicate type for specific checks
+        predicate_type = self._determine_predicate_type(fact)
+        
+        # Check for vague terms (especially problematic in HasProperty)
         vague_terms = ['dynamic', 'static', 'complex', 'simple', 'variable', 
                        'optimal', 'critical', 'essential', 'fundamental', 'reactive']
         
         if any(term in fact.lower() for term in vague_terms):
             issues.append("Contains vague/generic terms")
             confidence *= 0.6
+            # Extra penalty for HasProperty with vague terms
+            if predicate_type == "HasProperty":
+                issues.append("HasProperty with vague property - likely auto-generated")
+                confidence *= 0.5
+        
+        # Check for minimal HasProperty facts (too simple)
+        if predicate_type == "HasProperty" and '(' in fact and ')' in fact:
+            args_part = fact[fact.find('(')+1:fact.rfind(')')]
+            args = [arg.strip() for arg in args_part.split(',')]
+            if len(args) == 2:  # Basic HasProperty(X, Y)
+                # Check if property is too generic
+                if len(args) == 2 and len(args[1]) < 4:  # Very short property
+                    issues.append("Property term too short/generic")
+                    confidence *= 0.7
         
         # Check for known problematic patterns
         problematic_patterns = [
@@ -388,7 +414,7 @@ class HallucinationPreventionService:
             confidence=confidence,
             validation_level=ValidationLevel.QUALITY_CHECK,
             issues=issues,
-            category="quality_check"
+            category=predicate_type  # Use predicate type as category
         )
 
     def _validate_comprehensive(self, fact: str, fact_id: int) -> ValidationResult:
@@ -410,8 +436,18 @@ class HallucinationPreventionService:
         # Remove duplicates
         all_issues = list(set(all_issues))
         
-        # Determine primary category
-        primary_category = scientific.category if scientific.category != "error" else quality.category
+        # FIX: Determine predicate type AND domain for proper classification
+        predicate_type = self._determine_predicate_type(fact)
+        domain = self._determine_domain(fact)
+        
+        # Primary category should include both predicate type and domain
+        if predicate_type != "Other":
+            primary_category = f"{predicate_type}_{domain.lower()}"
+        else:
+            primary_category = domain.lower()
+        
+        # For simple classification, just use the predicate type
+        simple_category = predicate_type
 
         return ValidationResult(
             fact_id=fact_id,
@@ -420,10 +456,55 @@ class HallucinationPreventionService:
             confidence=avg_confidence,
             validation_level=ValidationLevel.COMPREHENSIVE,
             issues=all_issues,
-            category=primary_category,
+            category=simple_category,  # Use predicate type as main category
             correction=scientific.correction,
-            reasoning=f"Comprehensive validation: Structural={structural.valid}, Scientific={scientific.valid}, Quality={quality.valid}"
+            reasoning=f"Comprehensive validation: Structural={structural.valid}, Scientific={scientific.valid}, Quality={quality.valid}, Predicate={predicate_type}, Domain={domain}"
         )
+
+    def _determine_predicate_type(self, fact: str) -> str:
+        """
+        Bestimme den Prädikat-Typ eines Fakts
+        
+        Returns:
+            Prädikat-Typ (HasProperty, ConsistsOf, Uses, etc.)
+        """
+        fact_stripped = fact.strip()
+        
+        # Definiere bekannte Prädikate
+        predicate_patterns = [
+            ('HasProperty(', 'HasProperty'),
+            ('ConsistsOf(', 'ConsistsOf'),
+            ('Uses(', 'Uses'),
+            ('IsTypeOf(', 'IsTypeOf'),
+            ('HasPart(', 'HasPart'),
+            ('HasPurpose(', 'HasPurpose'),
+            ('IsA(', 'IsA'),
+            ('Contains(', 'Contains'),
+            ('Requires(', 'Requires'),
+            ('Supports(', 'Supports'),
+            ('DependsOn(', 'DependsOn'),
+            ('PartOf(', 'PartOf'),
+            ('ConnectedTo(', 'ConnectedTo'),
+            ('HasFunction(', 'HasFunction'),
+            ('ComposedOf(', 'ComposedOf'),
+            ('ProducedBy(', 'ProducedBy'),
+            ('UsedBy(', 'UsedBy'),
+            ('LocatedIn(', 'LocatedIn'),
+            ('RelatedTo(', 'RelatedTo')
+        ]
+        
+        # Prüfe jeden bekannten Prädikat-Typ
+        for pattern, predicate_type in predicate_patterns:
+            if fact_stripped.startswith(pattern):
+                return predicate_type
+        
+        # Versuche generisches Prädikat zu extrahieren
+        if '(' in fact_stripped:
+            predicate = fact_stripped.split('(')[0].strip()
+            if predicate:
+                return predicate
+        
+        return "Other"
 
     def _determine_domain(self, fact: str) -> str:
         """Bestimme die Domäne eines Fakts"""
@@ -504,15 +585,25 @@ class HallucinationPreventionService:
 
     def get_validation_statistics(self) -> Dict[str, Any]:
         """Hole Validierungsstatistiken"""
+        # Count predicate types in cache
+        predicate_counts = {}
+        for cache_key, cached_data in self.validation_cache.items():
+            result = cached_data['result']
+            if result.category and result.category != 'error':
+                predicate_counts[result.category] = predicate_counts.get(result.category, 0) + 1
+        
         return {
             'stats': self.stats.copy(),
             'cache_size': len(self.validation_cache),
+            'predicate_distribution': predicate_counts,
             'validators_available': {
                 'scientific': self.scientific_validator is not None,
                 'maximal': self.maximal_validator is not None,
                 'quality_check': analyze_database_quality is not None,
                 'llm_reasoning': validate_with_deepseek_reasoning is not None
-            }
+            },
+            'validation_threshold': 0.8,
+            'auto_validation_enabled': False
         }
 
     def clear_cache(self):

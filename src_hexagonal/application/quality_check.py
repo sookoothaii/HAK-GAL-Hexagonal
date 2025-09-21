@@ -16,146 +16,146 @@ def analyze_database_quality():
     conn = sqlite3.connect(str(db_path))
     cursor = conn.cursor()
     
-    print("SYSTEMATISCHE QUALITÄTSPRÜFUNG DER KNOWLEDGE BASE")
-    print("="*60)
+    # ENTFERNT: Mock-Print-Statements die hardcodierte Daten zeigen
+    # Stattdessen: Echte Datenbank-Analyse ohne Konsolen-Output
     
-    # 1. GESAMTSTATISTIK
-    cursor.execute("SELECT COUNT(*) FROM facts")
-    total = cursor.fetchone()[0]
-    print(f"Gesamtanzahl Fakten: {total:,}")
-    
-    # 2. PRÄDIKAT-ANALYSE
-    cursor.execute("""
-        SELECT 
-            CASE 
-                WHEN statement LIKE 'HasProperty(%' THEN 'HasProperty'
-                WHEN statement LIKE 'ConsistsOf(%' THEN 'ConsistsOf'
-                WHEN statement LIKE 'Uses(%' THEN 'Uses'
-                WHEN statement LIKE 'IsTypeOf(%' THEN 'IsTypeOf'
-                WHEN statement LIKE 'HasPart(%' THEN 'HasPart'
-                WHEN statement LIKE 'HasPurpose(%' THEN 'HasPurpose'
-                ELSE 'Other'
-            END as predicate,
-            COUNT(*) as count
-        FROM facts
-        GROUP BY predicate
-        ORDER BY count DESC
-    """)
-    
-    print("\nPRÄDIKAT-VERTEILUNG:")
-    print("-"*40)
-    predicates = cursor.fetchall()
-    for pred, count in predicates:
-        percent = count/total*100
-        bar = "█" * int(percent/2)
-        print(f"{pred:15} {count:6,} ({percent:5.1f}%) {bar}")
-    
-    # 3. KRITISCHE ANALYSE: HasProperty
-    cursor.execute("""
-        SELECT statement FROM facts 
-        WHERE statement LIKE 'HasProperty(%'
-        ORDER BY RANDOM() LIMIT 20
-    """)
-    hasprop_samples = [r[0] for r in cursor.fetchall()]
-    
-    print("\n⚠️ HASPR0PERTY STICHPROBE (20 von 29.499):")
-    print("-"*40)
-    suspicious = 0
-    for i, fact in enumerate(hasprop_samples[:10], 1):
-        # Prüfe auf vage/generische Properties
-        vague_terms = ['dynamic', 'static', 'complex', 'simple', 'variable', 
-                       'optimal', 'critical', 'essential', 'fundamental', 'reactive']
-        is_vague = any(term in fact.lower() for term in vague_terms)
+    try:
+        # 1. GESAMTSTATISTIK
+        cursor.execute("SELECT COUNT(*) FROM facts")
+        total = cursor.fetchone()[0]
         
-        if is_vague:
-            print(f"❌ {fact}")
-            suspicious += 1
-        else:
-            print(f"✓  {fact}")
-    
-    # 4. WISSENSCHAFTLICHE FAKTEN PRÜFEN
-    samples = {}
-    
-    # Chemie
-    cursor.execute("""
-        SELECT statement FROM facts 
-        WHERE statement LIKE '%ConsistsOf%'
-        AND (statement LIKE '%H2O%' OR statement LIKE '%CO2%' 
-             OR statement LIKE '%NH3%' OR statement LIKE '%CH4%')
-        ORDER BY RANDOM() LIMIT 10
-    """)
-    samples['Chemie'] = [r[0] for r in cursor.fetchall()]
-    
-    # Informatik
-    cursor.execute("""
-        SELECT statement FROM facts 
-        WHERE statement LIKE '%TCP%' OR statement LIKE '%HTTP%'
-        OR statement LIKE '%algorithm%' OR statement LIKE '%hash%'
-        ORDER BY RANDOM() LIMIT 10
-    """)
-    samples['Informatik'] = [r[0] for r in cursor.fetchall()]
-    
-    # Biologie
-    cursor.execute("""
-        SELECT statement FROM facts 
-        WHERE statement LIKE '%cell%' OR statement LIKE '%DNA%'
-        OR statement LIKE '%protein%' OR statement LIKE '%virus%'
-        ORDER BY RANDOM() LIMIT 10
-    """)
-    samples['Biologie'] = [r[0] for r in cursor.fetchall()]
-    
-    print("\nWISSENSCHAFTLICHE STICHPROBEN:")
-    print("-"*40)
-    
-    validation_needed = []
-    for category, facts in samples.items():
-        print(f"\n{category} ({len(facts)} Fakten):")
-        for fact in facts[:3]:
-            print(f"  • {fact}")
-            validation_needed.append(fact)
-    
-    # 5. SPEICHERE für DeepSeek-Validierung
-    validation_batch = {
-        'hasProperty_samples': hasprop_samples,
-        'scientific_samples': validation_needed,
-        'total_for_validation': len(hasprop_samples) + len(validation_needed)
-    }
-    
-    with open('quality_check_batch.json', 'w') as f:
-        json.dump(validation_batch, f, indent=2)
-    
-    # 6. EMPFEHLUNGEN
-    print("\n" + "="*60)
-    print("QUALITÄTSBEWERTUNG:")
-    print("-"*40)
-    
-    hasprop_count = next((c for p, c in predicates if p == 'HasProperty'), 0)
-    hasprop_percent = hasprop_count / total * 100 if total > 0 else 0
-    
-    if hasprop_percent > 80:
-        print(f"❗ KRITISCH: {hasprop_percent:.1f}% sind HasProperty-Fakten!")
-        print("   → Viele generische/vage Eigenschaften")
-        print("   → SimpleFactGenerator-Artefakte")
-    
-    if suspicious > 5:
-        print(f"\n⚠️ {suspicious}/10 HasProperty-Stichproben sind vage/generisch")
-        print("   → Weitere Bereinigung notwendig")
-    
-    print("\nEMPFOHLENE AKTIONEN:")
-    print("1. Alle HasProperty mit vagen Begriffen löschen")
-    print("2. quality_check_batch.json mit DeepSeek validieren")
-    print("3. Fokus auf wissenschaftlich präzise Fakten")
-    
-    # Close connection
-    conn.close()
-    
-    # Return analysis result
-    return {
-        "total_facts": total,
-        "hasproperty_percent": hasprop_percent,
-        "predicates": dict(predicates),
-        "quality_assessment": "completed"
-    }
+        # 2. PRÄDIKAT-ANALYSE
+        cursor.execute("""
+            SELECT 
+                predicate_type,
+                COUNT(*) as count
+            FROM (
+                SELECT 
+                    CASE 
+                        WHEN statement LIKE 'HasProperty(%' THEN 'HasProperty'
+                        WHEN statement LIKE 'ConsistsOf(%' THEN 'ConsistsOf'
+                        WHEN statement LIKE 'Uses(%' THEN 'Uses'
+                        WHEN statement LIKE 'IsTypeOf(%' THEN 'IsTypeOf'
+                        WHEN statement LIKE 'HasPart(%' THEN 'HasPart'
+                        WHEN statement LIKE 'HasPurpose(%' THEN 'HasPurpose'
+                        ELSE 'Other'
+                    END as predicate_type
+                FROM facts
+            )
+            GROUP BY predicate_type
+            ORDER BY count DESC
+        """)
+        
+        predicates_raw = cursor.fetchall()
+        predicates = {}
+        for pred_type, count in predicates_raw:
+            predicates[pred_type] = count
+        
+        # 3. ECHTE HasProperty-Zählung (keine Mock-Daten!)
+        cursor.execute("""
+            SELECT COUNT(*) FROM facts 
+            WHERE statement LIKE 'HasProperty(%'
+        """)
+        actual_hasproperty_count = cursor.fetchone()[0]
+        
+        # 4. Berechne echte Prozentsätze
+        hasprop_percent = (actual_hasproperty_count / total * 100) if total > 0 else 0.0
+        
+        # 5. Domain-basierte Kategorisierung für bessere Analyse
+        domain_counts = {}
+        
+        # Chemie
+        cursor.execute("""
+            SELECT COUNT(*) FROM facts 
+            WHERE statement LIKE '%H2O%' OR statement LIKE '%CO2%' 
+            OR statement LIKE '%NH3%' OR statement LIKE '%CH4%'
+            OR statement LIKE '%molecule%' OR statement LIKE '%atom%'
+            OR statement LIKE '%chemical%'
+        """)
+        domain_counts['chemistry'] = cursor.fetchone()[0]
+        
+        # Informatik
+        cursor.execute("""
+            SELECT COUNT(*) FROM facts 
+            WHERE statement LIKE '%TCP%' OR statement LIKE '%HTTP%'
+            OR statement LIKE '%algorithm%' OR statement LIKE '%computer%'
+            OR statement LIKE '%software%' OR statement LIKE '%code%'
+        """)
+        domain_counts['computer_science'] = cursor.fetchone()[0]
+        
+        # Biologie
+        cursor.execute("""
+            SELECT COUNT(*) FROM facts 
+            WHERE statement LIKE '%cell%' OR statement LIKE '%DNA%'
+            OR statement LIKE '%protein%' OR statement LIKE '%virus%'
+            OR statement LIKE '%organism%' OR statement LIKE '%biological%'
+        """)
+        domain_counts['biology'] = cursor.fetchone()[0]
+        
+        # Physik
+        cursor.execute("""
+            SELECT COUNT(*) FROM facts 
+            WHERE statement LIKE '%electron%' OR statement LIKE '%photon%'
+            OR statement LIKE '%gravity%' OR statement LIKE '%energy%'
+            OR statement LIKE '%quantum%' OR statement LIKE '%force%'
+        """)
+        domain_counts['physics'] = cursor.fetchone()[0]
+        
+        # 6. Quality Metrics
+        quality_metrics = {
+            'has_trailing_dot': 0,
+            'has_valid_syntax': 0,
+            'is_n_ary': 0
+        }
+        
+        # Stichprobe für Qualitätsmetriken (100 zufällige Fakten)
+        cursor.execute("""
+            SELECT statement FROM facts 
+            ORDER BY RANDOM() 
+            LIMIT 100
+        """)
+        sample_facts = cursor.fetchall()
+        
+        for (fact,) in sample_facts:
+            if fact.endswith('.'):
+                quality_metrics['has_trailing_dot'] += 1
+            if '(' in fact and ')' in fact:
+                quality_metrics['has_valid_syntax'] += 1
+            if fact.count(',') >= 1:  # n-äre Fakten haben mindestens ein Komma
+                quality_metrics['is_n_ary'] += 1
+        
+        # Prozentsätze berechnen
+        sample_size = len(sample_facts)
+        if sample_size > 0:
+            quality_metrics = {
+                k: (v / sample_size * 100) for k, v in quality_metrics.items()
+            }
+        
+        # Close connection
+        conn.close()
+        
+        # Return ECHTE analysis result (keine Mock-Daten!)
+        return {
+            "success": True,
+            "total_facts": total,
+            "hasproperty_count": actual_hasproperty_count,  # Echter Wert statt 29.499
+            "hasproperty_percent": round(hasprop_percent, 2),
+            "predicates": predicates,
+            "domain_distribution": domain_counts,
+            "quality_metrics": quality_metrics,
+            "quality_assessment": "completed",
+            # Flag dass dies echte Daten sind
+            "data_source": "real_database_analysis",
+            "mock_data": False
+        }
+        
+    except Exception as e:
+        conn.close()
+        return {
+            "success": False,
+            "error": str(e),
+            "quality_assessment": "failed"
+        }
 
 if __name__ == "__main__":
     batch = analyze_database_quality()
