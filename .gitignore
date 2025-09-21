@@ -36,7 +36,8 @@ frontend/.vite/
 *~
 
 # Database
-hexagonal_kb.db
+# hexagonal_kb.db ist die HAUPT-Wissensdatenbank und MUSS im Repo sein!
+# Nur temporäre/backup Dateien ignorieren:
 *.db-journal
 *.db-shm
 *.db-wal
@@ -154,8 +155,8 @@ snapshot_*/
 
 # === KRITISCHE ERGÄNZUNGEN (17.09.2025) ===
 
-# Database files - NIEMALS committen!
-hexagonal_kb.db
+# Database files - NUR BACKUPS/TEMPORÄRE ignorieren!
+# hexagonal_kb.db ist die HAUPT-DB und gehört ins Repo!
 hexagonal_kb.db-*
 *.db.backup*
 *.db-journal
