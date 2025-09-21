@@ -334,22 +334,12 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 - [ ] External Integration Plugin System
 - [ ] Credential Vault Implementation  
-- [ ] n8n-style Node Library
+- [x] n8n-style Node Library
 - [ ] Enhanced Data Mapping
 - [ ] GraphDB Migration
 - [x] Hallucination Prevention Engine
 - [x] Multi-LLM Init Protocol
 - [ ] Prometheus/Grafana Integration (planned)
-
-## Documentation
-
-- [Database Setup](docs/database_setup.md) - Knowledge Base installation
-- [System Architecture](docs/architecture.md)
-- [API Documentation](docs/api.md)
-- [Workflow Tutorial](docs/workflow_tutorial.md)
-- [MCP Tools Reference](docs/mcp_tools.md)
-- **NEW**: [Hallucination Prevention Guide](docs/hallucination_prevention.md)
-- **NEW**: [Multi-LLM Init Protocol](PROJECT_HUB/docs/guides/LLM_INITIALIZATION_CRITICAL_SYNTAX_RULES.md)
 
 ## Troubleshooting
 
@@ -382,4 +372,4 @@ Built through collaboration between human and AI intelligence, following HAK-GAL
 
 ---
 
-**Version 2.2.0** - Enhanced with Hallucination Prevention (9 endpoints), Multi-LLM Init Protocol (788 n-ary facts), and verified tool counts (125 total: 69 KB + 56 FS).
+**Version 2.2.0** - Enhanced with Hallucination Prevention (9 endpoints), Multi-LLM Init Protocol (788 n-ary facts), and verified tool counts (125 total: 69 KB + 56 FS). Koh Samui 2025
