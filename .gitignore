@@ -169,6 +169,17 @@ logs/
 mcp_server.log
 mcp_server.jsonl
 mcp_write_audit.log
+filesystem_mcp.log
+ultimate_mcp.log
+mcp_*.log
+mcp_*.jsonl
+*_mcp.log
+kill_switch_activations.log
+maximum_complexity_test.log
+caddy_*.log
+audit_log.jsonl
+gold_ledger.jsonl
+test_audit*.jsonl
 
 # Executables 
 *.exe

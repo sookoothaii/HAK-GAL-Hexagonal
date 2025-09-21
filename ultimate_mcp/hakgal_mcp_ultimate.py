@@ -3484,7 +3484,8 @@ class HAKGALMCPServer:
             
             # ===== Projekt/Snapshot/Digest =====
             elif tool_name == "project_snapshot":
-                title = tool_args.get("title", f"Snapshot {time.strftime('%Y-%m-%d %H:%M:%S')}")
+                import time as time_module
+                title = tool_args.get("title", f"Snapshot {time_module.strftime('%Y-%m-%d %H:%M:%S')}")
                 description = tool_args.get("description", "")
                 hub_path = tool_args.get("hub_path", self.hub_path_env)
                 if not self._is_write_allowed(tool_args.get("auth_token", "")):
@@ -3493,7 +3494,7 @@ class HAKGALMCPServer:
                     try:
                         snap_dir = Path("D:/MCP Mods/HAK_GAL_HEXAGONAL/snapshots")
                         snap_dir.mkdir(parents=True, exist_ok=True)
-                        fn = snap_dir / f"snapshot_{int(time.time())}.json"
+                        fn = snap_dir / f"snapshot_{int(time_module.time())}.json"
                         
                         # Get base stats
                         conn = sqlite3.connect(str(self.db_path))
@@ -3509,7 +3510,7 @@ class HAKGALMCPServer:
                             "hub_path": hub_path,
                             "db_path": str(self.db_path),
                             "facts_count": count,
-                            "created_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+                            "created_at": time_module.strftime("%Y-%m-%d %H:%M:%S"),
                             "kb_statistics": kb_stats_data
                         }
                         fn.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
