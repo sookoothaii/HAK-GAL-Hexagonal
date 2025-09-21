@@ -1,0 +1,252 @@
+{
+  "provider": "deepseek-r1",
+  "timestamp": 1758145818.7855673,
+  "source_file": "validation_samples/stratified/top.json",
+  "total_facts": 20,
+  "validations": [
+    {
+      "id": 1,
+      "fact": "API(AI, GraphQL, REST, TCP/IP)",
+      "valid": false,
+      "confidence": 0.9,
+      "reasoning": "Die Notation ist inkonsistent und irreführend. API ist ein Konzept, keine Entität, die andere Technologien 'enthält'. TCP/IP ist ein Netzwerkprotokoll-Stack, während AI, GraphQL und REST verschiedene Konzepte/Technologien sind. Die Darstellung suggeriert eine falsche Hierarchiebeziehung.",
+      "category": "computer_science",
+      "issues": [
+        "Inkonsistente Notation",
+        "Falsche Hierarchiebeziehung",
+        "Vermischung unterschiedlicher Abstraktionsebenen"
+      ],
+      "correction": "API_Technologies(AI, GraphQL, REST) und Network_Protocol(TCP/IP)"
+    },
+    {
+      "id": 2,
+      "fact": "API(AI, GraphQL, blockchain, cloud, server)",
+      "valid": false,
+      "confidence": 0.9,
+      "reasoning": "Ähnliches Problem wie bei Fakt 1. Blockchain ist eine verteilte Ledger-Technologie, Cloud bezieht sich auf Bereitstellungsmodelle, Server sind Hardware/Software-Instanzen. Diese gehören nicht zur Kategorie 'API' und die Notation ist konzeptionell falsch.",
+      "category": "computer_science",
+      "issues": [
+        "Konzeptionelle Vermischung",
+        "Falsche Kategorisierung",
+        "Ungenaue Terminologie"
+      ],
+      "correction": "Computing_Concepts(AI, GraphQL, blockchain, cloud_computing, server_architecture)"
+    },
+    {
+      "id": 3,
+      "fact": "API(AI, HTTP, GraphQL, NoSQL, SQL)",
+      "valid": false,
+      "confidence": 0.9,
+      "reasoning": "HTTP ist ein Protokoll, NoSQL und SQL sind Datenbankparadigmen, AI ist ein Forschungsfeld. Die Gruppierung unter 'API' ist wissenschaftlich inkorrekt und verwirrend.",
+      "category": "computer_science",
+      "issues": [
+        "Falsche Oberkategorie",
+        "Vermischung unterschiedlicher Konzepte",
+        "Terminologische Ungenauigkeit"
+      ],
+      "correction": "Web_Technologies(HTTP, GraphQL) und Data_Management(NoSQL, SQL) und Research_Field(AI)"
+    },
+    {
+      "id": 4,
+      "fact": "API(AI, HTTP, GraphQL, cloud, REST)",
+      "valid": false,
+      "confidence": 0.9,
+      "reasoning": "Cloud-Computing ist ein Bereitstellungsmodell, keine API-Technologie. Die Notation suggeriert falsche Beziehungen zwischen den Begriffen.",
+      "category": "computer_science",
+      "issues": [
+        "Inkorrekte Kategorisierung",
+        "Konzeptionelle Vermischung",
+        "Ungenaue Terminologie"
+      ],
+      "correction": "API_Styles(REST, GraphQL) und Protocol(HTTP) und Deployment_Model(cloud) und Technology_Field(AI)"
+    },
+    {
+      "id": 5,
+      "fact": "API(AI, HTTP, SQL, NoSQL, server)",
+      "valid": false,
+      "confidence": 0.9,
+      "reasoning": "SQL und NoSQL sind Datenbankabfragesprachen/Systeme, Server sind Infrastrukturkomponenten. Die Gruppierung unter 'API' ist konzeptionell falsch.",
+      "category": "computer_science",
+      "issues": [
+        "Falsche Oberkategorie",
+        "Vermischung von Infrastruktur und Softwarekonzepten",
+        "Terminologische Ungenauigkeit"
+      ],
+      "correction": "Database_Systems(SQL, NoSQL) und Protocol(HTTP) and Infrastructure(server) und Field(AI)"
+    },
+    {
+      "id": 6,
+      "fact": "ConsistsOf(NH3, oxygen)",
+      "valid": false,
+      "confidence": 1.0,
+      "reasoning": "NH3 (Ammoniak) besteht aus Stickstoff (N) und Wasserstoff (H), nicht aus Sauerstoff. Die chemische Formel NH3 zeigt 1 Stickstoffatom und 3 Wasserstoffatome. Sauerstoff ist nicht enthalten.",
+      "category": "chemistry",
+      "issues": [
+        "Falsche chemische Zusammensetzung",
+        "Inkorrekte Elementzuordnung"
+      ],
+      "correction": "ConsistsOf(NH3, nitrogen, hydrogen)"
+    },
+    {
+      "id": 7,
+      "fact": "ConsistsOf(H2O, carbon)",
+      "valid": false,
+      "confidence": 1.0,
+      "reasoning": "H2O (Wasser) besteht aus Wasserstoff und Sauerstoff. Kohlenstoff ist nicht in Wasser enthalten. Dies ist ein fundamentaler chemischer Fehler.",
+      "category": "chemistry",
+      "issues": [
+        "Grundlegender chemischer Fehler",
+        "Falsche Elementzuordnung"
+      ],
+      "correction": "ConsistsOf(H2O, hydrogen, oxygen)"
+    },
+    {
+      "id": 8,
+      "fact": "HasProperty(water, liquid)",
+      "valid": true,
+      "confidence": 0.8,
+      "reasoning": "Wasser hat bei Standardbedingungen (20°C, 1 atm) tatsächlich den Aggregatzustand flüssig. Allerdings ist dies zustandsabhängig und nicht eine intrinsische Eigenschaft von Wasser an sich.",
+      "category": "chemistry",
+      "issues": [
+        "Zustandsabhängige Eigenschaft ohne Kontext"
+      ],
+      "correction": "HasState(water, liquid) [at standard conditions]"
+    },
+    {
+      "id": 9,
+      "fact": "Uses(TCP, three_way_handshake)",
+      "valid": true,
+      "confidence": 0.95,
+      "reasoning": "TCP (Transmission Control Protocol) verwendet tatsächlich einen Three-Way-Handshake zur Verbindungsherstellung. Dies ist ein korrektes technisches Detail aus den Netzwerkprotokollen.",
+      "category": "computer_science",
+      "issues": null,
+      "correction": null
+    },
+    {
+      "id": 10,
+      "fact": "ConsistsOf(H2O, hydrogen, oxygen)",
+      "valid": true,
+      "confidence": 1.0,
+      "reasoning": "Korrekte chemische Zusammensetzung von Wasser: 2 Wasserstoffatome und 1 Sauerstoffatom pro Molekül.",
+      "category": "chemistry",
+      "issues": null,
+      "correction": null
+    },
+    {
+      "id": 11,
+      "fact": "IsTypeOf(electron, lepton)",
+      "valid": true,
+      "confidence": 0.95,
+      "reasoning": "Elektronen gehören tatsächlich zur Teilchenfamilie der Leptonen in der Teilchenphysik. Leptonen sind Elementarteilchen, die nicht der starken Wechselwirkung unterliegen.",
+      "category": "physics",
+      "issues": null,
+      "correction": null
+    },
+    {
+      "id": 12,
+      "fact": "HasProperty(algorithm, complex)",
+      "valid": false,
+      "confidence": 0.7,
+      "reasoning": "'Complex' ist keine wohldefinierte Eigenschaft von Algorithmen. Algorithmen haben Zeit- und Raumkomplexität, aber 'complex' allein ist zu vage und subjektiv. Einige Algorithmen sind einfach, andere komplex.",
+      "category": "computer_science",
+      "issues": [
+        "Vage und subjektive Eigenschaft",
+        "Fehlende Präzision",
+        "Nicht wissenschaftlich quantifizierbar"
+      ],
+      "correction": "HasComplexity(algorithm, time_complexity, space_complexity)"
+    },
+    {
+      "id": 13,
+      "fact": "ConsistsOf(CO2, carbon, oxygen)",
+      "valid": true,
+      "confidence": 1.0,
+      "reasoning": "Korrekte chemische Zusammensetzung von Kohlendioxid: 1 Kohlenstoffatom und 2 Sauerstoffatome pro Molekül.",
+      "category": "chemistry",
+      "issues": null,
+      "correction": null
+    },
+    {
+      "id": 14,
+      "fact": "Uses(Python, indentation)",
+      "valid": true,
+      "confidence": 0.9,
+      "reasoning": "Python verwendet tatsächlich Einrückung (indentation) zur Definition von Codeblöcken anstelle von geschweiften Klammern wie in vielen anderen Sprachen. Dies ist ein syntaktisches Merkmal der Sprache.",
+      "category": "computer_science",
+      "issues": null,
+      "correction": null
+    },
+    {
+      "id": 15,
+      "fact": "HasProperty(quantum, uncertain)",
+      "valid": false,
+      "confidence": 0.8,
+      "reasoning": "'Quantum' ist kein Objekt mit Eigenschaften, sondern ein Adjektiv oder Konzept. Die Heisenberg'sche Unschärferelation bezieht sich auf Teilcheneigenschaften, nicht auf 'Quanten' an sich. Die Formulierung ist konzeptionell falsch.",
+      "category": "physics",
+      "issues": [
+        "Falsche Subjektwahl",
+        "Konzeptionelle Ungenauigkeit",
+        "Unpräzise Terminologie"
+      ],
+      "correction": "HasProperty(quantum_particles, uncertainty_principle)"
+    },
+    {
+      "id": 16,
+      "fact": "ConsistsOf(CH4, carbon, hydrogen)",
+      "valid": true,
+      "confidence": 1.0,
+      "reasoning": "Korrekte chemische Zusammensetzung von Methan: 1 Kohlenstoffatom und 4 Wasserstoffatome pro Molekül.",
+      "category": "chemistry",
+      "issues": null,
+      "correction": null
+    },
+    {
+      "id": 17,
+      "fact": "API(blockchain, distributed, ledger)",
+      "valid": false,
+      "confidence": 0.7,
+      "reasoning": "Blockchain ist eine Technologie, keine API. Distributed Ledger ist ein Konzept, das Blockchain implementiert. Die Notation ist irreführend und terminologisch falsch.",
+      "category": "computer_science",
+      "issues": [
+        "Falsche Kategorisierung",
+        "Terminologische Ungenauigkeit",
+        "Konzeptionelle Vermischung"
+      ],
+      "correction": "IsTypeOf(blockchain, distributed_ledger_technology)"
+    },
+    {
+      "id": 18,
+      "fact": "HasProperty(DNA, double_helix)",
+      "valid": true,
+      "confidence": 0.9,
+      "reasoning": "DNA (Desoxyribonukleinsäure) hat tatsächlich typischerweise eine Doppelhelix-Struktur, wie von Watson und Crick beschrieben. Es gibt jedoch auch andere DNA-Formen (A-DNA, Z-DNA), aber die Doppelhelix ist die primäre Struktur.",
+      "category": "biology",
+      "issues": null,
+      "correction": null
+    },
+    {
+      "id": 19,
+      "fact": "Uses(HTTP, TCP)",
+      "valid": true,
+      "confidence": 0.95,
+      "reasoning": "HTTP (Hypertext Transfer Protocol) verwendet tatsächlich TCP (Transmission Control Protocol) als Transportprotokoll. Dies ist korrekt gemäß dem Internet-Protokoll-Stack.",
+      "category": "computer_science",
+      "issues": null,
+      "correction": null
+    },
+    {
+      "id": 20,
+      "fact": "ConsistsOf(NaCl, sodium, chlorine)",
+      "valid": true,
+      "confidence": 1.0,
+      "reasoning": "Korrekte chemische Zusammensetzung von Natriumchlorid (Kochsalz): Natrium- und Chlorid-Ionen in einem 1:1-Verhältnis.",
+      "category": "chemistry",
+      "issues": null,
+      "correction": null
+    }
+  ],
+  "statistics": {
+    "valid": 10,
+    "invalid": 10
+  }
+}

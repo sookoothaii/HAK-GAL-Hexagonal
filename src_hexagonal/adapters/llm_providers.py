@@ -7,6 +7,9 @@ SSL certificate verification enabled for security
 import os
 import sys
 import requests
+import certifi
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 # SSL warnings are now shown for security awareness
 import subprocess
 import json
@@ -143,8 +146,16 @@ class DeepSeekProvider(LLMProvider):
     def __init__(self):
         self.api_key = os.environ.get('DEEPSEEK_API_KEY', '')
         self.base_url = "https://api.deepseek.com/v1/chat/completions"
-        self.timeout = (3, 10)  # Reduziert: (3s connect, 10s read) von (10s, 60s)
-        self.session = requests.Session()  # Reuse connection
+        # Erhöhte Timeouts: connect=5s, read=45s (konfigurierbar via ENV)
+        connect_to = float(os.environ.get('HAK_GAL_LLM_CONNECT_TIMEOUT', '5'))
+        read_to = float(os.environ.get('HAK_GAL_LLM_READ_TIMEOUT', '45'))
+        self.timeout = (connect_to, read_to)
+        # Session mit Retries (429/5xx) und Backoff
+        self.session = requests.Session()
+        retries = Retry(total=3, backoff_factor=0.5, status_forcelist=[429, 500, 502, 503, 504])
+        adapter = HTTPAdapter(max_retries=retries)
+        self.session.mount('https://', adapter)
+        self.session.mount('http://', adapter)
     
     def is_available(self) -> bool:
         api_key_present = bool(self.api_key)
@@ -157,6 +168,12 @@ class DeepSeekProvider(LLMProvider):
             return "DeepSeek API key not configured", provider_name
         
         try:
+            # Erzwinge IPv4 (Workaround für sporadische NameResolutionError unter Windows/Eventlet)
+            try:
+                import urllib3.util.connection as uc
+                uc.HAS_IPV6 = False
+            except Exception:
+                pass
             print(f"[{provider_name}] Direct API call...")
             
             headers = {
@@ -170,7 +187,8 @@ class DeepSeekProvider(LLMProvider):
             data = {
                 "model": "deepseek-chat",
                 "messages": [{"role": "user", "content": prompt}],
-                "max_tokens": 1000,
+                # Reduziere Default-Ausgabegröße, kann per Prompt erhöht werden
+                "max_tokens": int(os.environ.get('HAK_GAL_LLM_MAXTOKENS', '600')),
                 "temperature": 0.7,
                 "stream": False
             }
@@ -181,7 +199,7 @@ class DeepSeekProvider(LLMProvider):
                 headers=headers,
                 json=data,
                 timeout=self.timeout,
-                verify=True
+                verify=certifi.where()
             )
             
             print(f"[{provider_name}] Response status: {response.status_code}")
@@ -211,8 +229,50 @@ class ClaudeProvider(LLMProvider):
     def __init__(self):
         self.api_key = os.environ.get('ANTHROPIC_API_KEY', '')
         self.base_url = "https://api.anthropic.com/v1/messages"
-        self.models = ["claude-3-5-sonnet-20241022", "claude-3-5-sonnet-latest", "claude-3-sonnet-20240229"]
-        self.timeout = 30
+        # Modelle: aus Konfig oder sinnvolle Defaults
+        self.models = [
+            "claude-3-7-sonnet-20250219",
+            "claude-sonnet-4-20250514",
+            "claude-3-5-sonnet-20241022",
+            "claude-3-5-sonnet-latest",
+            "claude-3-sonnet-20240229",
+        ]
+        # Optional aus Root-llm_config.json überschreiben
+        try:
+            from pathlib import Path as _P
+            import json as _json
+            cfgp = _P("llm_config.json")
+            if cfgp.exists():
+                with open(cfgp, 'r', encoding='utf-8') as _f:
+                    _cfg = _json.load(_f)
+                    cm = _cfg.get('claude', {}).get('models')
+                    if isinstance(cm, list) and cm:
+                        self.models = cm
+        except Exception:
+            pass
+        # Erhöhte Read-Timeouts für Sonnet (große Antworten)
+        connect_to = float(os.environ.get('HAK_GAL_LLM_CONNECT_TIMEOUT', '5'))
+        read_to = float(os.environ.get('HAK_GAL_LLM_READ_TIMEOUT', '45'))
+        self.timeout = (connect_to, read_to)
+        self.session = requests.Session()
+        retries = Retry(total=3, backoff_factor=0.5, status_forcelist=[429, 500, 502, 503, 504])
+        adapter = HTTPAdapter(max_retries=retries)
+        self.session.mount('https://', adapter)
+        self.session.mount('http://', adapter)
+        # DNS Fallback Cache (DoH)
+        self._dns_cache = {}
+        self._dns_ttl_seconds = 300.0
+        # Optional: Vorab-IPs via ENV (HAK_GAL_CLAUDE_IPS="ip1,ip2")
+        try:
+            import time as _t
+            ips_env = os.environ.get('HAK_GAL_CLAUDE_IPS', '').strip()
+            if ips_env:
+                seed_ips = [ip.strip() for ip in ips_env.split(',') if ip.strip()]
+                if seed_ips:
+                    self._dns_cache['api.anthropic.com'] = {"ips": seed_ips, "ts": _t.time()}
+                    print(f"[Claude] Using IPs from HAK_GAL_CLAUDE_IPS: {seed_ips}")
+        except Exception:
+            pass
     
     def is_available(self) -> bool:
         return bool(self.api_key)
@@ -226,6 +286,14 @@ class ClaudeProvider(LLMProvider):
         for model in self.models:
             try:
                 print(f"[{provider_name}] Trying model {model} (timeout={self.timeout}s)...")
+                # Erzwinge IPv4 (Workaround für sporadische DNS-Timeouts unter Windows/Eventlet)
+                try:
+                    import urllib3.util.connection as uc
+                    uc.HAS_IPV6 = False
+                except Exception:
+                    pass
+                # Vorab: Stelle sicher, dass DNS für api.anthropic.com auflösbar ist
+                self._ensure_dns("api.anthropic.com", preflight_timeout=0.35)
                 headers = {
                     "Content-Type": "application/json",
                     "x-api-key": self.api_key,
@@ -237,20 +305,58 @@ class ClaudeProvider(LLMProvider):
                     "max_tokens": 4096,
                     "temperature": 0.7
                 }
-                response = requests.post(
-                    self.base_url, 
-                    headers=headers, 
-                    json=data, 
-                    timeout=self.timeout
-                )
+                # Proxies ignorieren, certifi-CA nutzen
+                self.session.trust_env = False
+                # Führe Request in DNS-Override-Kontext aus, falls wir DoH-IPs haben
+                response = None
+                ips = self._get_cached_ips("api.anthropic.com")
+                if ips:
+                    response = self._request_with_dns_override(ips, headers, data)
+                else:
+                    response = self.session.post(
+                        self.base_url,
+                        headers=headers,
+                        json=data,
+                        timeout=self.timeout,
+                        verify=certifi.where()
+                    )
                 
                 if response.status_code == 200:
                     result = response.json()
-                    if 'content' in result and len(result['content']) > 0:
-                        text = result['content'][0].get('text', '')
-                        if text and len(text) > 10:  # Reduced threshold
-                            print(f"[{provider_name}] Success with {model}!")
-                            return text, provider_name
+                    text = ""
+                    # 1) Neues Messages-API: content als Liste mit Text-Blöcken
+                    if isinstance(result.get('content'), list) and len(result['content']) > 0:
+                        parts = []
+                        for item in result['content']:
+                            if isinstance(item, dict) and item.get('type') == 'text':
+                                t = item.get('text', '')
+                                if t:
+                                    parts.append(t)
+                        text = "\n".join(parts).strip()
+                    # 2) Fallback: content als einfacher String
+                    if not text and isinstance(result.get('content'), str):
+                        text = result['content'].strip()
+                    # 3) Fallback: verschachtelt unter 'message'
+                    if not text and isinstance(result.get('message'), dict):
+                        msg = result['message']
+                        if isinstance(msg.get('content'), list):
+                            parts = []
+                            for item in msg['content']:
+                                if isinstance(item, dict) and item.get('type') == 'text':
+                                    t = item.get('text', '')
+                                    if t:
+                                        parts.append(t)
+                            text = "\n".join(parts).strip()
+                        elif isinstance(msg.get('content'), str):
+                            text = msg['content'].strip()
+                    if text and len(text) >= 2:
+                        print(f"[{provider_name}] Success with {model}!")
+                        return text, provider_name
+                    # Debug-Ausgabe zur Strukturhilfe
+                    try:
+                        print(f"[{provider_name}] Debug body: {response.text[:400]}")
+                    except Exception:
+                        pass
                     errors.append(f"{model}: Invalid response structure")
                 else:
                     errors.append(f"{model}: HTTP {response.status_code}")
@@ -258,6 +364,137 @@ class ClaudeProvider(LLMProvider):
                 errors.append(f"{model}: {str(e)[:50]}")
         
         return f"Claude error - tried all models: {', '.join(errors)}", provider_name
+
+    # --- DNS Robustness Helpers ---
+    def _ensure_dns(self, host: str, preflight_timeout: float = 0.3):
+        """Try normal DNS quickly; on failure resolve via DoH and cache IPs."""
+        import socket, time
+        old_to = socket.getdefaulttimeout()
+        try:
+            socket.setdefaulttimeout(preflight_timeout)
+            try:
+                socket.gethostbyname(host)
+                return  # Normal DNS ok
+            except Exception:
+                pass
+        finally:
+            socket.setdefaulttimeout(old_to)
+        # Fallback via DoH
+        ips = self._resolve_via_doh(host)
+        if ips:
+            self._dns_cache[host] = {"ips": ips, "ts": time.time()}
+
+    def _get_cached_ips(self, host: str):
+        import time
+        entry = self._dns_cache.get(host)
+        if entry and (time.time() - entry["ts"]) < self._dns_ttl_seconds:
+            return entry["ips"]
+        return None
+
+    def _resolve_via_doh(self, host: str) -> list:
+        """Resolve using public DoH endpoints (Google, Cloudflare)."""
+        ips = []
+        # 1) Cloudflare DoH via IP (vermeidet lokale DNS) – TLS-Verify optional
+        for ip_host in ("1.1.1.1", "1.0.0.1"):
+            try:
+                r = self.session.get(
+                    f"https://{ip_host}/dns-query",
+                    params={"name": host, "type": "A"},
+                    headers={
+                        "accept": "application/dns-json",
+                        "host": "cloudflare-dns.com"
+                    },
+                    timeout=2,
+                    verify=False  # bewusst nur für DoH-IP-Fallback
+                )
+                if r.status_code == 200:
+                    j = r.json()
+                    for ans in j.get("Answer", []):
+                        data = ans.get("data", "")
+                        if data and all(ch.isdigit() or ch == '.' for ch in data):
+                            ips.append(data)
+                    if ips:
+                        break
+            except Exception:
+                continue
+        # 2) Falls keine IPs: DoH über Domains (benötigt funktionierendes DNS)
+        if not ips:
+            try:
+                r = self.session.get(
+                    "https://dns.google/resolve",
+                    params={"name": host, "type": "A"},
+                    timeout=2,
+                )
+                if r.status_code == 200:
+                    j = r.json()
+                    for ans in j.get("Answer", []):
+                        data = ans.get("data", "")
+                        if data and all(ch.isdigit() or ch == '.' for ch in data):
+                            ips.append(data)
+            except Exception:
+                pass
+        if not ips:
+            try:
+                r = self.session.get(
+                    "https://cloudflare-dns.com/dns-query",
+                    params={"name": host, "type": "A"},
+                    headers={"accept": "application/dns-json"},
+                    timeout=2,
+                )
+                if r.status_code == 200:
+                    j = r.json()
+                    for ans in j.get("Answer", []):
+                        data = ans.get("data", "")
+                        if data and all(ch.isdigit() or ch == '.' for ch in data):
+                            ips.append(data)
+            except Exception:
+                pass
+        # 3) Letzter Ausweg: nslookup über Cloudflare-Resolver (keine DNS nötig für 1.1.1.1)
+        if not ips:
+            try:
+                import subprocess, re
+                p = subprocess.run(
+                    ["nslookup", host, "1.1.1.1"],
+                    capture_output=True,
+                    text=True,
+                    timeout=3
+                )
+                out = p.stdout or ""
+                for line in out.splitlines():
+                    m = re.search(r"Address:\s*([0-9]{1,3}(?:\.[0-9]{1,3}){3})", line)
+                    if m:
+                        ip = m.group(1)
+                        if ip and ip != "1.1.1.1":
+                            ips.append(ip)
+                ips = list(dict.fromkeys(ips))
+            except Exception:
+                pass
+        # De-dupe
+        return list(dict.fromkeys(ips))
+
+    def _request_with_dns_override(self, ips: list, headers: dict, data: dict):
+        """Temporarily override getaddrinfo for api.anthropic.com to use provided IPs."""
+        import socket
+        original_getaddrinfo = socket.getaddrinfo
+        host = "api.anthropic.com"
+        def fake_getaddrinfo(node, port, family=0, type=0, proto=0, flags=0):
+            if node == host:
+                results = []
+                for ip in ips:
+                    results.append((socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP, '', (ip, port)))
+                return results or original_getaddrinfo(node, port, family, type, proto, flags)
+            return original_getaddrinfo(node, port, family, type, proto, flags)
+        socket.getaddrinfo = fake_getaddrinfo
+        try:
+            return self.session.post(
+                self.base_url,
+                headers=headers,
+                json=data,
+                timeout=self.timeout,
+                verify=certifi.where()
+            )
+        finally:
+            socket.getaddrinfo = original_getaddrinfo
 
 class MistralProvider(LLMProvider):
     """Mistral API provider - Currently disabled due to invalid API key"""
@@ -280,7 +517,8 @@ class GeminiProvider(LLMProvider):
     
     def __init__(self):
         self.api_key = os.environ.get('GEMINI_API_KEY', '')
-        self.models = ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash-exp", "gemini-1.5-flash"]
+        # Eingeschränkt auf stabiles Modell
+        self.models = ["gemini-2.0-flash-exp"]
         self.timeout = 15
     
     def is_available(self) -> bool:
@@ -321,34 +559,95 @@ class OllamaProvider(LLMProvider):
     """Ollama Local LLM Provider - QWEN 2.5 Model"""
     
     def __init__(self):
-        self.base_url = "http://localhost:11434"
-        # FEST auf qwen2.5:7b gesetzt - keine automatische Auswahl mehr
-        self.model = "qwen2.5:7b"
+        # IPv6/localhost-Probleme vermeiden → IPv4 Loopback explizit
+        self.base_url = "http://127.0.0.1:11434"
+        # Bevorzugte Reihenfolge: 14b, dann 7b (automatische Auswahl)
+        self.preferred_models = ["qwen2.5:14b", "qwen2.5:7b"]
+        self.model = None  # wird bei is_available() gesetzt
         self.timeout = 30  # Reduziert auf 30s
         self._is_available = None  # Cache für is_available
     
+    def _select_model_from_tags(self, tags_json: dict) -> None:
+        try:
+            models = tags_json.get("models", [])
+            available = {m.get("name") for m in models if isinstance(m, dict)}
+            for candidate in self.preferred_models:
+                if candidate in available:
+                    self.model = candidate
+                    print(f"[Ollama] Selected model: {self.model}")
+                    return
+        except Exception:
+            pass
+        # Fallback
+        if not self.model:
+            self.model = "qwen2.5:7b"
+    
     def is_available(self) -> bool:
-        if self._is_available is not None:
-            return self._is_available
+        # Nur positiven Zustand cachen; negatives Ergebnis nicht cachen
+        if self._is_available is True:
+            return True
             
         try:
-            # Schneller Check ob Ollama läuft
-            response = requests.get(f"{self.base_url}/api/tags", timeout=1)
-            if response.status_code == 200:
-                print(f"[Ollama] Server running, using fixed model: {self.model}")
+            # Schneller Check ob Ollama läuft (mit einmaligem Retry)
+            timeouts = [1.0, 2.0]
+            response = None
+            for to in timeouts:
+                try:
+                    # Proxies ignorieren für Localhost
+                    response = requests.get(
+                        f"{self.base_url}/api/tags",
+                        timeout=to,
+                        proxies={"http": None, "https": None}
+                    )
+                    if response.status_code == 200:
+                        break
+                except Exception:
+                    response = None
+            if response is not None and response.status_code == 200:
+                # Modell automatisch bestimmen
+                try:
+                    tags = response.json()
+                except Exception:
+                    tags = {}
+                self._select_model_from_tags(tags)
+                print(f"[Ollama] Server running, selected model: {self.model}")
                 self._is_available = True
                 return True
-            self._is_available = False
+            # Fallback: direkter TCP-Connect-Test
+            try:
+                import socket
+                with socket.create_connection(("127.0.0.1", 11434), timeout=0.5):
+                    # Dienst läuft, auch wenn /api/tags gerade nicht antwortet
+                    if not self.model:
+                        self.model = self.preferred_models[0]
+                    print(f"[Ollama] TCP check OK, assuming available (model: {self.model})")
+                    self._is_available = True
+                    return True
+            except Exception:
+                pass
+            # Kein Erfolg → nicht cachen, damit wir im nächsten Versuch neu prüfen
+            self._is_available = None
             return False
         except:
             print(f"[Ollama] Server not reachable")
-            self._is_available = False
+            self._is_available = None
             return False
     
     def generate_response(self, prompt: str) -> tuple[str, str]:
         provider_name = "Ollama"
         if not self.is_available():
             return "Ollama server not running or model not available", provider_name
+        # Sicherstellen, dass ein Modell gesetzt ist
+        if not self.model:
+            # Versuche nochmal Tags zu laden, um bestes Modell zu wählen
+            try:
+                r = requests.get(f"{self.base_url}/api/tags", timeout=2, proxies={"http": None, "https": None})
+                if r.status_code == 200:
+                    self._select_model_from_tags(r.json())
+            except Exception:
+                pass
+            if not self.model:
+                self.model = self.preferred_models[0]
         
         try:
             print(f"[{provider_name}] Generating with model {self.model}")
@@ -424,7 +723,55 @@ class MultiLLMProvider(LLMProvider):
                 ]
                 print("[MultiLLM] Online mode: Custom chain (Groq -> DeepSeek -> Gemini -> Claude -> Ollama)")
         self.providers = providers
+        # Lightweight DNS health cache to avoid repeated slow failures (TTL seconds)
+        self._dns_health: dict[str, tuple[bool, float]] = {}
+        self._dns_ttl_seconds: float = 60.0
+        # Map providers to their API hostnames for preflight DNS checks
+        self._provider_dns_map = {
+            'Groq': 'api.groq.com',
+            'DeepSeek': 'api.deepseek.com',
+            'Gemini': 'generativelanguage.googleapis.com',
+            'Claude': 'api.anthropic.com',
+            # Ollama is local; skip DNS
+        }
         self._check_dynamic_config()
+
+    def _provider_dns_ok(self, provider_name: str) -> bool:
+        """Fast DNS preflight for external providers with small TTL cache.
+        Returns True if resolution succeeds quickly; False if it fails.
+        Ollama is treated as always OK.
+        """
+        # Allow Claude to proceed; it has its own DoH + override fallback
+        if provider_name == 'Claude':
+            return True
+        if provider_name == 'Ollama':
+            return True
+        host = self._provider_dns_map.get(provider_name)
+        if not host:
+            return True  # Unknown provider -> do not block
+        import time as _t
+        now = _t.time()
+        cached = self._dns_health.get(host)
+        if cached and (now - cached[1]) < self._dns_ttl_seconds:
+            return cached[0]
+        # Perform quick DNS resolution with tight timeout
+        try:
+            import socket as _s
+            old_to = _s.getdefaulttimeout()
+            _s.setdefaulttimeout(0.3)
+            _s.gethostbyname(host)
+            _s.setdefaulttimeout(old_to)
+            self._dns_health[host] = (True, now)
+            return True
+        except Exception:
+            try:
+                import socket as _s2
+                _s2.setdefaulttimeout(None)
+            except Exception:
+                pass
+            self._dns_health[host] = (False, now)
+            print(f"[MultiLLM] DNS preflight failed for {provider_name} ({host}) - skipping provider")
+            return False
     
     def _check_dynamic_config(self):
         """Check for dynamic LLM configuration"""
@@ -491,6 +838,10 @@ class MultiLLMProvider(LLMProvider):
             # OPTIMIERUNG: Nach 2 Verbindungsfehlern nur noch Ollama probieren
             if connection_failures >= 2 and provider_name != 'Ollama':
                 print(f"[MultiLLM] Skipping {provider_name} due to multiple connection failures")
+                continue
+            # Schneller DNS-Preflight für externe Provider
+            if not self._provider_dns_ok(provider_name):
+                connection_failures += 1
                 continue
                 
             if provider.is_available():

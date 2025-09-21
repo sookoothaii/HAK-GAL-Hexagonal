@@ -1,0 +1,183 @@
+{
+  "provider": "gemini_pro",
+  "instructions": "Fokus Bio/Physik; strikte JSON-Ausgabe; max 40 Items",
+  "schema": {
+    "items_schema": {
+      "statement": "string",
+      "verdict": "correct|incorrect|uncertain",
+      "reasons": "string",
+      "suggested_fix": "string|null",
+      "domain": "string",
+      "confidence": "number"
+    },
+    "summary_schema": {
+      "count": "number",
+      "correct": "number",
+      "incorrect": "number",
+      "uncertain": "number",
+      "acceptance_rate": "number"
+    }
+  },
+  "samples": [
+    {
+      "predicate": "ConsistsOf",
+      "statement": "ConsistsOf(protein, gene, DNA)."
+    },
+    {
+      "predicate": "StudiedBy",
+      "statement": "StudiedBy(quantum, Bohr)."
+    },
+    {
+      "predicate": "IsDefinedAs",
+      "statement": "IsDefinedAs(quantum, Newton)."
+    },
+    {
+      "predicate": "Uses",
+      "statement": "Uses(DNA, protein)."
+    },
+    {
+      "predicate": "HasProperty",
+      "statement": "HasProperty(ReignOfTerror, RadicalJacobins)."
+    },
+    {
+      "predicate": "ConsistsOf",
+      "statement": "ConsistsOf(HTTP, cloud, encryption)."
+    },
+    {
+      "predicate": "ConsistsOf",
+      "statement": "ConsistsOf(cloud, SQL, API)."
+    },
+    {
+      "predicate": "ConsistsOf",
+      "statement": "ConsistsOf(nucleus, protein, ribosome)."
+    },
+    {
+      "predicate": "Cell",
+      "statement": "Cell(chromosome, mitochondria, virus)."
+    },
+    {
+      "predicate": "ConsistsOf",
+      "statement": "ConsistsOf(graph, calculus, equation)."
+    },
+    {
+      "predicate": "IsTypeOf",
+      "statement": "IsTypeOf(NaCl, O2)."
+    },
+    {
+      "predicate": "IsSimilarTo",
+      "statement": "IsSimilarTo(fungi, protein)."
+    },
+    {
+      "predicate": "HasProperty",
+      "statement": "HasProperty(server, stable)."
+    },
+    {
+      "predicate": "ConsistsOf",
+      "statement": "ConsistsOf(chromosome, tissue, virus)."
+    },
+    {
+      "predicate": "Requires",
+      "statement": "Requires(calculus, integer)."
+    },
+    {
+      "predicate": "IsDefinedAs",
+      "statement": "IsDefinedAs(DNA, virus)."
+    },
+    {
+      "predicate": "Equation",
+      "statement": "Equation(integer, algebra, prime, Gauss, topology)."
+    },
+    {
+      "predicate": "HasPart",
+      "statement": "HasPart(FiscalStimulus, COVID19Relief)."
+    },
+    {
+      "predicate": "Field",
+      "statement": "Field(quark, gravity, photon, electron)."
+    },
+    {
+      "predicate": "Function",
+      "statement": "Function(Euler, Gauss, algebra)."
+    },
+    {
+      "predicate": "IsA",
+      "statement": "IsA(Water, WaterFormation)."
+    },
+    {
+      "predicate": "IsTypeOf",
+      "statement": "IsTypeOf(mitochondria, ribosome)."
+    },
+    {
+      "predicate": "Wave",
+      "statement": "Wave(Einstein, velocity, proton, electron, boson)."
+    },
+    {
+      "predicate": "HasProperty",
+      "statement": "HasProperty(KeynesianIdeas, RelevantInDebates)."
+    },
+    {
+      "predicate": "ConsistsOf",
+      "statement": "ConsistsOf(RNA, virus, species)."
+    },
+    {
+      "predicate": "Uses",
+      "statement": "Uses(blockchain, CryptographicHashinge)."
+    },
+    {
+      "predicate": "HasLocation",
+      "statement": "HasLocation(set, space)."
+    },
+    {
+      "predicate": "Set",
+      "statement": "Set(derivative, calculus, topology, graph)."
+    },
+    {
+      "predicate": "IsDefinedAs",
+      "statement": "IsDefinedAs(Gauss, topology)."
+    },
+    {
+      "predicate": "Force",
+      "statement": "Force(momentum, neutron, Newton, velocity, Einstein)."
+    },
+    {
+      "predicate": "HasPurpose",
+      "statement": "HasPurpose(GreatPyramidOfGiza, Tomb)."
+    },
+    {
+      "predicate": "Particle",
+      "statement": "Particle(proton, velocity, photon, neutron)."
+    },
+    {
+      "predicate": "Theorem",
+      "statement": "Theorem(topology, integer, graph, calculus, algebra)."
+    },
+    {
+      "predicate": "HasPurpose",
+      "statement": "HasPurpose(DeclarationOfTheRightsOfManAndCitizen, EstablishPrinciples)."
+    },
+    {
+      "predicate": "ConsistsOf",
+      "statement": "ConsistsOf(network, HTTP, TCP/IP)."
+    },
+    {
+      "predicate": "DependsOn",
+      "statement": "DependsOn(set, integer)."
+    },
+    {
+      "predicate": "Evolution",
+      "statement": "Evolution(fungi, ribosome, plant, mitochondria, bacteria)."
+    },
+    {
+      "predicate": "IsTypeOf",
+      "statement": "IsTypeOf(enzyme, species)."
+    },
+    {
+      "predicate": "Causes",
+      "statement": "Causes(KeynesianEconomics, CyclicalUnemployment)."
+    },
+    {
+      "predicate": "HasPurpose",
+      "statement": "HasPurpose(JustinianI, BuildHagiaSophia)."
+    }
+  ]
+}

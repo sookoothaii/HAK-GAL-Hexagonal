@@ -1,40 +1,24 @@
----
-title: "MCP Tools — Dual Server Index (3006 &amp; 3007)"
-created: "2025-09-15T09:12:00Z"
-author: "GPT-5 Thinking"
-topics: ["meta"]
-tags: ["tools","inventory","index","mcp","ssot"]
-privacy: "internal"
-summary_200: |
-  Zentrales Index-Dokument für die MCP-Toolbestände der zwei Laufzeitserver
-  (Ports 3006 und 3007). Enthält bestätigte Zählwerte und Verweise auf die
-  Detailinventare je Port. Dient als Single Source of Truth.
----
+# Tools Inventory — Ports 3006 &amp; 3007
 
-# MCP Tools — Dual Server Index
+**Stand:** 2025-09-18 03:04:10
 
-**Server:** 3006 &amp; 3007  
-**Gesamtzahl Tools (bestätigt):** **119**
+**Anzahlen**
+- Port 3006: **0**
+- Port 3007: **0**
+- Gesamt (unique): **0**
+- Schnittmenge: **0**
+- Nur 3006: **0**
+- Nur 3007: **0**
 
-## Aufteilung nach Suite
+## Schnittmenge (beide Ports)
+_(keine)_
 
-- **hak-gal:** **64** Tools  
-- **hak-gal-filesystem:** **55** Tools  
-- **Summe:** **119**
+## Nur Port 3006
+_(keine)_
 
-> Hinweis: Die Zählwerte stammen aus der bestätigten Laufzeit-Konfiguration der zwei Server.
+## Nur Port 3007
+_(keine)_
 
 ---
 
-## Detail-Inventare
-
-- **Port 3006:** [`TOOLS_3006.md`](./TOOLS_3006.md)
-- **Port 3007:** [`TOOLS_3007.md`](./TOOLS_3007.md)
-
----
-
-## Governance & Verwendung
-
-- Dieses Dokument ist die **Single Source of Truth** (SSOT) für Tool-Zählwerte und Verweise.
-- Detailänderungen (z. B. Aktivierung/Deaktivierung einzelner Tools) werden in den per-Port-Dateien gepflegt.
-- Bei Abweichungen zwischen Laufzeit und Dokumentation: **Laufzeitzustand** hat Priorität; anschließend Inventare aktualisieren.
+*Quelle:* Konsolidiert aus `TOOLS_3006.md` und `TOOLS_3007.md`. Siehe auch `tools_inventory.json` für Präsenzmatrix.

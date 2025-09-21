@@ -23,6 +23,7 @@ import WorkflowPro from '@/pages/WorkflowPro';
 import HRMDashboard from '@/pages/HRMDashboard';
 import ProNavigation from '@/components/ProNavigation';
 import KnowledgeGraphVisualization from '@/components/interaction/KnowledgeGraphVisualization';
+import HallucinationPrevention from '@/components/HallucinationPrevention/HallucinationPrevention';
 
 function AppContent() {
   // Use existing store bridge - it handles WebSocket connection
@@ -70,6 +71,7 @@ function AppContent() {
             <Route path="/knowledge/graph" element={<KnowledgeGraphVisualization />} />
             <Route path="/graph" element={<KnowledgeGraphVisualization />} />
             <Route path="/hrm" element={<HRMDashboard />} />
+            <Route path="/hallucination-prevention" element={<HallucinationPrevention />} />
             <Route path="/system" element={<ProSystemMonitoring />} />
             <Route path="/monitoring" element={<ProSystemMonitoring />} />
             <Route path="/stats" element={<ProKnowledgeStats />} />

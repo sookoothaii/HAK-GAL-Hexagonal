@@ -1,0 +1,25 @@
+{
+  "verified_queries": {
+    "nenn mir 10 komplexe valide fakten ueber llm": {
+      "verified": true,
+      "confidence_override": null,
+      "verified_at": 1758240883.6827333,
+      "verifier": "user"
+    }
+  },
+  "adjustments": {
+    "nenn mir 10 komplexe valide fakten ueber llm": {
+      "base_adjustment": 0.2,
+      "feedback_ratio": 1.0,
+      "updated_at": 1758240883.6837301
+    }
+  },
+  "history": {
+    "nenn mir 10 komplexe valide fakten ueber llm": {
+      "positive_count": 1,
+      "negative_count": 0,
+      "last_feedback": 1758240883.6837301,
+      "confidence_adjustments": []
+    }
+  }
+}

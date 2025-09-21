@@ -17,7 +17,8 @@ import {
   Database,
   Network,
   BarChart3,
-  Cpu
+  Cpu,
+  Shield
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -93,6 +94,13 @@ const ProNavigation: React.FC = () => {
       icon: <Terminal className="w-4 h-4" />,
       description: 'Neural + Symbolic reasoning',
       badge: 'DUAL'
+    },
+    {
+      path: '/hallucination-prevention',
+      label: 'Hallucination Prevention',
+      icon: <Shield className="w-4 h-4" />,
+      description: 'AI-Powered validation',
+      badge: 'NEW'
     },
     {
       path: '/knowledge',

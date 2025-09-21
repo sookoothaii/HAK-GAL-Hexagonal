@@ -2568,6 +2568,12 @@ class FileSystemMCPServer:
         logger.info("Server shutdown")
 
 async def main():
+    
+    # === N-ÄRE FACT TOOL PATCHES ===
+    # print("Applying n-ary fact tool patches...")
+    # patched_tools = patch_mcp_server_tools()
+    # === END PATCHES ===
+    
     server = FileSystemMCPServer()
     await server.run()
 

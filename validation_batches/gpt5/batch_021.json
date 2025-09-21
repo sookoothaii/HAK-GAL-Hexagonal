@@ -1,0 +1,183 @@
+{
+  "provider": "gpt5",
+  "instructions": "Generische Qualitätsprüfung; strikte JSON-Ausgabe",
+  "schema": {
+    "items_schema": {
+      "statement": "string",
+      "verdict": "correct|incorrect|uncertain",
+      "reasons": "string",
+      "suggested_fix": "string|null",
+      "domain": "string",
+      "confidence": "number"
+    },
+    "summary_schema": {
+      "count": "number",
+      "correct": "number",
+      "incorrect": "number",
+      "uncertain": "number",
+      "acceptance_rate": "number"
+    }
+  },
+  "samples": [
+    {
+      "predicate": "API",
+      "statement": "API(blockchain, SQL, encryption, REST, server)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(blockchain, TCP/IP, AI, NoSQL)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(blockchain, TCP/IP, HTTP, GraphQL, SQL)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(blockchain, TCP/IP, NoSQL)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(blockchain, TCP/IP, server, encryption, GraphQL)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(blockchain, client, SQL)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(blockchain, client, SQL, HTTP)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(blockchain, client, SQL, REST, cloud)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(blockchain, client, TCP/IP, encryption)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(blockchain, cloud, TCP/IP, server, encryption)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(blockchain, cloud, encryption, server, AI)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(blockchain, encryption, NoSQL, GraphQL)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(blockchain, encryption, REST, HTTP, TCP/IP)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(blockchain, server, SQL)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(client, AI, REST)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(client, AI, encryption)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(client, AI, encryption, cloud, HTTP)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(client, GraphQL, server, TCP/IP, cloud)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(client, HTTP, SQL, encryption, NoSQL)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(client, HTTP, server, TCP/IP)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(client, REST, TCP/IP, cloud)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(client, REST, cloud, server, AI)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(client, SQL, AI, HTTP)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(client, SQL, NoSQL, HTTP, AI)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(client, SQL, TCP/IP, AI, REST)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(client, TCP/IP, AI, GraphQL, server)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(client, TCP/IP, REST)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(client, TCP/IP, SQL, REST, encryption)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(client, TCP/IP, blockchain)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(client, TCP/IP, blockchain, GraphQL, NoSQL)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(client, TCP/IP, cloud, GraphQL, blockchain)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(client, blockchain, AI, encryption, cloud)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(client, blockchain, NoSQL)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(client, blockchain, NoSQL, HTTP)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(client, blockchain, SQL, TCP/IP)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(client, blockchain, TCP/IP, cloud)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(client, blockchain, cloud)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(client, cloud, GraphQL, AI, blockchain)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(client, cloud, GraphQL, blockchain)."
+    },
+    {
+      "predicate": "API",
+      "statement": "API(client, cloud, NoSQL, REST, AI)."
+    }
+  ]
+}

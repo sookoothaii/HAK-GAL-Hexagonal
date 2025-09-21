@@ -1,0 +1,183 @@
+{
+  "provider": "gemini_pro",
+  "instructions": "Fokus Bio/Physik; strikte JSON-Ausgabe; max 40 Items",
+  "schema": {
+    "items_schema": {
+      "statement": "string",
+      "verdict": "correct|incorrect|uncertain",
+      "reasons": "string",
+      "suggested_fix": "string|null",
+      "domain": "string",
+      "confidence": "number"
+    },
+    "summary_schema": {
+      "count": "number",
+      "correct": "number",
+      "incorrect": "number",
+      "uncertain": "number",
+      "acceptance_rate": "number"
+    }
+  },
+  "samples": [
+    {
+      "predicate": "IsSimilarTo",
+      "statement": "IsSimilarTo(quantum, electron)."
+    },
+    {
+      "predicate": "IsSimilarTo",
+      "statement": "IsSimilarTo(tissue, nucleus)."
+    },
+    {
+      "predicate": "IsSimilarTo",
+      "statement": "IsSimilarTo(bacteria, species)."
+    },
+    {
+      "predicate": "IsSimilarTo",
+      "statement": "IsSimilarTo(catalyst, carbon)."
+    },
+    {
+      "predicate": "IsSimilarTo",
+      "statement": "IsSimilarTo(DefensiveWars, FoughtAgainstSeljukTurks)."
+    },
+    {
+      "predicate": "IsSimilarTo",
+      "statement": "IsSimilarTo(reaction, bond)."
+    },
+    {
+      "predicate": "IsSimilarTo",
+      "statement": "IsSimilarTo(ecosystem, gene)."
+    },
+    {
+      "predicate": "IsSimilarTo",
+      "statement": "IsSimilarTo(RNA, DNA)."
+    },
+    {
+      "predicate": "IsSimilarTo",
+      "statement": "IsSimilarTo(server, protocol)."
+    },
+    {
+      "predicate": "IsSimilarTo",
+      "statement": "IsSimilarTo(blockchain, client)."
+    },
+    {
+      "predicate": "IsSimilarTo",
+      "statement": "IsSimilarTo(protocol, NoSQL)."
+    },
+    {
+      "predicate": "IsSimilarTo",
+      "statement": "IsSimilarTo(enzyme, chromosome)."
+    },
+    {
+      "predicate": "IsSimilarTo",
+      "statement": "IsSimilarTo(proton, velocity)."
+    },
+    {
+      "predicate": "IsSimilarTo",
+      "statement": "IsSimilarTo(function, graph)."
+    },
+    {
+      "predicate": "IsSimilarTo",
+      "statement": "IsSimilarTo(NationalAssembly, ThirdEstate)."
+    },
+    {
+      "predicate": "IsSimilarTo",
+      "statement": "IsSimilarTo(mass, Newton)."
+    },
+    {
+      "predicate": "IsSimilarTo",
+      "statement": "IsSimilarTo(NoSQL, client)."
+    },
+    {
+      "predicate": "IsSimilarTo",
+      "statement": "IsSimilarTo(gravity, photon)."
+    },
+    {
+      "predicate": "IsSimilarTo",
+      "statement": "IsSimilarTo(momentum, gravity)."
+    },
+    {
+      "predicate": "IsSimilarTo",
+      "statement": "IsSimilarTo(topology, Euler)."
+    },
+    {
+      "predicate": "HasPurpose",
+      "statement": "HasPurpose(CritiqueOfPureReason, ExploreHumanKnowledge)."
+    },
+    {
+      "predicate": "HasPurpose",
+      "statement": "HasPurpose(CounterCyclicalPolicies, PreventOverheating)."
+    },
+    {
+      "predicate": "HasPurpose",
+      "statement": "HasPurpose(gene, computation)."
+    },
+    {
+      "predicate": "HasPurpose",
+      "statement": "HasPurpose(gene, analysis)."
+    },
+    {
+      "predicate": "HasPurpose",
+      "statement": "HasPurpose(NoSQL, regulation)."
+    },
+    {
+      "predicate": "HasPurpose",
+      "statement": "HasPurpose(NaCl, computation)."
+    },
+    {
+      "predicate": "HasPurpose",
+      "statement": "HasPurpose(proton, transmission)."
+    },
+    {
+      "predicate": "HasPurpose",
+      "statement": "HasPurpose(wave, conversion)."
+    },
+    {
+      "predicate": "HasPurpose",
+      "statement": "HasPurpose(SynapticPlasticity, RecoveryFromInjury)."
+    },
+    {
+      "predicate": "HasPurpose",
+      "statement": "HasPurpose(algorithm, protection)."
+    },
+    {
+      "predicate": "HasPurpose",
+      "statement": "HasPurpose(KantPhilosophy, EmphasizesReasonRole)."
+    },
+    {
+      "predicate": "HasPurpose",
+      "statement": "HasPurpose(KrebsCycle, SuppliesPrecursors)."
+    },
+    {
+      "predicate": "HasPurpose",
+      "statement": "HasPurpose(FiscalPolicies, CounteractEconomicDownturns)."
+    },
+    {
+      "predicate": "HasPurpose",
+      "statement": "HasPurpose(SpecializedNetworks, Memory)."
+    },
+    {
+      "predicate": "HasPurpose",
+      "statement": "HasPurpose(species, synthesis)."
+    },
+    {
+      "predicate": "HasPurpose",
+      "statement": "HasPurpose(ByzantineEmpire, PreserveClassicalKnowledge)."
+    },
+    {
+      "predicate": "HasPurpose",
+      "statement": "HasPurpose(carbon, conversion)."
+    },
+    {
+      "predicate": "HasPurpose",
+      "statement": "HasPurpose(gravity, computation)."
+    },
+    {
+      "predicate": "HasPurpose",
+      "statement": "HasPurpose(NileFloods, Agriculture)."
+    },
+    {
+      "predicate": "HasPurpose",
+      "statement": "HasPurpose(AI, transmission)."
+    }
+  ]
+}

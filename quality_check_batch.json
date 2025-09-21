@@ -1,0 +1,36 @@
+{
+  "hasProperty_samples": [
+    "HasProperty(H2O, polar).",
+    "HasProperty(CurrentAI, PatternRecognitionCapability).",
+    "HasProperty(CH4, gas).",
+    "HasProperty(photon, energy).",
+    "HasProperty(proton, mass).",
+    "HasProperty(NH3, pungent).",
+    "HasProperty(CH4, flammable).",
+    "HasProperty(electron, negative_charge).",
+    "HasProperty(proton, positive_charge).",
+    "HasProperty(CH4, nonpolar).",
+    "HasProperty(photon, speed_of_light).",
+    "HasProperty(NaCl, soluble).",
+    "HasProperty(CO2, gas).",
+    "HasProperty(NaCl, crystalline).",
+    "HasProperty(NH3, basic).",
+    "HasProperty(CO2, nonpolar).",
+    "HasProperty(H2O, solvent).",
+    "HasProperty(NaCl, ionic).",
+    "HasProperty(photon, no_mass).",
+    "HasProperty(electron, mass)."
+  ],
+  "scientific_samples": [
+    "ConsistsOf(CO2, carbon, oxygen).",
+    "ConsistsOf(H2O, hydrogen, oxygen).",
+    "ConsistsOf(CH4, carbon, hydrogen).",
+    "ArchitectureValidationMethod(human_supervision:100_percent, live_testing:completed, http_tests:all_passed, tcp_connections:verified, response_analysis:headers_checked, metrics_collection:dashboard_data, prometheus_data:collected, empirical_evidence:complete, reproducible:true, timestamp:2025-09-19_UTC)",
+    "HallucinationPreventionTechnicalStack(date:2025-01-21, backend_port:5002, frontend_port:8088, api_key:hg_sk_4f9a8e1b7d2c5f6a8b3d9e0c1a7b4f9d, http_client:axios, error_interceptors:implemented, cors_enabled:true, base_url:http_127_0_0_1_5002, timeout_ms:10000, auth_header:X-API-Key).",
+    "NetworkPacket(127.0.0.1, 127.0.0.1, TCP, 3306, 4096bytes).",
+    "HasPart(DNA, thymine).",
+    "BiologicalProcess(Ribosome, Translation, mRNA, Protein, Cytoplasm).",
+    "HasPart(DNA, cytosine)."
+  ],
+  "total_for_validation": 29
+}

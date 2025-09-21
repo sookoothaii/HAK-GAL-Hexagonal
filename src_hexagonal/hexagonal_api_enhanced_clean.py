@@ -7,6 +7,11 @@ Nach HAK/GAL Verfassung: NO FAKE DATA, ONLY REAL RESULTS
 import os  # Import os at the top level
 import sys
 from pathlib import Path
+import socket
+
+# NOTE: Kein globaler Socket-Timeout, da dies Eventlet-Accept-Loop timeouts auslöst
+# Falls nötig, gezielte Timeouts in HTTP-Clients (Requests) setzen
+print("[DNS FIX] Global socket timeout disabled to avoid Eventlet accept timeouts")
 
 # Set Governance Version BEFORE other imports
 os.environ.setdefault('GOVERNANCE_VERSION', 'v3')
@@ -17,9 +22,20 @@ print(f"[INFO] Governance Version: {os.environ.get('GOVERNANCE_VERSION')}")
 # are patched for cooperative multitasking, preventing hangs with SocketIO.
 try:
     import eventlet
+    # Apply custom patch for BrokenPipeError protection
+    try:
+        import eventlet_patch
+    except:
+        pass
     # Full patching for proper async operation - fixes 2-second delay
     eventlet.monkey_patch()
     print("[OK] Eventlet monkey-patching applied (DNS-safe mode).")
+    # Sicherstellen, dass es keinen globalen Socket-Timeout gibt
+    try:
+        socket.setdefaulttimeout(None)
+        print("[Eventlet] Cleared global socket timeout (None)")
+    except Exception:
+        pass
 except ImportError:
     print("[WARNING] Eventlet not found. WebSocket may hang under load.")
 # --- End of Patching ---
@@ -94,6 +110,7 @@ from src_hexagonal.llm_config_routes import init_llm_config_routes
 from src_hexagonal.llm_governor_integration_fixed import integrate_llm_governor
 from src_hexagonal.application.transactional_governance_engine import TransactionalGovernanceEngine
 from src_hexagonal.application.governance_monitor import probe_sqlite
+from adapters.hallucination_prevention_adapter import create_hallucination_prevention_adapter
 
 
 
@@ -179,6 +196,14 @@ class HexagonalAPI:
         print(f"[OK] Policy enforcement: {os.environ.get('POLICY_ENFORCE', 'observe')}")
         print(f"[OK] Bypass mode: {os.environ.get('GOVERNANCE_BYPASS', 'false')}")
 
+        # Initialize Hallucination Prevention
+        try:
+            self.hallucination_adapter = create_hallucination_prevention_adapter()
+            print("[OK] Hallucination Prevention Service initialized")
+        except Exception as e:
+            print(f"[WARNING] Hallucination Prevention failed to initialize: {e}")
+            self.hallucination_adapter = None
+
         
         # Initialize Application Services
         self.fact_service = FactManagementService(
@@ -253,6 +278,7 @@ class HexagonalAPI:
         self._register_agent_bus_routes() # Register the new agent bus routes
         self._register_engine_routes() # Register engine API routes
         self._register_llm_config_routes() # Register LLM configuration routes
+        self._register_hallucination_prevention_routes() # Register Hallucination Prevention routes
         
         # Ensure CORS headers on every response
         @self.app.after_request
@@ -718,10 +744,11 @@ class HexagonalAPI:
             import time
             start_time = time.time()  # Start timing immediately
             
+            # Parse payload and build prompt
             payload = request.get_json(silent=True) or {}
             topic = payload.get('topic') or payload.get('query') or ''
             context_facts = payload.get('context_facts') or []
-            
+                
             prompt = (
                 f"Query: {topic}\n\n"
                 f"Context facts:\n{os.linesep.join(context_facts) if context_facts else 'None'}\n\n"
@@ -1231,6 +1258,183 @@ class HexagonalAPI:
         except Exception as e:
             print(f"[WARNING] Failed to register async engine routes: {e}")
 
+    def _register_hallucination_prevention_routes(self):
+        """Register Hallucination Prevention API endpoints"""
+        
+        if not self.hallucination_adapter:
+            print("[WARNING] Hallucination Prevention not available - skipping route registration")
+            return
+        
+        # ========================================================================
+        # HALLUCINATION PREVENTION ENDPOINTS
+        # ========================================================================
+
+        @self.app.route('/api/hallucination-prevention/validate', methods=['POST'])
+        @require_api_key
+        def hallucination_validate_fact():
+            """Validiere einen einzelnen Fakt"""
+            try:
+                data = request.get_json()
+                if not data or 'fact' not in data:
+                    return jsonify({'error': 'Missing fact parameter'}), 400
+                
+                fact = data['fact']
+                validation_level = data.get('validation_level', 'comprehensive')
+                
+                result = self.hallucination_adapter.validate_fact(fact, validation_level)
+                return jsonify(result)
+                
+            except Exception as e:
+                return jsonify({'error': str(e)}), 500
+
+        @self.app.route('/api/hallucination-prevention/validate-batch', methods=['POST'])
+        @require_api_key
+        def hallucination_validate_batch():
+            """Validiere einen Batch von Fakten"""
+            try:
+                data = request.get_json()
+                if not data:
+                    return jsonify({'error': 'Missing request data'}), 400
+                
+                # Support both formats: fact_ids array and facts array
+                if 'fact_ids' in data:
+                    # Original format: fact_ids array
+                    fact_ids = data['fact_ids']
+                    validation_level = data.get('validation_level', 'comprehensive')
+                    result = self.hallucination_adapter.batch_validate_facts(fact_ids, validation_level)
+                elif isinstance(data, list):
+                    # New format: array of fact objects
+                    facts = data
+                    validation_level = 'comprehensive'  # Default level
+                    result = self.hallucination_adapter.batch_validate_facts_from_statements(facts, validation_level)
+                elif 'facts' in data:
+                    # Alternative format: facts array in object
+                    facts = data['facts']
+                    validation_level = data.get('validation_level', 'comprehensive')
+                    result = self.hallucination_adapter.batch_validate_facts_from_statements(facts, validation_level)
+                else:
+                    return jsonify({'error': 'Missing fact_ids or facts parameter'}), 400
+                
+                return jsonify(result)
+                
+            except Exception as e:
+                return jsonify({'error': str(e)}), 500
+
+        @self.app.route('/api/hallucination-prevention/statistics', methods=['GET'])
+        @require_api_key
+        def hallucination_get_statistics():
+            """Hole Validierungsstatistiken"""
+            try:
+                result = self.hallucination_adapter.get_statistics()
+                return jsonify(result)
+                
+            except Exception as e:
+                return jsonify({'error': str(e)}), 500
+
+        @self.app.route('/api/hallucination-prevention/quality-analysis', methods=['POST'])
+        @require_api_key
+        def hallucination_quality_analysis():
+            """Führe Qualitätsanalyse durch"""
+            try:
+                result = self.hallucination_adapter.run_database_quality_analysis()
+                return jsonify(result)
+                
+            except Exception as e:
+                return jsonify({'error': str(e)}), 500
+
+        @self.app.route('/api/hallucination-prevention/governance-compliance', methods=['POST'])
+        @require_api_key
+        def hallucination_governance_compliance():
+            """Prüfe Governance-Compliance"""
+            try:
+                data = request.get_json()
+                if not data or 'fact' not in data:
+                    return jsonify({'error': 'Missing fact parameter'}), 400
+                
+                fact = data['fact']
+                result = self.hallucination_adapter.check_governance_compliance(fact)
+                return jsonify(result)
+                
+            except Exception as e:
+                return jsonify({'error': str(e)}), 500
+
+        @self.app.route('/api/hallucination-prevention/suggest-correction/<int:fact_id>', methods=['GET'])
+        @require_api_key
+        def hallucination_suggest_correction_get(fact_id):
+            """Schlage Korrektur für einen Fakt vor (GET mit fact_id)"""
+            try:
+                result = self.hallucination_adapter.suggest_correction(fact_id)
+                return jsonify(result)
+                
+            except Exception as e:
+                return jsonify({'error': str(e)}), 500
+
+        @self.app.route('/api/hallucination-prevention/suggest-correction', methods=['POST'])
+        @require_api_key
+        def hallucination_suggest_correction_post():
+            """Schlage Korrektur für einen Fakt vor (POST mit fact statement)"""
+            try:
+                data = request.get_json()
+                if not data or 'fact' not in data:
+                    return jsonify({'error': 'Missing fact parameter'}), 400
+                
+                fact = data['fact']
+                # For POST requests, we'll suggest correction based on the fact statement
+                # This is a simplified approach - in production you'd want to validate the fact first
+                result = self.hallucination_adapter.suggest_correction_from_statement(fact)
+                return jsonify(result)
+                
+            except Exception as e:
+                return jsonify({'error': str(e)}), 500
+
+        @self.app.route('/api/hallucination-prevention/invalid-facts', methods=['GET'])
+        @require_api_key
+        def hallucination_get_invalid_facts():
+            """Hole ungültige Fakten"""
+            try:
+                limit = request.args.get('limit', 100, type=int)
+                result = self.hallucination_adapter.get_invalid_facts(limit)
+                return jsonify(result)
+                
+            except Exception as e:
+                return jsonify({'error': str(e)}), 500
+
+        @self.app.route('/api/hallucination-prevention/config', methods=['POST'])
+        @require_api_key
+        def hallucination_update_config():
+            """Aktualisiere Konfiguration"""
+            try:
+                data = request.get_json()
+                result = self.hallucination_adapter.update_config(data)
+                return jsonify(result)
+                
+            except Exception as e:
+                return jsonify({'error': str(e)}), 500
+
+        @self.app.route('/api/hallucination-prevention/health', methods=['GET'])
+        @require_api_key
+        def hallucination_health():
+            """Health Check für Hallucination Prevention Service"""
+            try:
+                if self.hallucination_adapter:
+                    return jsonify({
+                        'status': 'operational',
+                        'service': 'hallucination_prevention',
+                        'adapter_enabled': self.hallucination_adapter.is_enabled,
+                        'timestamp': datetime.now().isoformat()
+                    })
+                else:
+                    return jsonify({
+                        'status': 'unavailable',
+                        'service': 'hallucination_prevention',
+                        'error': 'Adapter not initialized'
+                    }), 503
+                
+            except Exception as e:
+                return jsonify({'error': str(e)}), 500
+
+        print("[OK] Hallucination Prevention API endpoints registered")
+
     def _register_websocket_routes(self):
         """Register WebSocket-specific routes"""
         
@@ -1313,6 +1517,224 @@ class HexagonalAPI:
             if not task:
                 return jsonify({'error': 'Task not found'}), 404
             return jsonify(task)
+
+        # ========================================================================
+        # HALLUCINATION PREVENTION ENDPOINTS
+        # ========================================================================
+        
+        @self.app.route('/api/hallucination-prevention/validate', methods=['POST'])
+        @require_api_key
+        def validate_fact():
+            """Validiere einen einzelnen Fakt"""
+            try:
+                if not self.hallucination_adapter:
+                    return jsonify({'error': 'Hallucination prevention service not available'}), 503
+                
+                data = request.get_json(silent=True)
+                if not data:
+                    return jsonify({'error': 'Invalid request data'}), 400
+                
+                fact = data.get('fact', '').strip()
+                fact_id = data.get('fact_id')
+                level = data.get('level', 'comprehensive')
+                
+                if not fact:
+                    return jsonify({'error': 'Missing fact'}), 400
+                
+                # Validiere Fakt
+                result = self.hallucination_adapter.validate_fact_before_insert(fact, fact_id)
+                result['validation_level'] = level
+                
+                return jsonify({
+                    'success': True,
+                    'validation_result': result,
+                    'timestamp': datetime.now().isoformat()
+                })
+                
+            except Exception as e:
+                print(f"[Hallucination Prevention] Error: {e}")
+                return jsonify({'error': str(e)}), 500
+
+        @self.app.route('/api/hallucination-prevention/validate-batch', methods=['POST'])
+        @require_api_key
+        def validate_facts_batch():
+            """Validiere einen Batch von Fakten"""
+            try:
+                if not self.hallucination_adapter:
+                    return jsonify({'error': 'Hallucination prevention service not available'}), 503
+                
+                data = request.get_json(silent=True)
+                if not data:
+                    return jsonify({'error': 'Invalid request data'}), 400
+                
+                fact_ids = data.get('fact_ids', [])
+                level = data.get('level', 'comprehensive')
+                
+                if not fact_ids or not isinstance(fact_ids, list):
+                    return jsonify({'error': 'Missing or invalid fact_ids list'}), 400
+                
+                # Validiere Batch
+                result = self.hallucination_adapter.batch_validate_facts(fact_ids, level)
+                
+                return jsonify({
+                    'success': True,
+                    'batch_result': result,
+                    'timestamp': datetime.now().isoformat()
+                })
+                
+            except Exception as e:
+                print(f"[Hallucination Prevention] Batch validation error: {e}")
+                return jsonify({'error': str(e)}), 500
+
+        @self.app.route('/api/hallucination-prevention/statistics', methods=['GET'])
+        @require_api_key
+        def get_validation_statistics():
+            """Hole Validierungsstatistiken"""
+            try:
+                if not self.hallucination_adapter:
+                    return jsonify({'error': 'Hallucination prevention service not available'}), 503
+                
+                stats = self.hallucination_adapter.get_validation_statistics()
+                
+                return jsonify({
+                    'success': True,
+                    'statistics': stats,
+                    'timestamp': datetime.now().isoformat()
+                })
+                
+            except Exception as e:
+                print(f"[Hallucination Prevention] Statistics error: {e}")
+                return jsonify({'error': str(e)}), 500
+
+        @self.app.route('/api/hallucination-prevention/quality-analysis', methods=['POST'])
+        @require_api_key
+        def run_database_quality_analysis():
+            """Führe Qualitätsanalyse der Datenbank durch"""
+            try:
+                if not self.hallucination_adapter:
+                    return jsonify({'error': 'Hallucination prevention service not available'}), 503
+                
+                result = self.hallucination_adapter.run_database_quality_analysis()
+                
+                return jsonify({
+                    'success': True,
+                    'quality_analysis': result,
+                    'timestamp': datetime.now().isoformat()
+                })
+                
+            except Exception as e:
+                print(f"[Hallucination Prevention] Quality analysis error: {e}")
+                return jsonify({'error': str(e)}), 500
+
+        @self.app.route('/api/hallucination-prevention/governance-compliance', methods=['POST'])
+        @require_api_key
+        def validate_governance_compliance():
+            """Validiere Governance-Compliance eines Fakts"""
+            try:
+                if not self.hallucination_adapter:
+                    return jsonify({'error': 'Hallucination prevention service not available'}), 503
+                
+                data = request.get_json(silent=True)
+                if not data:
+                    return jsonify({'error': 'Invalid request data'}), 400
+                
+                fact = data.get('fact', '').strip()
+                if not fact:
+                    return jsonify({'error': 'Missing fact'}), 400
+                
+                # Validiere Governance-Compliance
+                result = self.hallucination_adapter.validate_governance_compliance(fact)
+                
+                return jsonify({
+                    'success': True,
+                    'governance_compliance': result,
+                    'timestamp': datetime.now().isoformat()
+                })
+                
+            except Exception as e:
+                print(f"[Hallucination Prevention] Governance compliance error: {e}")
+                return jsonify({'error': str(e)}), 500
+
+        @self.app.route('/api/hallucination-prevention/suggest-correction/<int:fact_id>', methods=['GET'])
+        @require_api_key
+        def suggest_correction(fact_id):
+            """Schlage Korrekturen für einen Fakt vor"""
+            try:
+                if not self.hallucination_adapter:
+                    return jsonify({'error': 'Hallucination prevention service not available'}), 503
+                
+                correction = self.hallucination_adapter.suggest_corrections(fact_id)
+                
+                return jsonify({
+                    'success': True,
+                    'fact_id': fact_id,
+                    'correction': correction,
+                    'timestamp': datetime.now().isoformat()
+                })
+                
+            except Exception as e:
+                print(f"[Hallucination Prevention] Correction suggestion error: {e}")
+                return jsonify({'error': str(e)}), 500
+
+        @self.app.route('/api/hallucination-prevention/invalid-facts', methods=['GET'])
+        @require_api_key
+        def get_invalid_facts():
+            """Hole ungültige Fakten"""
+            try:
+                if not self.hallucination_adapter:
+                    return jsonify({'error': 'Hallucination prevention service not available'}), 503
+                
+                limit = request.args.get('limit', 100, type=int)
+                invalid_facts = self.hallucination_adapter.get_invalid_facts(limit)
+                
+                return jsonify({
+                    'success': True,
+                    'invalid_facts': invalid_facts,
+                    'count': len(invalid_facts),
+                    'limit': limit,
+                    'timestamp': datetime.now().isoformat()
+                })
+                
+            except Exception as e:
+                print(f"[Hallucination Prevention] Invalid facts error: {e}")
+                return jsonify({'error': str(e)}), 500
+
+        @self.app.route('/api/hallucination-prevention/config', methods=['POST'])
+        @require_api_key
+        def configure_validation():
+            """Konfiguriere Validierungseinstellungen"""
+            try:
+                if not self.hallucination_adapter:
+                    return jsonify({'error': 'Hallucination prevention service not available'}), 503
+                
+                data = request.get_json(silent=True)
+                if not data:
+                    return jsonify({'error': 'Invalid request data'}), 400
+                
+                # Update configuration
+                enabled = data.get('enabled')
+                auto_validation = data.get('auto_validation')
+                threshold = data.get('threshold')
+                
+                if enabled is not None:
+                    self.hallucination_adapter.enable_validation(enabled)
+                
+                if auto_validation is not None:
+                    self.hallucination_adapter.enable_auto_validation(auto_validation, threshold or 0.8)
+                
+                # Clear cache if requested
+                if data.get('clear_cache', False):
+                    self.hallucination_adapter.clear_validation_cache()
+                
+                return jsonify({
+                    'success': True,
+                    'message': 'Configuration updated',
+                    'timestamp': datetime.now().isoformat()
+                })
+                
+            except Exception as e:
+                print(f"[Hallucination Prevention] Configuration error: {e}")
+                return jsonify({'error': str(e)}), 500
         
         # WebSocket events for Cursor integration
         if self.socketio:
@@ -1388,7 +1810,8 @@ class HexagonalAPI:
                 port=port, 
                 debug=False, 
                 use_reloader=False,
-                log_output=True  # Enable logging to see what's happening
+                log_output=True,  # Enable logging to see what's happening
+                socket_timeout=None
             )
         else:
             self.app.run(host=host, port=port, debug=False, use_reloader=False)

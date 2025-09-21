@@ -1,0 +1,31 @@
+{
+  "provider": "gemini_pro",
+  "instructions": "Fokus Bio/Physik; strikte JSON-Ausgabe; max 40 Items",
+  "schema": {
+    "items_schema": {
+      "statement": "string",
+      "verdict": "correct|incorrect|uncertain",
+      "reasons": "string",
+      "suggested_fix": "string|null",
+      "domain": "string",
+      "confidence": "number"
+    },
+    "summary_schema": {
+      "count": "number",
+      "correct": "number",
+      "incorrect": "number",
+      "uncertain": "number",
+      "acceptance_rate": "number"
+    }
+  },
+  "samples": [
+    {
+      "predicate": "Bond",
+      "statement": "Bond(H2O, nitrogen, oxygen)."
+    },
+    {
+      "predicate": "Bond",
+      "statement": "Bond(H2O, oxygen, chlorine, NaCl, hydrogen)."
+    }
+  ]
+}

@@ -1,0 +1,183 @@
+{
+  "provider": "gpt5",
+  "instructions": "Generische Qualitätsprüfung; strikte JSON-Ausgabe",
+  "schema": {
+    "items_schema": {
+      "statement": "string",
+      "verdict": "correct|incorrect|uncertain",
+      "reasons": "string",
+      "suggested_fix": "string|null",
+      "domain": "string",
+      "confidence": "number"
+    },
+    "summary_schema": {
+      "count": "number",
+      "correct": "number",
+      "incorrect": "number",
+      "uncertain": "number",
+      "acceptance_rate": "number"
+    }
+  },
+  "samples": [
+    {
+      "predicate": "Requires",
+      "statement": "Requires(neutron, velocity)."
+    },
+    {
+      "predicate": "Requires",
+      "statement": "Requires(NaCl, atom)."
+    },
+    {
+      "predicate": "Requires",
+      "statement": "Requires(min_occurrences, unique_entities)."
+    },
+    {
+      "predicate": "Requires",
+      "statement": "Requires(chlorine, CH4)."
+    },
+    {
+      "predicate": "Requires",
+      "statement": "Requires(axiom, Euler)."
+    },
+    {
+      "predicate": "Requires",
+      "statement": "Requires(ion, O2)."
+    },
+    {
+      "predicate": "Requires",
+      "statement": "Requires(algebra, Gauss)."
+    },
+    {
+      "predicate": "Requires",
+      "statement": "Requires(QuantumComputer, QuantumAlgorithm)."
+    },
+    {
+      "predicate": "Requires",
+      "statement": "Requires(ArtificialIntelligence, ComputationalPower)."
+    },
+    {
+      "predicate": "Requires",
+      "statement": "Requires(nucleus, DNA)."
+    },
+    {
+      "predicate": "Requires",
+      "statement": "Requires(CH4, carbon)."
+    },
+    {
+      "predicate": "Requires",
+      "statement": "Requires(framework, security)."
+    },
+    {
+      "predicate": "Requires",
+      "statement": "Requires(Nanotechnology, Physics)."
+    },
+    {
+      "predicate": "Requires",
+      "statement": "Requires(sodium, catalyst)."
+    },
+    {
+      "predicate": "Requires",
+      "statement": "Requires(quantum, mass)."
+    },
+    {
+      "predicate": "Requires",
+      "statement": "Requires(NH3, bond)."
+    },
+    {
+      "predicate": "Requires",
+      "statement": "Requires(electron, gravity)."
+    },
+    {
+      "predicate": "Requires",
+      "statement": "Requires(NoSQL, blockchain)."
+    },
+    {
+      "predicate": "Requires",
+      "statement": "Requires(RNA, mitochondria)."
+    },
+    {
+      "predicate": "Requires",
+      "statement": "Requires(blockchain, client)."
+    },
+    {
+      "predicate": "Uses",
+      "statement": "Uses(blockchain, network)."
+    },
+    {
+      "predicate": "Uses",
+      "statement": "Uses(fungi, protein)."
+    },
+    {
+      "predicate": "Uses",
+      "statement": "Uses(O2, atom)."
+    },
+    {
+      "predicate": "Uses",
+      "statement": "Uses(algebra, axiom)."
+    },
+    {
+      "predicate": "Uses",
+      "statement": "Uses(cell, organism)."
+    },
+    {
+      "predicate": "Uses",
+      "statement": "Uses(client, NoSQL)."
+    },
+    {
+      "predicate": "Uses",
+      "statement": "Uses(energy, velocity)."
+    },
+    {
+      "predicate": "Uses",
+      "statement": "Uses(axiom, Gauss)."
+    },
+    {
+      "predicate": "Uses",
+      "statement": "Uses(server, NoSQL)."
+    },
+    {
+      "predicate": "Uses",
+      "statement": "Uses(SQL, TCP/IP)."
+    },
+    {
+      "predicate": "Uses",
+      "statement": "Uses(bacteria, ecosystem)."
+    },
+    {
+      "predicate": "Uses",
+      "statement": "Uses(mitochondria, virus)."
+    },
+    {
+      "predicate": "Uses",
+      "statement": "Uses(force, momentum)."
+    },
+    {
+      "predicate": "Uses",
+      "statement": "Uses(organism, ecosystem)."
+    },
+    {
+      "predicate": "Uses",
+      "statement": "Uses(proton, electron)."
+    },
+    {
+      "predicate": "Uses",
+      "statement": "Uses(Einstein, photon)."
+    },
+    {
+      "predicate": "Uses",
+      "statement": "Uses(topology, Gauss)."
+    },
+    {
+      "predicate": "Uses",
+      "statement": "Uses(mitochondria, organism)."
+    },
+    {
+      "predicate": "Uses",
+      "statement": "Uses(NeuralReasoning, DistributedRepresentation)."
+    },
+    {
+      "predicate": "Uses",
+      "statement": "Uses(wave, Einstein)."
+    }
+  ]
+}

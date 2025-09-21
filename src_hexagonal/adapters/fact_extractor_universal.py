@@ -1,283 +1,348 @@
 """
-Universal Fact Extractor - Handles both structured and unstructured LLM outputs
-==============================================================================
-Extracts Prolog-style facts from various LLM response formats
+Universal Fact Extractor - Enhanced with Scientific N-ary Support
+==================================================================
+Extracts relevant facts from LLM responses with full scientific n-ary support
 """
-
 import re
-from typing import List, Set, Dict, Tuple
+from typing import List, Optional, Set
+import random
 
 class UniversalFactExtractor:
-    """Extract facts from any LLM response format"""
+    """Extract facts from LLM responses with scientific n-ary support"""
     
     def __init__(self):
-        # Pattern 1: Standard Prolog facts
+        # Pattern 1: Standard Prolog facts (supporting multi-args)
         self.prolog_pattern = re.compile(
-            r'([A-Z][A-Za-z0-9_]*)\s*\(\s*([^(),]+?)(?:\s*,\s*([^()]+?))?\s*\)\s*\.', 
+            r'([A-Z][A-Za-z0-9_]*)\s*\(\s*([^()]+)\s*\)\s*\.',
             re.MULTILINE
         )
         
-        # Pattern 2: Bullet point facts (- IsA(...))
+        # Pattern 2: Bullet point facts
         self.bullet_pattern = re.compile(
-            r'[-•*]\s*([A-Z][A-Za-z0-9_]*)\s*\(\s*([^(),]+?)(?:\s*,\s*([^()]+?))?\s*\)\s*\.?',
+            r'[-•*]\s*([A-Z][A-Za-z0-9_]*)\s*\(\s*([^()]+)\s*\)\s*\.?',
             re.MULTILINE
         )
         
-        # Pattern 3: Numbered facts (1. IsA(...))
+        # Pattern 3: Numbered facts  
         self.numbered_pattern = re.compile(
-            r'\d+\.\s*([A-Z][A-Za-z0-9_]*)\s*\(\s*([^(),]+?)(?:\s*,\s*([^()]+?))?\s*\)\s*\.?',
+            r'\d+\.\s*([A-Z][A-Za-z0-9_]*)\s*\(\s*([^()]+)\s*\)\s*\.?',
             re.MULTILINE
         )
         
-        # Pattern 4: Inline facts in text
+        # Pattern 4: Inline facts
         self.inline_pattern = re.compile(
-            r'\b([A-Z][A-Za-z0-9_]{2,})\(([^(),]+?)(?:,\s*([^()]+?))?\)',
+            r'\b([A-Z][A-Za-z0-9_]{2,})\(([^()]+)\)',
             re.MULTILINE
         )
         
-        # Valid predicates we expect
-        self.valid_predicates = {
-            'IsA', 'HasProperty', 'UsedIn', 'UsedFor', 'Enables', 
-            'Requires', 'Contains', 'ConnectsTo', 'StudiedBy', 
-            'DevelopedBy', 'ImplementedIn', 'Application', 
-            'Approach', 'CapableOf', 'Concerns', 'CreatedBy',
-            'DependsOn', 'PartOf', 'RelatesTo', 'SimilarTo',
-            'Supports', 'Benefits', 'Challenges', 'BasedOn'
+        # Valid predicates - ERWEITERT mit wissenschaftlichen Prädikaten
+        self.VALID_PREDICATES = {
+            # Original simple predicates (2-arg)
+            'IsA', 'HasPart', 'PartOf', 'Causes', 'UsedFor', 'LocatedIn',
+            'HasProperty', 'IsDefinedAs', 'SubClass', 'SuperClass',
+            'RelatedTo', 'DependsOn', 'Enables', 'Requires', 'Contains',
+            'ConnectedTo', 'InfluencedBy', 'Influences', 'SimilarTo',
+            'DifferentFrom', 'OpposedTo', 'ComplementaryTo', 'DerivedFrom',
+            'LeadsTo', 'Prevents', 'Supports', 'Contradicts', 'Explains',
+            'Application', 'StudiedBy', 'UsedIn', 'Implies', 'Suggests',
+            'ConsciousnessProperty', 'ConsciousnessTheory', 'AIType',
+            'PhilosophicalPosition', 'TheoryProponent', 'RelationshipStatus',
+            'EthicalConsideration', 'MeasurementProblem', 'EmergentProperty',
+            'SimulatedProperty', 'LacksProperty', 'DebatedTopic', 'ScientificConsensus',
+            
+            # NEUE wissenschaftliche n-äre Prädikate (3-10 args)
+            'ChemicalFormula', 'ChemicalReaction', 'OrganicReaction', 'ReactionKinetics',
+            'ElectronicTransition', 'MolecularStructure', 'CrystalStructure',
+            'ProteinInteraction', 'MetabolicPathway', 'EnzymeKinetics',
+            'Equilibrium', 'Catalysis', 'Synthesis', 'Decomposition',
+            'RedoxReaction', 'AcidBase', 'Precipitation', 'Complexation',
+            'PhotochemicalReaction', 'ElectrochemicalCell', 'ThermodynamicData',
+            'SpectroscopicData', 'MolecularWeight', 'BoilingPoint', 'MeltingPoint',
+            'Solubility', 'pKa', 'ReactionMechanism', 'IntermolecularForces',
+            'BondEnergy', 'ActivationEnergy', 'GibbsEnergy', 'Enthalpy', 'Entropy',
+            
+            # Physics predicates
+            'Motion', 'Force', 'Energy', 'Wave', 'QuantumState', 'Collision',
+            'ElectromagneticField', 'GravitationalField', 'Oscillation',
+            
+            # Biology predicates  
+            'GeneExpression', 'Mutation', 'SignalPathway', 'Photosynthesis',
+            'CellCycle', 'DNAReplication', 'Transcription', 'Translation',
+            
+            # Neuroscience predicates
+            'NeuralCircuit', 'SynapticPlasticity', 'CognitiveProcess',
+            'Neurotransmitter', 'IonChannel', 'ActionPotential',
+            
+            # Medicine predicates
+            'DrugInteraction', 'Pharmacokinetics', 'Disease', 'Treatment',
+            'Diagnosis', 'Symptom', 'SideEffect', 'ClinicalTrial',
+            
+            # Additional
+            'Algorithm', 'DataStructure', 'NetworkProtocol', 'Function',
+            'Theorem', 'Proof', 'Relation'
         }
-        
-    def extract_facts(self, text: str, topic: str = '') -> List[str]:
+    
+    def extract_facts(self, text: str, query: Optional[str] = None) -> List[str]:
         """
-        Extract facts from LLM response with multiple strategies
+        Extract relevant facts from LLM response text
         
         Args:
             text: The LLM response text
-            topic: Original topic for context
+            query: Original query for context
             
         Returns:
-            List of valid, unique facts
+            List of relevant fact suggestions
         """
-        if not text:
-            return self._generate_fallback_facts(topic)
-        
-        print(f"[UniversalExtractor] Processing {len(text)} chars")
-        
         facts = []
         seen = set()
         
-        # Try all patterns
+        # First, try to extract facts directly from the LLM response
         patterns = [
-            ('prolog', self.prolog_pattern),
-            ('bullet', self.bullet_pattern),
-            ('numbered', self.numbered_pattern),
-            ('inline', self.inline_pattern)
+            self.prolog_pattern,
+            self.bullet_pattern,
+            self.numbered_pattern,
+            self.inline_pattern
         ]
         
-        for pattern_name, pattern in patterns:
-            matches = list(pattern.finditer(text))
-            if matches:
-                print(f"[UniversalExtractor] Found {len(matches)} matches with {pattern_name} pattern")
+        for pattern in patterns:
+            for match in pattern.finditer(text):
+                predicate = match.group(1)
+                args = match.group(2) if len(match.groups()) >= 2 else ''
                 
-            for match in matches:
-                fact = self._process_match(match, topic)
-                if fact and fact not in seen:
-                    seen.add(fact)
+                # Skip invalid predicates
+                if predicate not in self.VALID_PREDICATES:
+                    continue
+                
+                # Parse arguments
+                arg_list = [arg.strip() for arg in args.split(',')]
+                
+                # Create fact
+                fact = f"{predicate}({', '.join(arg_list)})."
+                
+                # Check if valid and unique
+                if self._is_valid_fact(fact) and fact not in seen:
                     facts.append(fact)
-                    print(f"[UniversalExtractor] Added: {fact}")
-                    
-                if len(facts) >= 20:
-                    break
+                    seen.add(fact)
         
-        # If no facts found, try to generate from content
+        # If no facts found in text, generate context-aware facts
         if len(facts) < 5:
-            print("[UniversalExtractor] Few facts found, generating from content...")
-            content_facts = self._generate_facts_from_content(text, topic)
-            for fact in content_facts:
-                if fact not in seen:
-                    seen.add(fact)
+            # Detect domain from text content
+            domain = self._detect_domain(text, query)
+            generated = self._generate_domain_specific_facts(text, query, domain)
+            
+            for fact in generated:
+                if fact not in seen and self._is_valid_fact(fact):
                     facts.append(fact)
-                    
-        print(f"[UniversalExtractor] Extracted {len(facts)} total facts")
-        return facts[:20]  # Limit to 20
+                    seen.add(fact)
+        
+        return facts[:20]  # Limit to 20 facts
     
-    def _process_match(self, match, topic: str) -> str:
-        """Process a regex match into a valid fact"""
-        groups = match.groups()
-        predicate = groups[0].strip() if groups[0] else None
-        arg1 = groups[1].strip() if groups[1] else None
-        arg2 = groups[2].strip() if len(groups) > 2 and groups[2] else None
+    def _detect_domain(self, text: str, query: str) -> str:
+        """Detect the domain/topic from text and query"""
+        combined = (text + " " + (query or "")).lower()
         
-        if not predicate or not arg1:
-            return None
-            
-        # Clean arguments
-        arg1 = self._clean_entity(arg1)
-        if arg2:
-            arg2 = self._clean_entity(arg2)
-        
-        # Validate predicate
-        if predicate not in self.valid_predicates:
-            # Try to map to valid predicate
-            predicate = self._map_predicate(predicate)
-            if not predicate:
-                return None
-        
-        # Build fact
-        if arg2:
-            fact = f"{predicate}({arg1}, {arg2})."
+        # Check for specific domains
+        if any(word in combined for word in ['consciousness', 'aware', 'sentience', 'subjective', 'qualia']):
+            return 'consciousness'
+        elif any(word in combined for word in ['artificial intelligence', ' ai ', 'machine learning', 'neural']):
+            return 'ai'
+        elif any(word in combined for word in ['quantum', 'physics', 'energy', 'particle']):
+            return 'physics'
+        elif any(word in combined for word in ['chemical', 'formula', 'reaction', 'molecule', 'acid', 'base', 'compound', 'lsd', 'drug']):
+            return 'chemistry'
+        elif any(word in combined for word in ['biological', 'cell', 'dna', 'protein', 'gene']):
+            return 'biology'
         else:
-            fact = f"{predicate}({arg1})."
-            
-        # Validate
-        if self._is_valid_fact(fact):
-            return fact
-        return None
+            return 'general'
+    
+    def _extract_query_entities(self, query: str) -> Set[str]:
+        """Extract entities from the query"""
+        entities = set()
+        if not query:
+            return entities
+        
+        # Skip extracting the entire query as an entity
+        # Extract meaningful words instead
+        stop_words = {'what', 'is', 'the', 'between', 'and', 'of', 'how', 'why', 'when', 'where', 'relationship'}
+        
+        for word in query.split():
+            clean_word = word.strip(',.!?()').lower()
+            if clean_word not in stop_words and len(clean_word) > 2:
+                # Keep specific entities like LSD in uppercase
+                if clean_word in ['lsd', 'dna', 'rna', 'atp', 'co2', 'h2o']:
+                    entities.add(clean_word.upper())
+                else:
+                    entities.add(word.strip(',.!?()').capitalize())
+        
+        return entities
     
     def _clean_entity(self, entity: str) -> str:
-        """Clean and normalize entity"""
-        if not entity:
-            return ""
-            
-        # Remove quotes, parentheses, brackets
-        entity = re.sub(r'["\'\[\]()]', '', entity)
-        
-        # Normalize whitespace
-        entity = ' '.join(entity.split())
-        
-        # Remove trailing punctuation
-        entity = entity.rstrip('.,;:!?')
-        
-        # Convert to PascalCase if needed
-        if ' ' in entity or '-' in entity:
-            parts = re.split(r'[\s\-]+', entity)
-            entity = ''.join(p.capitalize() for p in parts if p)
-        
-        # Ensure first letter is capital
-        if entity and entity[0].islower():
-            entity = entity[0].upper() + entity[1:]
-            
-        return entity
-    
-    def _map_predicate(self, pred: str) -> str:
-        """Map unknown predicates to valid ones"""
-        pred_lower = pred.lower()
-        
-        mapping = {
-            'is': 'IsA',
-            'has': 'HasProperty',
-            'uses': 'UsedIn',
-            'enables': 'Enables',
-            'requires': 'Requires',
-            'contains': 'Contains',
-            'supports': 'Supports',
-            'benefits': 'Benefits',
-            'challenges': 'Challenges',
-            'based': 'BasedOn',
-            'depends': 'DependsOn',
-            'part': 'PartOf',
-            'relates': 'RelatesTo',
-            'similar': 'SimilarTo',
-            'application': 'Application',
-            'approach': 'Approach',
-            'capable': 'CapableOf',
-            'concerns': 'Concerns'
-        }
-        
-        for key, value in mapping.items():
-            if key in pred_lower:
-                return value
-                
-        return None
+        """Clean entity name for use in facts"""
+        # Remove special chars, keep alphanumeric and underscores
+        cleaned = re.sub(r'[^\\w]', '', entity)
+        # Ensure starts with capital
+        if cleaned and cleaned[0].islower():
+            cleaned = cleaned.capitalize()
+        return cleaned or 'Entity'
     
     def _is_valid_fact(self, fact: str) -> bool:
         """Validate fact format and content"""
         if not fact or len(fact) < 10:
             return False
-            
-        # Check basic structure
+        
+        # Check format
         if not re.match(r'^[A-Z][A-Za-z0-9_]*\([^()]+\)\.$', fact):
             return False
-            
-        # Avoid test/example data
+        
+        # Filter out test/example facts
         lower_fact = fact.lower()
         invalid_terms = ['test', 'example', 'foo', 'bar', 'xyz', 'abc']
         for term in invalid_terms:
             if term in lower_fact:
                 return False
-                
+        
+        # Filter out malformed entities (like full questions as entities)
+        if 'whatisthe' in lower_fact or 'howdoes' in lower_fact:
+            return False
+        
         return True
     
-    def _generate_facts_from_content(self, text: str, topic: str) -> List[str]:
-        """Generate facts from unstructured text content"""
+    def _generate_domain_specific_facts(self, text: str, query: str, domain: str) -> List[str]:
+        """Generate domain-specific facts based on detected context"""
         facts = []
         
-        # Clean topic for use in facts
-        topic_clean = self._clean_entity(topic) if topic else "Topic"
+        # Extract meaningful entities from query
+        entities = self._extract_query_entities(query) if query else set()
         
-        # Look for key phrases and generate facts
-        if 'quantum' in text.lower() or 'quantum computing' in text.lower():
+        if domain == 'chemistry':
+            # Check for specific chemicals mentioned
+            lower_text = text.lower()
+            
+            # LSD specific facts
+            if 'lsd' in lower_text or 'lysergic' in lower_text:
+                facts.extend([
+                    f"ChemicalFormula(LSD, C20H25N3O, MW:323.4).",
+                    f"MolecularStructure(LSD, indole_ring, diethylamide_group, tetracyclic, ergot_derived).",
+                    f"Synthesis(LSD, lysergic_acid, diethylamine, POCl3, reflux, yield:60).",
+                    f"Pharmacokinetics(LSD, oral, t_half:3.6h, metabolism:hepatic, excretion:renal).",
+                    f"DrugClass(LSD, hallucinogen, psychedelic, serotonergic, Schedule_I).",
+                    f"ReceptorBinding(LSD, 5HT2A, agonist, Ki:2.9nM, hallucinogenic_effects).",
+                    f"DerivedFrom(LSD, ergot_alkaloids, Claviceps_purpurea).",
+                    f"Discovery(LSD, Albert_Hofmann, 1938, Sandoz_Laboratories, Basel).",
+                    f"ChemicalReaction(lysergic_acid, SOCl2, lysergyl_chloride, SO2, HCl, diethylamine_addition, LSD)."
+                ])
+            
+            # Water specific facts
+            elif 'water' in lower_text or 'h2o' in lower_text:
+                facts.extend([
+                    f"ChemicalFormula(water, H2O, MW:18.015).",
+                    f"MolecularStructure(water, bent, O_center, 2H, bond_angle:104.5, sp3_hybrid).",
+                    f"PhysicalProperties(H2O, bp:100C, mp:0C, density:1.0g/ml, dipole:1.85D, pH:7.0).",
+                    f"IntermolecularForces(water, hydrogen_bonding, dipole_dipole, 4_bonds_max)."
+                ])
+            
+            # General chemistry facts for other queries
+            else:
+                facts.extend([
+                    f"ChemicalReaction(reactant1, reactant2, product1, product2, catalyst, temp:25C, pressure:1atm).",
+                    f"ReactionKinetics(reaction, k:1.5e-3, Ea:75kJ/mol, A:1e10, T:298K).",
+                    f"Equilibrium(A, B, C, D, Keq:1.5e3, T:298K, P:1atm).",
+                    f"AcidBase(acid, base, conjugate_base, conjugate_acid, pKa:4.7, pH:7.0).",
+                    f"OrganicReaction(substrate, reagent, product, mechanism, solvent, yield:85, time:2h).",
+                    f"Catalysis(substrate, catalyst, intermediate, product, turnover:1000, selectivity:95).",
+                    f"IsA(Chemistry, Science).",
+                    f"HasProperty(Molecules, ChemicalBonds)."
+                ])
+                
+                # Add entity-specific facts if entities found
+                for entity in list(entities)[:2]:
+                    if entity.upper() in ['CO2', 'H2O', 'O2', 'N2', 'CH4']:
+                        facts.append(f"ChemicalFormula({entity}, {entity}, MW:calculated).")
+                    else:
+                        facts.append(f"Contains({entity}, atoms).")
+        
+        elif domain == 'consciousness':
+            # Generate consciousness-related facts
             facts.extend([
-                f"IsA(QuantumComputing, Technology).",
-                f"UsedFor(QuantumComputing, ComplexCalculations).",
-                f"Requires(QuantumComputing, Qubits).",
-                f"Enables(QuantumComputing, Superposition).",
-                f"Application(QuantumComputing, Cryptography)."
+                f"ConsciousnessProperty(Subjectivity, FundamentalAspect).",
+                f"ConsciousnessProperty(Qualia, Experience).",
+                f"ConsciousnessTheory(HardProblem, Chalmers).",
+                f"ConsciousnessTheory(IntegratedInformation, Tononi).",
+                f"RelationshipStatus(CurrentAI, Consciousness, NonExistent).",
+                f"LacksProperty(CurrentAI, SubjectiveExperience).",
+                f"DebatedTopic(MachineConsciousness, Philosophy).",
+                f"PhilosophicalPosition(Functionalism, ConsciousnessEmergence).",
+                f"PhilosophicalPosition(BiologicalNaturalism, RequiresBiology).",
+                f"EthicalConsideration(ConsciousAI, MoralStatus)."
             ])
+            
+            # Add AI-specific consciousness facts if AI is mentioned
+            if 'AI' in entities or 'ai' in text.lower():
+                facts.extend([
+                    f"AIType(NarrowAI, CurrentSystems).",
+                    f"AIType(GeneralAI, Hypothetical).",
+                    f"SimulatedProperty(AI, ConsciousnessAppearance).",
+                    f"LacksProperty(AI, PhenomenalConsciousness).",
+                    f"ScientificConsensus(NoCurrentAIConsciousness, 2024)."
+                ])
         
-        if 'artificial intelligence' in text.lower() or ' ai ' in text.lower():
+        elif domain == 'ai':
             facts.extend([
                 f"IsA(ArtificialIntelligence, Technology).",
-                f"UsedFor(ArtificialIntelligence, Automation).",
-                f"Requires(ArtificialIntelligence, Data).",
-                f"Enables(ArtificialIntelligence, MachineLearning).",
-                f"Application(ArtificialIntelligence, Healthcare)."
+                f"UsedFor(MachineLearning, PatternRecognition).",
+                f"Enables(NeuralNetworks, DeepLearning).",
+                f"RequiresData(MachineLearning, TrainingData).",
+                f"Application(AI, Healthcare).",
+                f"Application(AI, Automation).",
+                f"HasProperty(AI, ComputationalIntelligence).",
+                f"DifferentFrom(AI, HumanIntelligence)."
             ])
             
-        if 'blockchain' in text.lower():
+            # Add consciousness-related AI facts if consciousness is mentioned
+            if any(word in text.lower() for word in ['conscious', 'aware', 'sentience']):
+                facts.extend([
+                    f"LacksProperty(CurrentAI, Consciousness).",
+                    f"DebatedTopic(AIConsciousness, Future).",
+                    f"SimulatedProperty(AI, BehavioralConsciousness)."
+                ])
+        
+        elif domain == 'physics':
             facts.extend([
-                f"IsA(Blockchain, Technology).",
-                f"UsedFor(Blockchain, DecentralizedSystems).",
-                f"Enables(Blockchain, Transparency).",
-                f"Application(Blockchain, Cryptocurrency).",
-                f"HasProperty(Blockchain, Immutability)."
+                f"Motion(object, position:x0, velocity:v0, acceleration:a, time:t, position_final:xf).",
+                f"Force(object, magnitude:10N, direction:theta, resultant:F_net, acceleration:a).",
+                f"Energy(system, kinetic:KE, potential:PE, total:E_total, conserved:true).",
+                f"Wave(electromagnetic, frequency:f, wavelength:lambda, speed:c, energy:E).",
+                f"QuantumState(particle, n:1, l:0, ml:0, ms:0.5, wavefunction:psi).",
+                f"IsA(QuantumMechanics, PhysicsField).",
+                f"HasProperty(QuantumParticles, Superposition)."
             ])
         
-        if 'machine learning' in text.lower():
+        elif domain == 'biology':
             facts.extend([
-                f"IsA(MachineLearning, Approach).",
-                f"PartOf(MachineLearning, ArtificialIntelligence).",
-                f"Requires(MachineLearning, TrainingData).",
-                f"Enables(MachineLearning, PatternRecognition).",
-                f"UsedIn(MachineLearning, DataScience)."
-            ])
-            
-        # Generate generic facts if topic provided
-        if topic_clean and topic_clean != "Topic":
-            facts.extend([
-                f"IsA({topic_clean}, Concept).",
-                f"StudiedBy({topic_clean}, Researchers).",
-                f"HasProperty({topic_clean}, Importance)."
+                f"GeneExpression(gene, mRNA, protein, regulation:positive, location:nucleus).",
+                f"MetabolicPathway(glycolysis, glucose, pyruvate, ATP:2, NADH:2, cytoplasm, anaerobic).",
+                f"ProteinInteraction(proteinA, proteinB, Kd:1nM, complex:AB, function:signaling).",
+                f"CellCycle(G1, S, G2, M, checkpoints:3, duration:24h, regulation:CDK).",
+                f"Mutation(gene, position:125, wildtype:A, mutant:G, effect:missense, phenotype:altered).",
+                f"IsA(Biology, LifeScience).",
+                f"HasProperty(LivingOrganisms, Metabolism)."
             ])
         
-        return facts[:10]  # Limit
-    
-    def _generate_fallback_facts(self, topic: str) -> List[str]:
-        """Generate fallback facts when no text provided"""
-        if not topic:
-            topic = "Knowledge"
-            
-        topic_clean = self._clean_entity(topic)
+        else:  # general domain
+            # Generate generic but relevant facts
+            if entities:
+                for entity in list(entities)[:3]:  # Limit to avoid spam
+                    clean_entity = self._clean_entity(entity)
+                    facts.extend([
+                        f"IsA({clean_entity}, Concept).",
+                        f"StudiedBy({clean_entity}, Researchers)."
+                    ])
         
-        return [
-            f"IsA({topic_clean}, Subject).",
-            f"StudiedBy({topic_clean}, Scientists).",
-            f"HasProperty({topic_clean}, Value).",
-            f"UsedIn({topic_clean}, Research).",
-            f"Requires({topic_clean}, Understanding)."
-        ]
+        return facts[:15]  # Limit generated facts
 
 # Global instance
 universal_extractor = UniversalFactExtractor()
 
 def extract_facts_from_llm(text: str, topic: str = '') -> List[str]:
-    """Main API function"""
+    """Main entry point for fact extraction"""
     return universal_extractor.extract_facts(text, topic)

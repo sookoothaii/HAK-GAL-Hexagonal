@@ -1,0 +1,189 @@
+{
+  "groq": {
+    "llm": "Groq",
+    "timestamp": 1758197535.982458,
+    "domains": {
+      "CHEMISTRY": {
+        "facts": [
+          {
+            "fact": "ChemicalReaction(glucose, oxygen, carbon dioxide, water, platinum, 500\u00b0C, 1 atm).",
+            "arg_count": 7,
+            "generation_time": 0.31029343605041504,
+            "valid": false,
+            "confidence": 0.0,
+            "issues": [
+              "validator_error_or_non_json"
+            ]
+          }
+        ],
+        "validation": []
+      },
+      "PHYSICS": {
+        "facts": [
+          {
+            "fact": "ParticleEmission(initialMass, finalMass, energy, momentum, velocity, spin, gammaFactor).",
+            "arg_count": 7,
+            "generation_time": 0.33589863777160645,
+            "valid": false,
+            "confidence": 0.0,
+            "issues": [
+              "validator_error_or_non_json"
+            ]
+          }
+        ],
+        "validation": []
+      },
+      "BIOLOGY": {
+        "facts": [
+          {
+            "fact": "Photosynthesis(chlorophyll, sunlight, carbonDioxide, water, glucose, oxygen, stomata).",
+            "arg_count": 7,
+            "generation_time": 0.29578375816345215,
+            "valid": false,
+            "confidence": 0.0,
+            "issues": [
+              "validator_error_or_non_json"
+            ]
+          }
+        ],
+        "validation": []
+      },
+      "COMPUTER_SCIENCE": {
+        "facts": [
+          {
+            "fact": "NetworkProtocol(TCP, Transmission Control Protocol, 20-65535, 20-65535, payload + header (20 bytes), checksum (16 bits), SYN, FIN, PSH, ACK, RST).",
+            "arg_count": 11,
+            "generation_time": 0.3216674327850342,
+            "valid": false,
+            "confidence": 0.7,
+            "issues": [
+              "The port range for TCP is typically 0-65535, not 20-65535",
+              "The checksum for TCP is 16 bits, which is correct, but it's calculated over the pseudoheader and the header, not just the header",
+              "The TCP header size is typically 20 bytes for the minimum header, but it can be larger due to options",
+              "Some flags are missing (URG, CWR, ECE)",
+              "The description of the payload and header size is vague and not entirely accurate"
+            ]
+          }
+        ],
+        "validation": []
+      }
+    },
+    "metrics": {
+      "total_generated": 4,
+      "valid_facts": 0,
+      "invalid_facts": 4,
+      "avg_confidence": 0.175,
+      "avg_arguments": 8.0,
+      "generation_time": 1.2636432647705078,
+      "accuracy_rate": 0.0
+    }
+  },
+  "deepseek": {
+    "llm": "DeepSeek",
+    "timestamp": 1758197539.8630767,
+    "domains": {
+      "CHEMISTRY": {
+        "facts": [
+          {
+            "fact": "ChemicalReaction(hydrogen, oxygen, water, energy, platinum, 500, [1]).",
+            "arg_count": 7,
+            "generation_time": 4.363239288330078,
+            "valid": false,
+            "confidence": 0.0,
+            "issues": [
+              "The parameters of the ChemicalReaction function are not clearly defined. However, based on the context of a typical chemical reaction involving hydrogen and oxygen, here are the issues:",
+              "1. The parameters should be in the correct order, typically reactants first and products last.",
+              "2. The 'energy' and 'platinum' parameters might be better represented as 'heat' and 'catalyst' respectively.",
+              "3. The '500' parameter is unclear and might be a temperature, pressure, or volume, but it is not specified.",
+              "4. The '[1]' parameter is unclear and might be an ID or an index, but it is not specified."
+            ]
+          }
+        ],
+        "validation": []
+      },
+      "PHYSICS": {
+        "facts": [
+          {
+            "fact": "Photon(visible_light, 500e-9, 6e14, 3.98e-19, 1, transverse, 299792458).",
+            "arg_count": 7,
+            "generation_time": 5.100220441818237,
+            "valid": false,
+            "confidence": 0.0,
+            "issues": [
+              "validator_error_or_non_json"
+            ]
+          }
+        ],
+        "validation": []
+      },
+      "BIOLOGY": {
+        "facts": [
+          {
+            "fact": "MitochondrialElectronTransportChain(NADH, ComplexI, CoenzymeQ, ComplexIII, CytochromeC, ComplexIV, Oxygen).",
+            "arg_count": 7,
+            "generation_time": 4.700693845748901,
+            "valid": false,
+            "confidence": 0.0,
+            "issues": [
+              "validator_error_or_non_json"
+            ]
+          }
+        ],
+        "validation": []
+      },
+      "COMPUTER_SCIENCE": {
+        "facts": [
+          {
+            "fact": "AlgorithmComplexity(quicksort, O(n log n), O(n log n), O(n^2), O(log n), array, in-placeSorting).",
+            "arg_count": 7,
+            "generation_time": 4.78223443031311,
+            "valid": false,
+            "confidence": 0.0,
+            "issues": [
+              "validator_error_or_non_json"
+            ]
+          }
+        ],
+        "validation": []
+      }
+    },
+    "metrics": {
+      "total_generated": 4,
+      "valid_facts": 0,
+      "invalid_facts": 4,
+      "avg_confidence": 0.0,
+      "avg_arguments": 7.0,
+      "generation_time": 18.946388006210327,
+      "accuracy_rate": 0.0
+    }
+  },
+  "comparison": {
+    "winner": "DeepSeek",
+    "summary": {},
+    "recommendations": [
+      "DeepSeek generiert erfolgreich komplexe Fakten mit 6+ Argumenten"
+    ],
+    "scores": {
+      "groq": 2,
+      "deepseek": 4
+    },
+    "metrics": {
+      "accuracy": {
+        "groq": 0.0,
+        "deepseek": 0.0
+      },
+      "avg_confidence": {
+        "groq": 0.175,
+        "deepseek": 0.0
+      },
+      "avg_arguments": {
+        "groq": 8.0,
+        "deepseek": 7.0
+      },
+      "speed": {
+        "groq": 1.2636432647705078,
+        "deepseek": 18.946388006210327
+      }
+    }
+  }
+}

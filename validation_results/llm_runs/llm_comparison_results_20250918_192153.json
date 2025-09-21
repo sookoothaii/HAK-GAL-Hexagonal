@@ -1,0 +1,373 @@
+{
+  "groq": {
+    "llm": "Groq",
+    "timestamp": 1758198009.5564382,
+    "domains": {
+      "CHEMISTRY": {
+        "facts": [
+          {
+            "fact": "ChemicalReaction(ethanol, oxygen, carbon dioxide, water, platinum, 400°C, atmospheric pressure).",
+            "arg_count": 7,
+            "generation_time": 0.30049848556518555,
+            "valid": false,
+            "confidence": 0.5,
+            "issues": [
+              "Platinum is not a reactant in the combustion of ethanol, but rather a catalyst.",
+              "Atmospheric pressure is not a significant variable in this reaction.",
+              "The reaction temperature (400°C) is plausible for the combustion of ethanol.",
+              "local_rule_violation: predicate_or_argcount"
+            ]
+          },
+          {
+            "fact": "ChemicalReaction(O2, H2, H2O, temperature: 250°C, catalyst: Pt, pressure: 1 atm, rate constant: 2.5 s^-1).",
+            "arg_count": 7,
+            "generation_time": 0.3189430236816406,
+            "valid": false,
+            "confidence": 0.5,
+            "issues": [
+              "Pressure should be in Pascals, not atmospheres.",
+              "Rate constant should be a value with units, e.g., 2.5 s^-1 is correct but it would be better with units such as mol L^-1 s^-1.",
+              "Temperature should be in Kelvin, not Celsius.",
+              "local_rule_violation: predicate_or_argcount"
+            ]
+          },
+          {
+            "fact": "ChemicalReaction(ethylene, oxygen, ethylene oxide, catalyst = silver, temperature = 200°C, pressure = 1 atm, rate enhancement = 10^5).",
+            "arg_count": 7,
+            "generation_time": 0.39306139945983887,
+            "valid": false,
+            "confidence": 0.5,
+            "issues": [
+              "Silver is not typically used as a catalyst for the oxidation of ethylene to ethylene oxide; more commonly used catalysts are silver-free, e.g. silver-free zeolites or metal oxides.",
+              "local_rule_violation: predicate_or_argcount"
+            ]
+          }
+        ],
+        "validation": []
+      },
+      "PHYSICS": {
+        "facts": [
+          {
+            "fact": "GravitationalRedshift(mass, radius, escapeVelocity, surfaceGravity, timeDilation, generalRelativity, SchwarzschildMetric).",
+            "arg_count": 7,
+            "generation_time": 0.2972579002380371,
+            "valid": false,
+            "confidence": 0.5,
+            "issues": [
+              "local_rule_violation: predicate_or_argcount"
+            ]
+          },
+          {
+            "fact": "ParticleScattering(Proton, Electron, CoulombForce, KineticEnergy, MomentumTransfer, SpinConservation, MassRatio).",
+            "arg_count": 7,
+            "generation_time": 0.31168198585510254,
+            "valid": false,
+            "confidence": 0.5,
+            "issues": [
+              "local_rule_violation: predicate_or_argcount"
+            ]
+          },
+          {
+            "fact": "GravitationalRedshift(mass, radius, initialEnergy, finalEnergy, gravitationalPotential, initialDistance, finalDistance).",
+            "arg_count": 7,
+            "generation_time": 0.32030487060546875,
+            "valid": false,
+            "confidence": 0.5,
+            "issues": [
+              "Gravitational Redshift equation typically takes into account the difference in gravitational potential energy between the initial and final distances or the difference in gravitational potential energy between the initial and final positions.",
+              "local_rule_violation: predicate_or_argcount"
+            ]
+          }
+        ],
+        "validation": []
+      },
+      "BIOLOGY": {
+        "facts": [
+          {
+            "fact": "Photosynthesis(plantCell, chloroplast, chlorophyll, sunlight, carbonDioxide, glucose, oxygen).",
+            "arg_count": 7,
+            "generation_time": 0.291886568069458,
+            "valid": false,
+            "confidence": 0.5,
+            "issues": [
+              "Photosynthesis is a multi-step process, but the given components are the primary reactants and products",
+              "The reactants and products should be in a specific order",
+              "local_rule_violation: predicate_or_argcount"
+            ]
+          },
+          {
+            "fact": "Photosynthesis(plantCell, chloroplast, lightEnergy, water, carbonDioxide, glucose, oxygen).",
+            "arg_count": 7,
+            "generation_time": 0.4766507148742676,
+            "valid": false,
+            "confidence": 0.5,
+            "issues": [
+              "chloroplasts are not directly involved in the photosynthesis chemical reaction, but rather house the pigment chlorophyll and other photosynthetic pigments.",
+              "The reactants and products should be in chemical formula format, not just molecular names (e.g., CO2, O2, H2O, not carbonDioxide, oxygen, water).",
+              "local_rule_violation: predicate_or_argcount"
+            ]
+          },
+          {
+            "fact": "Photosynthesis(plantCell, chloroplast, lightEnergy, water, carbonDioxide, glucose, oxygen).",
+            "arg_count": 7,
+            "generation_time": 0.28582763671875,
+            "valid": false,
+            "confidence": 0.5,
+            "issues": [
+              "local_rule_violation: predicate_or_argcount"
+            ]
+          }
+        ],
+        "validation": []
+      },
+      "COMPUTER_SCIENCE": {
+        "facts": [
+          {
+            "fact": "AlgorithmComplexity(algorithm = \"Merge Sort\", bestCase = O(n log n), averageCase = O(n log n), worstCase = O(n log n), spaceComplexity = O(n), dataStructure = \"Array\", operation = \"Comparison-based sorting\").",
+            "arg_count": 7,
+            "generation_time": 0.3160395622253418,
+            "valid": false,
+            "confidence": 0.5,
+            "issues": [
+              "local_rule_violation: predicate_or_argcount"
+            ]
+          },
+          {
+            "fact": "AlgorithmComplexity(algorithm=\"Quicksort\", bestCase=\"O(n log n)\", averageCase=\"O(n log n)\", worstCase=\"O(n^2)\", spaceComplexity=\"O(log n)\", dataStructure=\"Array\", operation=\"Partition).",
+            "arg_count": 7,
+            "generation_time": 0.3177025318145752,
+            "valid": false,
+            "confidence": 0.5,
+            "issues": [
+              "local_rule_violation: predicate_or_argcount"
+            ]
+          },
+          {
+            "fact": "AlgorithmComplexity(algorithm = \"Bubble Sort\", bestCase = O(n), averageCase = O(n^2), worstCase = O(n^2), spaceComplexity = O(1), dataStructure = \"Array\", operation = \"Comparison and Swap\").",
+            "arg_count": 7,
+            "generation_time": 0.342989444732666,
+            "valid": false,
+            "confidence": 0.5,
+            "issues": [
+              "local_rule_violation: predicate_or_argcount"
+            ]
+          }
+        ],
+        "validation": []
+      }
+    },
+    "metrics": {
+      "total_generated": 12,
+      "valid_facts": 0,
+      "invalid_facts": 12,
+      "avg_confidence": 0.5,
+      "avg_arguments": 7.0,
+      "generation_time": 3.972844123840332,
+      "accuracy_rate": 0.0
+    }
+  },
+  "deepseek": {
+    "llm": "DeepSeek",
+    "timestamp": 1758198017.8976097,
+    "domains": {
+      "CHEMISTRY": {
+        "facts": [
+          {
+            "fact": "ChemicalReaction(hydrogen, oxygen, water, energy, platinum, 500, 1).",
+            "arg_count": 7,
+            "generation_time": 4.81489372253418,
+            "valid": false,
+            "confidence": 0.0,
+            "issues": [
+              "The order of reactants and products in a ChemicalReaction is typically represented as reactants -> products.",
+              "Energy is not a reactant or product, but rather an outcome of the reaction.",
+              "Platinum is not a reactant or product in the standard reaction of hydrogen and oxygen to form water.",
+              "The provided quantity (500, 1) is unclear and does not match the typical representation of a chemical reaction.",
+              "local_rule_violation: predicate_or_argcount"
+            ]
+          },
+          {
+            "fact": "ChemicalReaction(hydrogen, oxygen, water, energy, platinum, 500, 1).",
+            "arg_count": 7,
+            "generation_time": 4.1160852909088135,
+            "valid": false,
+            "confidence": 0.0,
+            "issues": [
+              "Incorrect number of arguments. A typical ChemicalReaction requires reactants, products, and perhaps catalysts or conditions, but not energy as a direct argument. Energy is often a byproduct or a result of the reaction.",
+              "Platinum is not a typical reactant in the hydrogen-oxygen reaction, though it may be a catalyst in certain contexts.",
+              "Temperature (500) and other conditions (1) are not direct arguments in the provided function call.",
+              "The function call appears to be attempting to describe a hydrogen-oxygen reaction producing water, which is accurate, but the function name suggests a more general purpose.",
+              "local_rule_violation: predicate_or_argcount"
+            ]
+          },
+          {
+            "fact": "ChemicalReaction(nitrogen_gas, hydrogen_gas, ammonia_gas, none, iron_oxide, 450, 250).",
+            "arg_count": 7,
+            "generation_time": 4.5947771072387695,
+            "valid": false,
+            "confidence": 0.3,
+            "issues": [
+              "Missing catalyst in the Haber-Bosch process",
+              "Incorrect temperature (actual temperature is around 400-450°C, and 250°C is too low)",
+              "Incorrect pressure (actual pressure is around 200-300 atm)",
+              "Missing CO2 in the reactants to produce iron oxide",
+              "local_rule_violation: predicate_or_argcount"
+            ]
+          }
+        ],
+        "validation": []
+      },
+      "PHYSICS": {
+        "facts": [
+          {
+            "fact": "Photon(visible_light, 500e-9, 6e14, 3.98e-19, 1, 299792458, vacuum).",
+            "arg_count": 7,
+            "generation_time": 5.30645751953125,
+            "valid": false,
+            "confidence": 0.5,
+            "issues": [
+              "local_rule_violation: predicate_or_argcount"
+            ]
+          },
+          {
+            "fact": "Photon(visible_light, 500e-9, 6e14, 3.98e-19, 1, transverse, 299792458).",
+            "arg_count": 7,
+            "generation_time": 5.091782808303833,
+            "valid": false,
+            "confidence": 0.5,
+            "issues": [
+              "local_rule_violation: predicate_or_argcount"
+            ]
+          },
+          {
+            "fact": "Photon(visible_light, 600e-9, 5e14, 3.315e-19, 1, transverse, 299792458).",
+            "arg_count": 7,
+            "generation_time": 5.973899841308594,
+            "valid": false,
+            "confidence": 0.0,
+            "issues": [
+              "validator_error_or_non_json"
+            ]
+          }
+        ],
+        "validation": []
+      },
+      "BIOLOGY": {
+        "facts": [
+          {
+            "fact": "MitochondrialElectronTransportChain(NADH, ComplexI, CoenzymeQ, ComplexIII, CytochromeC, ComplexIV, Oxygen).",
+            "arg_count": 7,
+            "generation_time": 4.663076877593994,
+            "valid": false,
+            "confidence": 0.0,
+            "issues": [
+              "Missing ComplexII",
+              "Incorrect position of ComplexIII",
+              "Incorrect position of ComplexIV",
+              "Incorrect electron transport chain configuration",
+              "local_rule_violation: predicate_or_argcount"
+            ]
+          },
+          {
+            "fact": "MitochondrialElectronTransportChain(NADH, ComplexI, ubiquinone, ComplexIII, cytochromeC, ComplexIV, oxygen, ATP).",
+            "arg_count": 8,
+            "generation_time": 5.0328943729400635,
+            "valid": false,
+            "confidence": 0.5,
+            "issues": [
+              "local_rule_violation: predicate_or_argcount"
+            ]
+          },
+          {
+            "fact": "MitochondrialElectronTransportChain(NADH, ComplexI, CoenzymeQ, ComplexIII, CytochromeC, ComplexIV, Oxygen).",
+            "arg_count": 7,
+            "generation_time": 4.796762704849243,
+            "valid": false,
+            "confidence": 0.5,
+            "issues": [
+              "local_rule_violation: predicate_or_argcount"
+            ]
+          }
+        ],
+        "validation": []
+      },
+      "COMPUTER_SCIENCE": {
+        "facts": [
+          {
+            "fact": "SortingAlgorithm(quicksort, O(n log n), O(n log n), O(n^2), O(log n), comparison, divideAndConquer, inPlace).",
+            "arg_count": 8,
+            "generation_time": 5.181220054626465,
+            "valid": false,
+            "confidence": 0.5,
+            "issues": [
+              "local_rule_violation: predicate_or_argcount"
+            ]
+          },
+          {
+            "fact": "SortingAlgorithm(QuickSort, O(n log n), O(n log n), O(n^2), O(log n), Comparison, InPlace, Unstable).",
+            "arg_count": 8,
+            "generation_time": 4.972625255584717,
+            "valid": false,
+            "confidence": 0.5,
+            "issues": [
+              "O(n^2) is not typical for QuickSort",
+              "local_rule_violation: predicate_or_argcount"
+            ]
+          },
+          {
+            "fact": "AlgorithmComplexity(quicksort, O(n log n), O(n log n), O(n^2), O(log n), array, inPlaceSorting).",
+            "arg_count": 7,
+            "generation_time": 5.548141717910767,
+            "valid": false,
+            "confidence": 0.5,
+            "issues": [
+              "The time complexity of Quicksort is typically O(n log n) in the average case, but can be O(n^2) in the worst case.",
+              "The space complexity of Quicksort is generally O(log n) due to the recursive call stack, not O(n log n) or O(n^2).",
+              "In-place sorting is not typically a characteristic of Quicksort, which often uses additional memory to store the recursive call stack.",
+              "local_rule_violation: predicate_or_argcount"
+            ]
+          }
+        ],
+        "validation": []
+      }
+    },
+    "metrics": {
+      "total_generated": 12,
+      "valid_facts": 0,
+      "invalid_facts": 12,
+      "avg_confidence": 0.31666666666666665,
+      "avg_arguments": 7.25,
+      "generation_time": 60.09261727333069,
+      "accuracy_rate": 0.0
+    }
+  },
+  "comparison": {
+    "winner": "Groq",
+    "summary": {},
+    "recommendations": [
+      "DeepSeek generiert erfolgreich komplexe Fakten mit 6+ Argumenten"
+    ],
+    "scores": {
+      "groq": 3,
+      "deepseek": 3
+    },
+    "metrics": {
+      "accuracy": {
+        "groq": 0.0,
+        "deepseek": 0.0
+      },
+      "avg_confidence": {
+        "groq": 0.5,
+        "deepseek": 0.31666666666666665
+      },
+      "avg_arguments": {
+        "groq": 7.0,
+        "deepseek": 7.25
+      },
+      "speed": {
+        "groq": 3.972844123840332,
+        "deepseek": 60.09261727333069
+      }
+    }
+  }
+}

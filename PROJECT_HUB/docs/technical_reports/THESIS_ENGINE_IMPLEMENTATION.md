@@ -191,3 +191,8 @@ export GROQ_API_KEY=your_key
 
 *Für technische Details siehe `src_hexagonal/infrastructure/engines/thesis_enhanced.py`*
 
+
+
+
+
+

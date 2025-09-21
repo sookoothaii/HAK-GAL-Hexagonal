@@ -183,3 +183,8 @@ if __name__ == "__main__":
     generator = EmergencyFactGenerator()
     generator.run(duration_minutes=5)  # Run for 5 minutes
 
+
+
+
+
+

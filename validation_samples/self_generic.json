@@ -1,405 +1,106 @@
 {
-  "table": "facts",
-  "samples": [
-    {
-      "predicate": "ConsistsOf",
-      "statement": "ConsistsOf(AI, protocol, GraphQL)."
-    },
-    {
-      "predicate": "ConsistsOf",
-      "statement": "ConsistsOf(RNA, bacteria, tissue)."
-    },
-    {
-      "predicate": "ConsistsOf",
-      "statement": "ConsistsOf(Euler, proof, algebra)."
-    },
-    {
-      "predicate": "ConsistsOf",
-      "statement": "ConsistsOf(chromosome, tissue, virus)."
-    },
-    {
-      "predicate": "ConsistsOf",
-      "statement": "ConsistsOf(SQL, encryption, API)."
-    },
-    {
-      "predicate": "ConsistsOf",
-      "statement": "ConsistsOf(tissue, mitochondria, DNA)."
-    },
-    {
-      "predicate": "ConsistsOf",
-      "statement": "ConsistsOf(mitochondria, ribosome, DNA)."
-    },
-    {
-      "predicate": "ConsistsOf",
-      "statement": "ConsistsOf(security, encryption, AI)."
-    },
-    {
-      "predicate": "ConsistsOf",
-      "statement": "ConsistsOf(client, SQL, database)."
-    },
-    {
-      "predicate": "ConsistsOf",
-      "statement": "ConsistsOf(ion, nitrogen, carbon)."
-    },
-    {
-      "predicate": "HasPart",
-      "statement": "HasPart(KulturellerAustausch, Kompass)."
-    },
-    {
-      "predicate": "HasPart",
-      "statement": "HasPart(CategoricalImperative, Principle2)."
-    },
-    {
-      "predicate": "HasPart",
-      "statement": "HasPart(cloud, NoSQL)."
-    },
-    {
-      "predicate": "HasPart",
-      "statement": "HasPart(NaCl, CO2)."
-    },
-    {
-      "predicate": "HasPart",
-      "statement": "HasPart(SilkRoad, NorthernRoute)."
-    },
-    {
-      "predicate": "HasPart",
-      "statement": "HasPart(AncientEgypt, Tombs)."
-    },
-    {
-      "predicate": "HasPart",
-      "statement": "HasPart(cloud, algorithm)."
-    },
-    {
-      "predicate": "HasPart",
-      "statement": "HasPart(mitochondria, enzyme)."
-    },
-    {
-      "predicate": "HasPart",
-      "statement": "HasPart(Literature, BookOfTheDead)."
-    },
-    {
-      "predicate": "HasPart",
-      "statement": "HasPart(HTTP, GraphQL)."
-    },
-    {
-      "predicate": "Causes",
-      "statement": "Causes(TCP/IP, GraphQL)."
-    },
-    {
-      "predicate": "Causes",
-      "statement": "Causes(PlateInteractions, Volcanoes)."
-    },
-    {
-      "predicate": "Causes",
-      "statement": "Causes(ConvergentBoundary, PlatesCollide)."
-    },
-    {
-      "predicate": "Causes",
-      "statement": "Causes(organ, protein)."
-    },
-    {
-      "predicate": "Causes",
-      "statement": "Causes(proof, limit)."
-    },
-    {
-      "predicate": "Causes",
-      "statement": "Causes(AdvancedFusion, Sulfur)."
-    },
-    {
-      "predicate": "Causes",
-      "statement": "Causes(species, nucleus)."
-    },
-    {
-      "predicate": "Causes",
-      "statement": "Causes(StickyPrices, PersistentUnemployment)."
-    },
-    {
-      "predicate": "Causes",
-      "statement": "Causes(API, TCP/IP)."
-    },
-    {
-      "predicate": "Causes",
-      "statement": "Causes(catalyst, chlorine)."
-    },
-    {
-      "predicate": "IsDefinedAs",
-      "statement": "IsDefinedAs(catalyst, CO2)."
-    },
-    {
-      "predicate": "IsDefinedAs",
-      "statement": "IsDefinedAs(HTTP, NoSQL)."
-    },
-    {
-      "predicate": "IsDefinedAs",
-      "statement": "IsDefinedAs(FrenchRevolution, TransformationFromMonarchyToRepublic)."
-    },
-    {
-      "predicate": "IsDefinedAs",
-      "statement": "IsDefinedAs(ecosystem, DNA)."
-    },
-    {
-      "predicate": "IsDefinedAs",
-      "statement": "IsDefinedAs(SilkRoad, NetworkOfTradeRoutes)."
-    },
-    {
-      "predicate": "IsDefinedAs",
-      "statement": "IsDefinedAs(bacteria, ribosome)."
-    },
-    {
-      "predicate": "IsDefinedAs",
-      "statement": "IsDefinedAs(SQL, network)."
-    },
-    {
-      "predicate": "IsDefinedAs",
-      "statement": "IsDefinedAs(StellarNucleosynthesis, Prozess)."
-    },
-    {
-      "predicate": "IsDefinedAs",
-      "statement": "IsDefinedAs(security, network)."
-    },
-    {
-      "predicate": "IsDefinedAs",
-      "statement": "IsDefinedAs(integer, prime)."
-    },
-    {
-      "predicate": "HasProperty",
-      "statement": "HasProperty(neutron, complex)."
-    },
-    {
-      "predicate": "HasProperty",
-      "statement": "HasProperty(NH3, polar)."
-    },
-    {
-      "predicate": "HasProperty",
-      "statement": "HasProperty(RNA, variable)."
-    },
-    {
-      "predicate": "HasProperty",
-      "statement": "HasProperty(H2O, critical)."
-    },
-    {
-      "predicate": "HasProperty",
-      "statement": "HasProperty(ecosystem, reactive)."
-    },
-    {
-      "predicate": "HasProperty",
-      "statement": "HasProperty(AdvancedFusion, CarbonZuNeonUndMagnesium)."
-    },
-    {
-      "predicate": "HasProperty",
-      "statement": "HasProperty(Gauss, static)."
-    },
-    {
-      "predicate": "HasProperty",
-      "statement": "HasProperty(BiasVarianceTradeoff, Overfitting)."
-    },
-    {
-      "predicate": "HasProperty",
-      "statement": "HasProperty(CH4, static)."
-    },
-    {
-      "predicate": "HasProperty",
-      "statement": "HasProperty(securityCryptographic, HingAndConsensus)."
-    },
-    {
-      "predicate": "IsTypeOf",
-      "statement": "IsTypeOf(reaction, bond)."
-    },
-    {
-      "predicate": "IsTypeOf",
-      "statement": "IsTypeOf(nucleus, gene)."
-    },
-    {
-      "predicate": "IsTypeOf",
-      "statement": "IsTypeOf(bacteria, organism)."
-    },
-    {
-      "predicate": "IsTypeOf",
-      "statement": "IsTypeOf(calculus, axiom)."
-    },
-    {
-      "predicate": "IsTypeOf",
-      "statement": "IsTypeOf(organ, nucleus)."
-    },
-    {
-      "predicate": "IsTypeOf",
-      "statement": "IsTypeOf(oxygen, O2)."
-    },
-    {
-      "predicate": "IsTypeOf",
-      "statement": "IsTypeOf(algorithm, database)."
-    },
-    {
-      "predicate": "IsTypeOf",
-      "statement": "IsTypeOf(protein, chromosome)."
-    },
-    {
-      "predicate": "IsTypeOf",
-      "statement": "IsTypeOf(quantum, velocity)."
-    },
-    {
-      "predicate": "IsTypeOf",
-      "statement": "IsTypeOf(integer, algebra)."
-    },
-    {
-      "predicate": "IsSimilarTo",
-      "statement": "IsSimilarTo(momentum, Einstein)."
-    },
-    {
-      "predicate": "IsSimilarTo",
-      "statement": "IsSimilarTo(quark, gravity)."
-    },
-    {
-      "predicate": "IsSimilarTo",
-      "statement": "IsSimilarTo(gene, bacteria)."
-    },
-    {
-      "predicate": "IsSimilarTo",
-      "statement": "IsSimilarTo(wave, Einstein)."
-    },
-    {
-      "predicate": "IsSimilarTo",
-      "statement": "IsSimilarTo(enzyme, species)."
-    },
-    {
-      "predicate": "IsSimilarTo",
-      "statement": "IsSimilarTo(matrix, proof)."
-    },
-    {
-      "predicate": "IsSimilarTo",
-      "statement": "IsSimilarTo(cloud, API)."
-    },
-    {
-      "predicate": "IsSimilarTo",
-      "statement": "IsSimilarTo(network, protocol)."
-    },
-    {
-      "predicate": "IsSimilarTo",
-      "statement": "IsSimilarTo(SpreadTechnologies, Paper)."
-    },
-    {
-      "predicate": "IsSimilarTo",
-      "statement": "IsSimilarTo(electron, velocity)."
-    },
-    {
-      "predicate": "HasPurpose",
-      "statement": "HasPurpose(Euler, synthesis)."
-    },
-    {
-      "predicate": "HasPurpose",
-      "statement": "HasPurpose(Fadh2, ElectronTransportChain)."
-    },
-    {
-      "predicate": "HasPurpose",
-      "statement": "HasPurpose(bond, analysis)."
-    },
-    {
-      "predicate": "HasPurpose",
-      "statement": "HasPurpose(ImmanuelKant, ExamineLimitsOfHumanKnowledge)."
-    },
-    {
-      "predicate": "HasPurpose",
-      "statement": "HasPurpose(ImmanuelKant, EmphasizeLimitsAndPossibilitiesOfHumanReason)."
-    },
-    {
-      "predicate": "HasPurpose",
-      "statement": "HasPurpose(hydrogen, synthesis)."
-    },
-    {
-      "predicate": "HasPurpose",
-      "statement": "HasPurpose(TheodosianWalls, DefensiveWars)."
-    },
-    {
-      "predicate": "HasPurpose",
-      "statement": "HasPurpose(encryption, transmission)."
-    },
-    {
-      "predicate": "HasPurpose",
-      "statement": "HasPurpose(MultiplierEffect, MagnifiedImpactOnEmployment)."
-    },
-    {
-      "predicate": "HasPurpose",
-      "statement": "HasPurpose(CommitteeOfPublicSafety, SuppressOpposition)."
-    },
-    {
-      "predicate": "DependsOn",
-      "statement": "DependsOn(database, GraphQL)."
-    },
-    {
-      "predicate": "DependsOn",
-      "statement": "DependsOn(theorem, limit)."
-    },
-    {
-      "predicate": "DependsOn",
-      "statement": "DependsOn(graph, axiom)."
-    },
-    {
-      "predicate": "DependsOn",
-      "statement": "DependsOn(set, derivative)."
-    },
-    {
-      "predicate": "DependsOn",
-      "statement": "DependsOn(Gauss, prime)."
-    },
-    {
-      "predicate": "DependsOn",
-      "statement": "DependsOn(chromosome, species)."
-    },
-    {
-      "predicate": "DependsOn",
-      "statement": "DependsOn(SQL, security)."
-    },
-    {
-      "predicate": "DependsOn",
-      "statement": "DependsOn(mitochondria, ribosome)."
-    },
-    {
-      "predicate": "DependsOn",
-      "statement": "DependsOn(blockchain, algorithm)."
-    },
-    {
-      "predicate": "DependsOn",
-      "statement": "DependsOn(CH4, NaCl)."
-    },
-    {
-      "predicate": "Requires",
-      "statement": "Requires(derivative, limit)."
-    },
-    {
-      "predicate": "Requires",
-      "statement": "Requires(calculus, integer)."
-    },
-    {
-      "predicate": "Requires",
-      "statement": "Requires(tissue, organism)."
-    },
-    {
-      "predicate": "Requires",
-      "statement": "Requires(VR, PowerfulComputer)."
-    },
-    {
-      "predicate": "Requires",
-      "statement": "Requires(cell, chromosome)."
-    },
-    {
-      "predicate": "Requires",
-      "statement": "Requires(cloud, HTTP)."
-    },
-    {
-      "predicate": "Requires",
-      "statement": "Requires(HTTP, database)."
-    },
-    {
-      "predicate": "Requires",
-      "statement": "Requires(enzyme, fungi)."
-    },
-    {
-      "predicate": "Requires",
-      "statement": "Requires(protocol, NoSQL)."
-    },
-    {
-      "predicate": "Requires",
-      "statement": "Requires(velocity, wave)."
-    }
+  "provider": "self",
+  "category": "general",
+  "facts": [
+    "Causes(A, PairsWithT).",
+    "Causes(AI, API).",
+    "Causes(AI, GraphQL).",
+    "Causes(AI, HTTP).",
+    "Causes(AI, SQL).",
+    "Causes(AI, TCP/IP).",
+    "Causes(AI, algorithm).",
+    "Causes(AI, blockchain).",
+    "Causes(AI, cloud).",
+    "Causes(AI, database).",
+    "Causes(AI, encryption).",
+    "Causes(AI, framework).",
+    "Causes(AI, network).",
+    "Causes(AI, protocol).",
+    "Causes(AI, security).",
+    "Causes(AI, server).",
+    "Causes(API, AI).",
+    "Causes(API, GraphQL).",
+    "Causes(API, HTTP).",
+    "Causes(API, NoSQL).",
+    "Causes(API, SQL).",
+    "Causes(API, TCP/IP).",
+    "Causes(API, algorithm).",
+    "Causes(API, blockchain).",
+    "Causes(API, client).",
+    "Causes(API, cloud).",
+    "Causes(API, database).",
+    "Causes(API, framework).",
+    "Causes(API, network).",
+    "Causes(API, protocol).",
+    "Causes(API, server).",
+    "Causes(AbnormalFiring, Epilepsy).",
+    "Causes(Adenine, PaarMitThymine).",
+    "Causes(Adenine, PairsWithThymine).",
+    "Causes(Adenine, Thymine).",
+    "Causes(AdvancedBurning, Iron).",
+    "Causes(AdvancedBurning, Magnesium).",
+    "Causes(AdvancedBurning, Neon).",
+    "Causes(AdvancedBurning, Silicon).",
+    "Causes(AdvancedBurningPhases, Iron).",
+    "Causes(AdvancedBurningPhases, Neon).",
+    "Causes(AdvancedBurningPhases, Silicon).",
+    "Causes(AdvancedFusion, HeavyElementProduction).",
+    "Causes(AdvancedFusion, Iron).",
+    "Causes(AdvancedFusion, Magnesium).",
+    "Causes(AdvancedFusion, Neon).",
+    "Causes(AdvancedFusion, Nickel).",
+    "Causes(AdvancedFusion, Silicon).",
+    "Causes(AdvancedFusion, Sulfur).",
+    "Causes(AggregateDemand, EconomicActivity).",
+    "Causes(AggregateDemand, EconomicGrowth).",
+    "Causes(AggregateDemand, Employment).",
+    "Causes(AlexanderTheGreat, ConqueredAncientEgypt).",
+    "Causes(AlexanderTheGreat, ConquestOfEgypt).",
+    "Causes(AlexanderTheGreat, Decline).",
+    "Causes(AlexanderTheGreat, DeclineOfAncientEgypt).",
+    "Causes(Alzheimers, FunctionImpairment).",
+    "Causes(AnnualFloods, SoilEnrichment).",
+    "Causes(Aristotle, WesternPhilosophy).",
+    "Causes(ArtAndNature, DisinterestedPleasure).",
+    "Causes(AufstiegDesSeehandels, NiedergangDerSilkRoad).",
+    "Causes(AufstiegVonSeehandel, NiedergangVonSilkRoad).",
+    "Causes(BasePairing, HeldTogetherByHydrogenBonds).",
+    "Causes(BasePairing, HoldStrandsTogether).",
+    "Causes(BeliefInAfterlife, ElaborateBurialPractices).",
+    "Causes(BeliefInAfterlife, Mummification).",
+    "Causes(BlackDeath, DeclineOfSilkRoad).",
+    "Causes(BlackHole, Spaghettification).",
+    "Causes(BoostDemand, ReduceUnemployment).",
+    "Causes(Brain, ConsumeEnergy).",
+    "Causes(ByzantineEmpire, DefensiveWars).",
+    "Causes(ByzantineEmpire, FourthCrusade).",
+    "Causes(ByzantineEmpire, GreatSchism).",
+    "Causes(ByzantineEmpire, GreekFire).",
+    "Causes(ByzantineEmpire, Influence).",
+    "Causes(ByzantineEmpire, InfluenceSlavicCultures).",
+    "Causes(ByzantineEmpire, InfluencedSlavicCultures).",
+    "Causes(ByzantineEmpire, OttomanTurks).",
+    "Causes(ByzantineEmpire, ShapedOrthodoxChristianity).",
+    "Causes(C, PairsWithG).",
+    "Causes(CH4, CO2).",
+    "Causes(CH4, H2O).",
+    "Causes(CH4, NH3).",
+    "Causes(CH4, NaCl).",
+    "Causes(CH4, O2).",
+    "Causes(CH4, atom).",
+    "Causes(CH4, bond).",
+    "Causes(CH4, carbon).",
+    "Causes(CH4, catalyst).",
+    "Causes(CH4, hydrogen).",
+    "Causes(CH4, ion).",
+    "Causes(CH4, molecule).",
+    "Causes(CH4, nitrogen).",
+    "Causes(CH4, sodium).",
+    "Causes(CO2, CH4).",
+    "Causes(CO2, H2O).",
+    "Causes(CO2, NH3).",
+    "Causes(CO2, NaCl).",
+    "Causes(CO2, O2).",
+    "Causes(CO2, atom)."
   ]
 }

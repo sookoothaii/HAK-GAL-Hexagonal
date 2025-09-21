@@ -1,0 +1,17 @@
+{
+  "enabled_providers": [
+    "claude",
+    "deepseek",
+    "gemini",
+    "groq",
+    "ollama"
+  ],
+  "provider_order": [
+    "claude",
+    "deepseek",
+    "gemini",
+    "groq",
+    "ollama"
+  ],
+  "api_keys": {}
+}

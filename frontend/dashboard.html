@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HAK-GAL Analytics Dashboard</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+        
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .dashboard-title {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dashboard-subtitle {
+            font-size: 1.2em;
+            color: #7f8c8d;
+            margin: 10px 0 0 0;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .dashboard-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e1e8ed;
+        }
+        
+        .panel-title {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0 0 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .panel-icon {
+            width: 24px;
+            height: 24px;
+            background: #667eea;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+        
+        .knowledge-graph-container {
+            grid-column: 1 / -1;
+            height: 600px;
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e1e8ed;
+        }
+        
+        #knowledge-graph {
+            width: 100%;
+            height: 100%;
+            border: 1px solid #e1e8ed;
+            border-radius: 8px;
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        .metric-value {
+            font-size: 2em;
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        .metric-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin: 5px 0 0 0;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+        
+        .error {
+            background: #e74c3c;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        
+        .success {
+            background: #27ae60;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        
+        .node {
+            cursor: pointer;
+            stroke: #fff;
+            stroke-width: 2px;
+        }
+        
+        .node.system { fill: #3498db; }
+        .node.chemical { fill: #e74c3c; }
+        .node.operational { fill: #f39c12; }
+        .node.general { fill: #95a5a6; }
+        
+        .link {
+            stroke: #999;
+            stroke-opacity: 0.6;
+            stroke-width: 2px;
+        }
+        
+        .node-label {
+            font-size: 12px;
+            font-weight: 500;
+            text-anchor: middle;
+            pointer-events: none;
+            fill: #2c3e50;
+        }
+        
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        .refresh-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+        
+        .refresh-btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-online { background: #27ae60; }
+        .status-offline { background: #e74c3c; }
+        .status-warning { background: #f39c12; }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">🚀 HAK-GAL Analytics Dashboard</h1>
+            <p class="dashboard-subtitle">Real-time Knowledge Base Analytics & Visualization</p>
+        </div>
+        
+        <div class="dashboard-grid">
+            <!-- Predicate Analytics Panel -->
+            <div class="dashboard-panel">
+                <h2 class="panel-title">
+                    <span class="panel-icon">📊</span>
+                    Predicate Analytics
+                </h2>
+                <div id="predicate-analytics">
+                    <div class="loading">Loading predicate statistics...</div>
+                </div>
+                <button class="refresh-btn" onclick="loadPredicateAnalytics()">🔄 Refresh</button>
+            </div>
+            
+            <!-- System Health Panel -->
+            <div class="dashboard-panel">
+                <h2 class="panel-title">
+                    <span class="panel-icon">💚</span>
+                    System Health
+                </h2>
+                <div id="system-health">
+                    <div class="loading">Loading system health...</div>
+                </div>
+                <button class="refresh-btn" onclick="loadSystemHealth()">🔄 Refresh</button>
+            </div>
+        </div>
+        
+        <!-- Knowledge Graph Visualization -->
+        <div class="knowledge-graph-container">
+            <h2 class="panel-title">
+                <span class="panel-icon">🕸️</span>
+                Knowledge Graph Visualization
+            </h2>
+            <svg id="knowledge-graph"></svg>
+            <button class="refresh-btn" onclick="loadKnowledgeGraph()">🔄 Refresh Graph</button>
+        </div>
+    </div>
+    
+    <div class="tooltip" id="tooltip" style="display: none;"></div>
+    
+    <script>
+        // Global variables
+        let graphData = null;
+        let simulation = null;
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPredicateAnalytics();
+            loadSystemHealth();
+            loadKnowledgeGraph();
+        });
+        
+        // Load Predicate Analytics
+        async function loadPredicateAnalytics() {
+            const container = document.getElementById('predicate-analytics');
+            container.innerHTML = '<div class="loading">Loading predicate statistics...</div>';
+            
+            try {
+                // Simulate API call - replace with actual MCP tool call
+                const response = await simulateMCPCall('dashboard_predicates_analytics');
+                const data = JSON.parse(response);
+                
+                let html = `
+                    <div class="metric-card">
+                        <div class="metric-value">${data.total_facts}</div>
+                        <div class="metric-label">Total Facts</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">${data.total_predicates}</div>
+                        <div class="metric-label">Unique Predicates</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">${data.diversity_metrics.chemical_ratio}%</div>
+                        <div class="metric-label">Chemical Facts</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">${data.diversity_metrics.non_chemical_ratio}%</div>
+                        <div class="metric-label">Non-Chemical Facts</div>
+                    </div>
+                `;
+                
+                // Add top predicates
+                html += '<h3 style="margin-top: 20px; color: #2c3e50;">Top Predicates:</h3>';
+                data.top_predicates.slice(0, 10).forEach(pred => {
+                    html += `
+                        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee;">
+                            <span style="font-weight: 500;">${pred.predicate}</span>
+                            <span style="color: #667eea; font-weight: 600;">${pred.count} (${pred.percentage}%)</span>
+                        </div>
+                    `;
+                });
+                
+                container.innerHTML = html;
+            } catch (error) {
+                container.innerHTML = `<div class="error">Error loading predicate analytics: ${error.message}</div>`;
+            }
+        }
+        
+        // Load System Health
+        async function loadSystemHealth() {
+            const container = document.getElementById('system-health');
+            container.innerHTML = '<div class="loading">Loading system health...</div>';
+            
+            try {
+                // Simulate API call - replace with actual MCP tool call
+                const response = await simulateMCPCall('dashboard_system_health');
+                const data = JSON.parse(response);
+                
+                let html = `
+                    <div class="metric-card">
+                        <div class="metric-value">${data.database_metrics.total_facts}</div>
+                        <div class="metric-label">Total Facts</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">${data.database_metrics.database_size_mb} MB</div>
+                        <div class="metric-label">Database Size</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">${data.database_metrics.recent_facts_24h}</div>
+                        <div class="metric-label">New Facts (24h)</div>
+                    </div>
+                `;
+                
+                // Add tool status
+                html += '<h3 style="margin-top: 20px; color: #2c3e50;">Tool Status:</h3>';
+                Object.entries(data.tool_performance).forEach(([tool, status]) => {
+                    const statusClass = status === 'functional' ? 'status-online' : 'status-warning';
+                    html += `
+                        <div style="display: flex; align-items: center; padding: 5px 0;">
+                            <span class="status-indicator ${statusClass}"></span>
+                            <span style="font-weight: 500;">${tool.replace(/_/g, ' ')}</span>
+                        </div>
+                    `;
+                });
+                
+                container.innerHTML = html;
+            } catch (error) {
+                container.innerHTML = `<div class="error">Error loading system health: ${error.message}</div>`;
+            }
+        }
+        
+        // Load Knowledge Graph
+        async function loadKnowledgeGraph() {
+            const svg = d3.select('#knowledge-graph');
+            svg.selectAll('*').remove();
+            
+            try {
+                // Simulate API call - replace with actual MCP tool call
+                const response = await simulateMCPCall('dashboard_knowledge_graph_data');
+                const data = JSON.parse(response);
+                
+                graphData = data;
+                renderKnowledgeGraph(data);
+            } catch (error) {
+                svg.append('text')
+                    .attr('x', '50%')
+                    .attr('y', '50%')
+                    .attr('text-anchor', 'middle')
+                    .attr('fill', '#e74c3c')
+                    .text(`Error loading knowledge graph: ${error.message}`);
+            }
+        }
+        
+        // Render Knowledge Graph with D3.js
+        function renderKnowledgeGraph(data) {
+            const svg = d3.select('#knowledge-graph');
+            const width = svg.node().clientWidth;
+            const height = svg.node().clientHeight;
+            
+            svg.attr('width', width).attr('height', height);
+            
+            // Create tooltip
+            const tooltip = d3.select('#tooltip');
+            
+            // Create force simulation
+            simulation = d3.forceSimulation(data.nodes)
+                .force('link', d3.forceLink(data.edges).id(d => d.id).distance(100))
+                .force('charge', d3.forceManyBody().strength(-300))
+                .force('center', d3.forceCenter(width / 2, height / 2))
+                .force('collision', d3.forceCollide().radius(20));
+            
+            // Create links
+            const link = svg.append('g')
+                .selectAll('line')
+                .data(data.edges)
+                .enter().append('line')
+                .attr('class', 'link')
+                .attr('stroke-width', d => Math.sqrt(d.weight * 10));
+            
+            // Create nodes
+            const node = svg.append('g')
+                .selectAll('circle')
+                .data(data.nodes)
+                .enter().append('circle')
+                .attr('class', d => `node ${d.type}`)
+                .attr('r', d => Math.max(5, Math.min(15, d.connections / 2)))
+                .call(d3.drag()
+                    .on('start', dragstarted)
+                    .on('drag', dragged)
+                    .on('end', dragended))
+                .on('mouseover', function(event, d) {
+                    tooltip.style('display', 'block')
+                        .html(`
+                            <strong>${d.id}</strong><br/>
+                            Type: ${d.type}<br/>
+                            Connections: ${d.connections}
+                        `)
+                        .style('left', (event.pageX + 10) + 'px')
+                        .style('top', (event.pageY - 10) + 'px');
+                })
+                .on('mouseout', function() {
+                    tooltip.style('display', 'none');
+                });
+            
+            // Add labels
+            const label = svg.append('g')
+                .selectAll('text')
+                .data(data.nodes)
+                .enter().append('text')
+                .attr('class', 'node-label')
+                .text(d => d.id.length > 15 ? d.id.substring(0, 15) + '...' : d.id);
+            
+            // Update positions on simulation tick
+            simulation.on('tick', () => {
+                link
+                    .attr('x1', d => d.source.x)
+                    .attr('y1', d => d.source.y)
+                    .attr('x2', d => d.target.x)
+                    .attr('y2', d => d.target.y);
+                
+                node
+                    .attr('cx', d => d.x)
+                    .attr('cy', d => d.y);
+                
+                label
+                    .attr('x', d => d.x)
+                    .attr('y', d => d.y + 5);
+            });
+        }
+        
+        // Drag functions
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+        
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+        
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+        
+        // Simulate MCP Tool Call (replace with actual implementation)
+        async function simulateMCPCall(toolName) {
+            // This is a placeholder - replace with actual MCP tool calls
+            const mockData = {
+                'dashboard_predicates_analytics': {
+                    "timestamp": new Date().toISOString(),
+                    "execution_time": "0.003s",
+                    "total_facts": 567,
+                    "total_predicates": 281,
+                    "category_distribution": {"Chemical": 460, "Non-Chemical": 107},
+                    "top_predicates": [
+                        {"predicate": "ElectromagneticWave", "count": 48, "percentage": 8.47},
+                        {"predicate": "ParticleInteraction", "count": 26, "percentage": 4.59},
+                        {"predicate": "HasProperty", "count": 24, "percentage": 4.23},
+                        {"predicate": "SystemPerformance", "count": 2, "percentage": 0.35}
+                    ],
+                    "diversity_metrics": {
+                        "chemical_ratio": 81.13,
+                        "non_chemical_ratio": 18.87,
+                        "predicate_diversity_index": 281
+                    }
+                },
+                'dashboard_system_health': {
+                    "timestamp": new Date().toISOString(),
+                    "execution_time": "0.002s",
+                    "database_metrics": {
+                        "total_facts": 567,
+                        "unique_facts": 565,
+                        "recent_facts_24h": 12,
+                        "database_size_mb": 2.34,
+                        "duplicate_rate": 0.35
+                    },
+                    "tool_performance": {
+                        "semantic_similarity": "functional",
+                        "get_knowledge_graph": "functional",
+                        "get_predicates_stats": "functional",
+                        "cross_agent_consistency": "achieved"
+                    },
+                    "system_status": {
+                        "multi_agent_coordination": "active",
+                        "framework_implementation": "complete",
+                        "analytics_dashboard": "ready"
+                    }
+                },
+                'dashboard_knowledge_graph_data': {
+                    "timestamp": new Date().toISOString(),
+                    "execution_time": "0.001s",
+                    "nodes": [
+                        {"id": "SystemPerformance", "type": "system", "connections": 9},
+                        {"id": "ArchitectureComponent", "type": "system", "connections": 14},
+                        {"id": "ChemicalReaction", "type": "chemical", "connections": 12},
+                        {"id": "UserExperience", "type": "operational", "connections": 8},
+                        {"id": "ToolValidation", "type": "system", "connections": 6}
+                    ],
+                    "edges": [
+                        {"source": "SystemPerformance", "target": "ArchitectureComponent", "predicate": "DependsOn", "type": "n-ary_relation", "weight": 0.5},
+                        {"source": "SystemPerformance", "target": "ToolValidation", "predicate": "MeasuredBy", "type": "n-ary_relation", "weight": 0.5},
+                        {"source": "ArchitectureComponent", "target": "UserExperience", "predicate": "Influences", "type": "n-ary_relation", "weight": 0.5}
+                    ],
+                    "metadata": {
+                        "total_nodes": 5,
+                        "total_edges": 3,
+                        "facts_processed": 100
+                    }
+                }
+            };
+            
+            return JSON.stringify(mockData[toolName]);
+        }
+        
+        // Auto-refresh every 30 seconds
+        setInterval(() => {
+            loadPredicateAnalytics();
+            loadSystemHealth();
+            loadKnowledgeGraph();
+        }, 30000);
+    </script>
+</body>
+</html>
+
+

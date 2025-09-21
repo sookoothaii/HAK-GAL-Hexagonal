@@ -1,0 +1,36 @@
+{
+  "hasProperty_samples": [
+    "HasProperty(CH4, nonpolar).",
+    "HasProperty(proton, mass).",
+    "HasProperty(CurrentAI, PatternRecognitionCapability).",
+    "HasProperty(H2O, liquid).",
+    "HasProperty(CO2, nonpolar).",
+    "HasProperty(CH4, flammable).",
+    "HasProperty(CO2, gas).",
+    "HasProperty(H2O, polar).",
+    "HasProperty(NH3, pungent).",
+    "HasProperty(photon, no_mass).",
+    "HasProperty(photon, speed_of_light).",
+    "HasProperty(electron, mass).",
+    "HasProperty(NaCl, ionic).",
+    "HasProperty(photon, energy).",
+    "HasProperty(NaCl, crystalline).",
+    "HasProperty(NH3, basic).",
+    "HasProperty(H2O, solvent).",
+    "HasProperty(electron, spin).",
+    "HasProperty(CO2, greenhouse).",
+    "HasProperty(electron, negative_charge)."
+  ],
+  "scientific_samples": [
+    "ConsistsOf(H2O, hydrogen, oxygen).",
+    "ConsistsOf(CO2, carbon, oxygen).",
+    "ConsistsOf(CH4, carbon, hydrogen).",
+    "HallucinationPreventionSystematicDebugSession(debug_date:2025-09-21, api_key_used:hg_sk_4f9a8e1b7d2c5f6a8b3d9e0c1a7b4f9d, backend_port:5002, endpoints_tested:7, results:[validate_POST_200_functional, validate_batch_POST_400_confirmed_broken, statistics_GET_200_functional, quality_analysis_POST_200_but_success_false, governance_compliance_POST_200_functional, invalid_facts_GET_200_functional, suggest_correction_405_method_not_allowed], critical_issues:[batch_validation_HTTP_400_payload_format_problem, quality_analysis_internal_success_false_no_error_message], cache_problem_confirmed:0_cache_hits_despite_1_cache_entry, performance_baseline:[single_validation_17ms, statistics_3ms, quality_analysis_52ms])",
+    "HallucinationPreventionPostRestartValidation(validation_date:2025-09-21, backend_restart_confirmed:true, claimed_fixes_validated:false, batch_validation_status:still_HTTP_500_not_fixed, quality_analysis_status:still_success_false_not_fixed, health_endpoint_status:still_HTTP_405_not_implemented, suggest_correction_status:still_HTTP_405_not_implemented, cache_system_status:reset_to_0_after_restart_normal_behavior, api_success_rate:78_percent_unchanged, functional_endpoints:7_of_9_unchanged, empirical_evidence:contradicts_claimed_bug_resolution_success, hakgal_compliance:P6_L3_empirical_validation_conducted_claims_falsified)",
+    "DesktopClaude4AuthenticityMeterProblemSolving(problem_solving_date:2025-09-20, problem_solver:desktop_claude_4, solved_problems:[false_positive_problem_resolved, false_negative_problem_resolved, arbitrary_thresholds_resolved, context_awareness_implemented], scientific_improvements:[context_specific_weights, score_density_normalization, improved_pattern_detection, auto_context_detection], accuracy_improvement:60_70_percent_to_80_85_percent, validation_results:[reduced_false_positives_scientific_texts, improved_detection_subtle_artificiality, scientifically_founded_thresholds, context_aware_processing], trinity_pattern_success:[user_defined_requirements, implementer_created_basic_algorithm, desktop_claude_empirical_validation, implementer_systematic_problem_solving], production_readiness:improved_authenticity_meter_scientifically_validated_and_production_ready, collaboration_excellence:trinity_pattern_successfully_validated_for_scientific_quality_assurance",
+    "HasPart(cell, cytoplasm).",
+    "ToolRepairSession(date:2025-09-19, broken_tools:[semantic_similarity, consistency_check], root_cause:tripel_to_nary_migration_incomplete, handler_issue:tool_name_vs_name_mismatch, fix_applied:FixedNaryTools_class_import, repair_location:hakgal_mcp_ultimate.py, lines_modified:[1683, 1684], python_cache_cleared:true, test_validation:successful, repair_duration:Q(1.5, hours))",
+    "ConsistsOf(DNA, nucleotides, phosphate_backbone, bases)."
+  ],
+  "total_for_validation": 29
+}

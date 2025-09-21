@@ -21,6 +21,7 @@ import {
 import { toast } from 'sonner';
 import TrustScoreCard, { TrustBadge, TrustComponents } from '@/components/TrustScoreCard';
 import { getApiBaseUrl, httpClient } from '@/services/api';
+import llmClient from '@/services/llmService'; // Import the LLM client with extended timeout
 
 interface QueryResult {
   id: string;
@@ -178,7 +179,7 @@ const UnifiedQueryInterface: React.FC = () => {
         let llmData: any = null;
         let ok = false;
         try {
-          const proxyResp = await httpClient.post(`/api/llm/get-explanation`, { topic: query.trim(), context_facts: extractedFacts, hrm_confidence: storedHrmConfidence });
+          const proxyResp = await llmClient.getExplanation({ topic: query.trim(), context_facts: extractedFacts, hrm_confidence: storedHrmConfidence });
           if (proxyResp.status === 200) { 
             llmData = proxyResp.data; 
             ok = true; 

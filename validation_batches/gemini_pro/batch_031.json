@@ -1,0 +1,183 @@
+{
+  "provider": "gemini_pro",
+  "instructions": "Fokus Bio/Physik; strikte JSON-Ausgabe; max 40 Items",
+  "schema": {
+    "items_schema": {
+      "statement": "string",
+      "verdict": "correct|incorrect|uncertain",
+      "reasons": "string",
+      "suggested_fix": "string|null",
+      "domain": "string",
+      "confidence": "number"
+    },
+    "summary_schema": {
+      "count": "number",
+      "correct": "number",
+      "incorrect": "number",
+      "uncertain": "number",
+      "acceptance_rate": "number"
+    }
+  },
+  "samples": [
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(integral, Gauss, topology)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(integral, Gauss, topology, algebra, Euler)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(integral, algebra, graph)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(integral, algebra, graph, Euler)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(integral, algebra, prime, integer)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(integral, calculus, Gauss, Euler)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(integral, calculus, algebra, Euler)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(integral, calculus, limit, graph)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(integral, calculus, topology)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(integral, derivative, integer)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(integral, derivative, integer, Gauss)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(integral, graph, algebra, topology, Euler)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(integral, graph, limit, algebra)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(integral, integer, Euler, algebra, graph)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(integral, integer, algebra, topology, derivative)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(integral, integer, calculus)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(integral, integer, topology)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(integral, integer, topology, derivative)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(integral, limit, topology)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(integral, limit, topology, Euler)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(integral, prime, algebra, Gauss)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(integral, prime, derivative)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(integral, prime, integer)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(integral, prime, limit)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(integral, prime, limit, Gauss, derivative)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(integral, topology, algebra, derivative, Gauss)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(integral, topology, prime, calculus)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(limit, Euler, Gauss)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(limit, Euler, derivative)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(limit, Euler, derivative, calculus, prime)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(limit, Euler, graph)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(limit, Euler, graph, integer)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(limit, Euler, integer, derivative, prime)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(limit, Euler, integral)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(limit, Gauss, Euler, integer)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(limit, Gauss, calculus, graph)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(limit, Gauss, derivative, integral)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(limit, Gauss, integral)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(limit, Gauss, integral, calculus)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(limit, algebra, calculus, integral)."
+    }
+  ]
+}

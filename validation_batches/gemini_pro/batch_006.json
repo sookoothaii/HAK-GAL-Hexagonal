@@ -1,0 +1,183 @@
+{
+  "provider": "gemini_pro",
+  "instructions": "Fokus Bio/Physik; strikte JSON-Ausgabe; max 40 Items",
+  "schema": {
+    "items_schema": {
+      "statement": "string",
+      "verdict": "correct|incorrect|uncertain",
+      "reasons": "string",
+      "suggested_fix": "string|null",
+      "domain": "string",
+      "confidence": "number"
+    },
+    "summary_schema": {
+      "count": "number",
+      "correct": "number",
+      "incorrect": "number",
+      "uncertain": "number",
+      "acceptance_rate": "number"
+    }
+  },
+  "samples": [
+    {
+      "predicate": "Classification",
+      "statement": "Classification(Support, Vector, Machine, SVM, hyperplane)."
+    },
+    {
+      "predicate": "Hurricane",
+      "statement": "Hurricane(Category, Saffir-Simpson, wind, speed, pressure)."
+    },
+    {
+      "predicate": "Trade",
+      "statement": "Trade(USA, China, 500B, 2025, imports)."
+    },
+    {
+      "predicate": "Money",
+      "statement": "Money(Currency, exchange, rate, inflation, deflation)."
+    },
+    {
+      "predicate": "Biodiversity",
+      "statement": "Biodiversity(Genetic, species, ecosystem, diversity, hotspot)."
+    },
+    {
+      "predicate": "Reasoning",
+      "statement": "Reasoning(Deductive, inductive, abductive, inference)."
+    },
+    {
+      "predicate": "Innovation",
+      "statement": "Innovation(Disruptive, sustaining, incremental, radical, breakthrough)."
+    },
+    {
+      "predicate": "Extinction",
+      "statement": "Extinction(K-T, boundary, asteroid, impact, Chicxulub)."
+    },
+    {
+      "predicate": "Loan",
+      "statement": "Loan(Mortgage, amortization, down, payment, equity)."
+    },
+    {
+      "predicate": "Policy",
+      "statement": "Policy(Public, social, economic, foreign, domestic)."
+    },
+    {
+      "predicate": "Function",
+      "statement": "Function(graph, algebra, derivative)."
+    },
+    {
+      "predicate": "IsSimilarTo",
+      "statement": "IsSimilarTo(GraphQL, HTTP)."
+    },
+    {
+      "predicate": "HasPart",
+      "statement": "HasPart(EstatesSystem, Clergy)."
+    },
+    {
+      "predicate": "Requires",
+      "statement": "Requires(energy, particle)."
+    },
+    {
+      "predicate": "Interface",
+      "statement": "Interface(HTTP, NoSQL, server, AI, SQL)."
+    },
+    {
+      "predicate": "ConsistsOf",
+      "statement": "ConsistsOf(electron, boson, mass)."
+    },
+    {
+      "predicate": "Network",
+      "statement": "Network(client, AI, HTTP, server)."
+    },
+    {
+      "predicate": "Motion",
+      "statement": "Motion(mass, Einstein, neutron, velocity)."
+    },
+    {
+      "predicate": "System",
+      "statement": "System(SQL, AI, HTTP, blockchain, server)."
+    },
+    {
+      "predicate": "Molecule",
+      "statement": "Molecule(carbon, hydrogen, CO2, CH4)."
+    },
+    {
+      "predicate": "Force",
+      "statement": "Force(Einstein, quark, electron)."
+    },
+    {
+      "predicate": "ConsistsOf",
+      "statement": "ConsistsOf(wave, force, quark)."
+    },
+    {
+      "predicate": "IsSimilarTo",
+      "statement": "IsSimilarTo(wave, electron)."
+    },
+    {
+      "predicate": "HasPurpose",
+      "statement": "HasPurpose(catalyst, transmission)."
+    },
+    {
+      "predicate": "ConsistsOf",
+      "statement": "ConsistsOf(molecule, H2O, nitrogen)."
+    },
+    {
+      "predicate": "ConsistsOf",
+      "statement": "ConsistsOf(bond, CH4, sodium)."
+    },
+    {
+      "predicate": "IsTypeOf",
+      "statement": "IsTypeOf(energy, force)."
+    },
+    {
+      "predicate": "Bond",
+      "statement": "Bond(sodium, chlorine, O2)."
+    },
+    {
+      "predicate": "HasPart",
+      "statement": "HasPart(NoSQL, network)."
+    },
+    {
+      "predicate": "Requires",
+      "statement": "Requires(hydrogen, oxygen)."
+    },
+    {
+      "predicate": "ConsistsOf",
+      "statement": "ConsistsOf(Gauss, topology, equation)."
+    },
+    {
+      "predicate": "ConsistsOf",
+      "statement": "ConsistsOf(derivative, Euler, equation)."
+    },
+    {
+      "predicate": "WasDevelopedBy",
+      "statement": "WasDevelopedBy(quark, Curie)."
+    },
+    {
+      "predicate": "IsSimilarTo",
+      "statement": "IsSimilarTo(StellarContribution, RiftValleys)."
+    },
+    {
+      "predicate": "HasPurpose",
+      "statement": "HasPurpose(PlateTectonics, InfluenceClimate)."
+    },
+    {
+      "predicate": "Algorithm",
+      "statement": "Algorithm(Gauss, derivative, integral, prime, graph)."
+    },
+    {
+      "predicate": "IsDefinedAs",
+      "statement": "IsDefinedAs(LowerEgypt, NorthEgypt)."
+    },
+    {
+      "predicate": "Set",
+      "statement": "Set(Gauss, topology, calculus, graph)."
+    },
+    {
+      "predicate": "Force",
+      "statement": "Force(boson, momentum, neutron, mass)."
+    },
+    {
+      "predicate": "IsTypeOf",
+      "statement": "IsTypeOf(virus, chromosome)."
+    }
+  ]
+}
